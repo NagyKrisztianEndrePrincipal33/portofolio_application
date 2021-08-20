@@ -1,16 +1,15 @@
 <template>
-  <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-  </div>
+  <navigation-bar></navigation-bar>
   <router-view />
 </template>
 
 <script>
+import NavigationBar from "./components/NavigationBar.vue";
 
 export default {
   name: 'App',
   components: {
+    NavigationBar,
   }
 }
 </script>
@@ -23,5 +22,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  margin:0;
+}
+body{
+  margin:0;
 }
 </style>
