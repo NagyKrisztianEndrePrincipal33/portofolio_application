@@ -1,20 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { createStore } from 'vuex'
+import store from "./vuex";
 
-const store = createStore({
-    state() {
-        return {
-            authenticated: false,
-        }
-    },
-    mutations: {
-        setAuthentication(state, status) {
-            state.authenticated = status;
-        }
-    }
-});
+
 
 createApp(App)
     .use(store)
