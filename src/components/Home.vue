@@ -1,3 +1,13 @@
 <template>
-  <h1>Home Page</h1>
+  <navigation-bar></navigation-bar>
 </template>
+
+<script>
+import NavigationBar from "./NavigationBar";
+export default {
+  name: "Home",
+  components: {
+    NavigationBar,
+  },
+};
+</script>

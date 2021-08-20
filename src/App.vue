@@ -1,8 +1,4 @@
 <template>
-  <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-  </div>
   <router-view />
 </template>
 
@@ -23,5 +19,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  margin:0;
+}
+body{
+  margin:0;
 }
 </style>
