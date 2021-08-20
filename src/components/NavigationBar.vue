@@ -3,12 +3,24 @@
         <i class="fas fa-users"></i>
         <router-link class="navigation-link" to="/">Home</router-link> 
       <router-link class="navigation-link" to="/about">About</router-link>
+      <div class="login-register" v-if="!this.$store.state.authenticated">
+          <button @click="redirectToLogin">Login</button>
+          <button @click="redirectToRegister">Register</button>
+      </div>
     </nav>
 </template>
 
 <script>
 export default {
     name:"NavigationBar",
+    methods:{
+        redirectToLogin(){
+            this.$router.replace({name:"login"});
+        },
+        redirectToRegister(){
+            this.$router.replace({name:"register"});
+        }
+    }
 }
 </script>
 
@@ -34,5 +46,18 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
             font-family: "sans-serif", cursive;
             font-size:2rem;
         }
+        .login-register{
+                justify-self: end;
+                display:flex;
+                padding: 0 10px;
+                gap:10px;
+                button{
+                    height:100%;
+                    border-radius: 25px;
+                    border: none;
+                    padding:10px;
+                }
+        }
+        
     }
 </style>
