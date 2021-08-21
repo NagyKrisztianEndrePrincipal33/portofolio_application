@@ -15,7 +15,7 @@ const routes = [{
         name: "About",
         component: About,
         beforeEnter: (to, from, next) => {
-            if (store.state.authenticated == false) {
+            if (store.state.user.loggedIn == false) {
                 next('/login');
             } else {
                 next();
@@ -26,11 +26,25 @@ const routes = [{
         path: '/login',
         name: 'login',
         component: Login,
+        beforeEnter: (to, from, next) => {
+            if (store.state.user.loggedIn == false) {
+                next();
+            } else {
+                next(false);
+            }
+        }
     },
     {
         path: '/register',
         name: 'register',
         component: Register,
+        beforeEnter: (to, from, next) => {
+            if (store.state.user.loggedIn == false) {
+                next();
+            } else {
+                next(false);
+            }
+        }
     }
 ];
 
