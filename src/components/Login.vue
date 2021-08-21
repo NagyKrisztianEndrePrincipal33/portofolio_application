@@ -2,6 +2,7 @@
     <div id="login-container">
         <div class="login-component">
             <h2>Login</h2>
+<<<<<<< HEAD
             <form class="login-form" @submit.prevent="login">
                 <p v-if="errors.length" class="error-field">
                     <b>Please correct the following error(s):</b>
@@ -16,28 +17,49 @@
                 <div class="form-row form-field">
                     <label>Password:</label>
                     <input type="password" placeholder="Password" v-model="password" minlength="6" required>
+=======
+            <p>Are you new here? <router-link to="/register">Register</router-link></p>
+            <form class="login-form" @submit.prevent="login">
+                <div class="form-row form-field">
+                    <label>Email:</label>
+                    <input type="email" placeholder="Email" v-model="email">
+                </div>
+                <div class="form-row form-field">
+                    <label>Password:</label>
+                    <input type="password" placeholder="Password" v-model="password">
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
                 </div>
                 <button class="btn btn-login form-field">Login <i class="fas fa-arrow-right"></i></button>
                 
             </form>
+<<<<<<< HEAD
             <p>Are you new here? <router-link to="/register">Register</router-link></p>
+=======
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
         </div>
     </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 import firebase from "../database/firebase";
+=======
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
 export default {
     name:"Login",
     data(){
         return{
             email:"",
             password:"",
+<<<<<<< HEAD
             errors:[],
+=======
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
         }
     },
     methods:{
         login(){
+<<<<<<< HEAD
             this.errors = [];
             // eslint-disable-next-line
             const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
@@ -61,6 +83,9 @@ export default {
                     var errorMessage = error.message;
                     this.errors.push(errorMessage);
                 });
+=======
+
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
         }
     }
 }
@@ -118,7 +143,11 @@ export default {
             align-self: flex-start;
             margin: 5px 0;
             box-sizing: border-box;
+<<<<<<< HEAD
             padding:10px;   
+=======
+            padding:10px;
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
         }
         input{
             width: 100%;
@@ -146,6 +175,7 @@ export default {
         box-sizing: border-box;
         align-items: center;
     }
+<<<<<<< HEAD
      .error-field{
         margin:0;
         b{
@@ -162,4 +192,6 @@ export default {
         font-size: 1rem;
         color:red;
       }
+=======
+>>>>>>> 397836d231ecdc344bc6d4862d3eb1d6bb070996
  </style>
