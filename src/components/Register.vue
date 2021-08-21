@@ -59,7 +59,7 @@ export default {
   },
   methods: {
     register() {
-      this.error = [];
+      this.errors = [];
       console.log("register");
       // eslint-disable-next-line
       const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
@@ -154,6 +154,7 @@ export default {
    ul{
      margin:0;
     margin-bottom:5px;
+    padding:0;
    }
  } 
       .error-list-item{

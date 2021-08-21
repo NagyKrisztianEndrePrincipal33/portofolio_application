@@ -2,35 +2,50 @@
     <div id="login-container">
         <div class="login-component">
             <h2>Login</h2>
-            <p>Are you new here? <router-link to="/register">Register</router-link></p>
             <form class="login-form" @submit.prevent="login">
+                <p v-if="errors.length" class="error-field">
+                    <b>Please correct the following error(s):</b>
+                    <ul>
+                        <li class="error-list-item" :key="error" v-for="error in errors">{{error}}</li>
+                    </ul>
+                    </p>
                 <div class="form-row form-field">
                     <label>Email:</label>
-                    <input type="email" placeholder="Email" v-model="email">
+                    <input type="email" placeholder="Email" v-model="email" required>
                 </div>
                 <div class="form-row form-field">
                     <label>Password:</label>
-                    <input type="password" placeholder="Password" v-model="password">
+                    <input type="password" placeholder="Password" v-model="password" minlength="6" required>
                 </div>
                 <button class="btn btn-login form-field">Login <i class="fas fa-arrow-right"></i></button>
                 
             </form>
+            <p>Are you new here? <router-link to="/register">Register</router-link></p>
         </div>
     </div>
 </template>
 
 <script>
+// import firebase from "../database/firebase";
 export default {
     name:"Login",
     data(){
         return{
             email:"",
             password:"",
+            errors:[],
         }
     },
     methods:{
         login(){
-
+            this.errors = [];
+            // eslint-disable-next-line
+            const emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+            if (!emailReg.test(this.email)) {
+                console.log("Email is not valid!");
+                this.errors.push("Email is not valid!");
+                return;
+            }
         }
     }
 }
@@ -116,4 +131,20 @@ export default {
         box-sizing: border-box;
         align-items: center;
     }
+     .error-field{
+   margin:0;
+   b{
+     font-size: 0.75rem;
+   }
+   ul{
+     margin:0;
+    margin-bottom:5px;
+    padding:0;
+   }
+ } 
+      .error-list-item{
+        list-style: none;
+        font-size: 1rem;
+        color:red;
+      }
  </style>
