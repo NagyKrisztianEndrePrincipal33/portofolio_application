@@ -1,0 +1,119 @@
+<template>
+    <div id="login-container">
+        <div class="login-component">
+            <h2>Login</h2>
+            <p>Are you new here? <router-link to="/register">Register</router-link></p>
+            <form class="login-form" @submit.prevent="login">
+                <div class="form-row form-field">
+                    <label>Email:</label>
+                    <input type="email" placeholder="Email" v-model="email">
+                </div>
+                <div class="form-row form-field">
+                    <label>Password:</label>
+                    <input type="password" placeholder="Password" v-model="password">
+                </div>
+                <button class="btn btn-login form-field">Login <i class="fas fa-arrow-right"></i></button>
+                
+            </form>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    name:"Login",
+    data(){
+        return{
+            email:"",
+            password:"",
+        }
+    },
+    methods:{
+        login(){
+
+        }
+    }
+}
+</script>
+ 
+ <style scoped lang="scss">
+ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid"; // fas
+@import "~@fortawesome/fontawesome-free/scss/regular"; // far
+@import "~@fortawesome/fontawesome-free/scss/brands"; // fab
+    @import "./colors";
+    #login-container{
+        width:100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $third-color;
+
+    }
+
+    .login-component{
+        min-width: 60vw;
+        min-height: 60vh;
+        background-color: white;
+        border-radius: 25px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        padding:15px;
+        h2{
+            margin:10px auto;    
+        }
+        box-sizing: border-box;
+    }
+
+    .btn{
+        padding:10px 15px;
+        outline: none;
+        border:none;
+        border-radius: 25px;
+        min-width: 30%;
+        max-width: 70%;
+        font-size: 1.25rem;
+    }
+
+    .form-field{
+        margin:10px 0;
+    }
+
+    .form-row{
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        label{
+            align-self: flex-start;
+            margin: 5px 0;
+            box-sizing: border-box;
+            padding:10px;   
+        }
+        input{
+            width: 100%;
+            padding:10px;
+            box-sizing: border-box;
+            outline: none;
+            border:none;
+            border-radius: 25px;
+            font-size: 1.25rem;
+           box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+        box-sizing: border-box;
+    }
+
+    .btn-login{
+        background-color: $third-color;
+        color:white;
+    }
+
+    .login-form{
+        display: flex;
+        height: 100%;
+        justify-content: space-evenly;
+        flex-direction: column;
+        box-sizing: border-box;
+        align-items: center;
+    }
+ </style>
