@@ -29,6 +29,7 @@
         </div>
         <button class="submit-button" :disabled="!submitIsActive">Submit</button>
       </form>
+      <p>Do you allready have an account? <router-link to="/login" class="link-in-register">Login</router-link></p>
     </div>
   </div>
 </template>
@@ -162,5 +163,9 @@ export default {
         font-size: 1rem;
         color:red;
       }
+}
+
+.link-in-register{
+  color:cyan;
 }
 </style>

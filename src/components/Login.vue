@@ -26,7 +26,7 @@
 </template>
 
 <script>
-// import firebase from "../database/firebase";
+import firebase from "../database/firebase";
 export default {
     name:"Login",
     data(){
@@ -46,6 +46,21 @@ export default {
                 this.errors.push("Email is not valid!");
                 return;
             }
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+                .then((userCredential) => {
+                    // Signed in
+                    var user = userCredential.user;
+                    console.log(user);
+                    this.$store.commit("setAuthentication",true);
+                    this.$router.push("/");
+                    // ...
+                })
+                .catch((error) => {
+                    var errorCode = error.code;
+                    console.log(errorCode);
+                    var errorMessage = error.message;
+                    this.errors.push(errorMessage);
+                });
         }
     }
 }
@@ -132,15 +147,15 @@ export default {
         align-items: center;
     }
      .error-field{
-   margin:0;
-   b{
-     font-size: 0.75rem;
-   }
-   ul{
-     margin:0;
-    margin-bottom:5px;
-    padding:0;
-   }
+        margin:0;
+        b{
+            font-size: 0.75rem;
+        }
+        ul{
+            margin:0;
+            margin-bottom:5px;
+            padding:0;
+        }
  } 
       .error-list-item{
         list-style: none;
