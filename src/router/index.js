@@ -3,6 +3,7 @@ import Home from "@/components/Home.vue";
 import About from "@/components/About.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
+import ProfilePage from "@/components/ProfilePage.vue";
 import store from "../vuex";
 
 const routes = [{
@@ -31,6 +32,11 @@ const routes = [{
         path: '/register',
         name: 'register',
         component: Register,
+    },
+    {
+        path: '/CV',
+        name: 'profile_page',
+        component: ProfilePage
     }
 ];
 
