@@ -66,22 +66,22 @@ export default {
 }
 </script>
  
- <style scoped lang="scss">
- $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+<style scoped lang="scss">
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/solid"; // fas
 @import "~@fortawesome/fontawesome-free/scss/regular"; // far
 @import "~@fortawesome/fontawesome-free/scss/brands"; // fab
-    @import "./colors";
-    #login-container{
-        width:100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: $third-color;
-
-    }
+@import "./colors";
+    
+#login-container{
+    width:100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $third-color;
+}
 
     .login-component{
         min-width: 60vw;
