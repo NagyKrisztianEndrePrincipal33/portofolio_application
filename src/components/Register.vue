@@ -3,33 +3,72 @@
     <div class="register-component">
       <h1>Register</h1>
       <form class="register-form" @submit.prevent="register">
-        <p v-if="errors.length" class="error-field">
+        <!-- <p v-if="errors.length" class="error-field">
           <b>Please correct the following error(s):</b>
           <ul>
             <li class="error-list-item" :key="error" v-for="error in errors">{{error}}</li>
           </ul>
-        </p>
+        </p> -->
         <div class="form-row">
-          <label>Email:</label>
-          <input type="email" v-model="email" required placeholder="Email"/>
+          <input
+            type="text"
+            v-model="firstName"
+            placeholder="First name"
+            required
+          />
         </div>
         <div class="form-row">
-        <label>Password:</label>
-        <input type="password" v-model="password" required minlength="6" placeholder="Password"/>
+          <input
+            type="text"
+            v-model="lastName"
+            placeholder="Last name"
+            required
+          />
         </div>
         <div class="form-row">
-        <label>Re-type password:</label>
-        <input
-          type="password"
-          v-model="retypedPassword"
-          required
-          minlength="6"
-          placeholder="Retype password"
-        />
+          <input type="email" v-model="email" required placeholder="Email" />
         </div>
-        <button class="submit-button" :disabled="!submitIsActive">Submit</button>
+        <div class="form-row">
+          <input
+            :type="type"
+            v-model="password"
+            required
+            minlength="6"
+            placeholder="Password"
+          />
+          <span class="btn-show-pass" @click="showHidePass">
+            <i :class="showPassIcon"></i>
+          </span>
+        </div>
+        <div class="form-row">
+          <input
+            :type="typeR"
+            v-model="retypedPassword"
+            required
+            minlength="6"
+            placeholder="Re-type password"
+          />
+          <span class="btn-show-pass" @click="showHideRPass">
+            <i :class="showPassIconR"></i>
+          </span>
+        </div>
+        <div class="terms">
+          <p>
+            By clicking Agree & Join, you agree to the
+            <a href="#">User Agreement</a>, <a href="#">Privacy Policy</a>, and
+            <a href="#">Cookie Policy</a>.
+          </p>
+        </div>
+        <div class="actions">
+          <button class="submit-button" :disabled="!submitIsActive">
+            Agree & Join
+          </button>
+        </div>
       </form>
-      <p>Do you allready have an account? <router-link to="/login" class="link-in-register">Login</router-link></p>
+      <p>
+        Do you allready have an account?
+        <router-link to="/login" class="link-in-register">Sign in</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -41,11 +80,17 @@ export default {
   name: "Register",
   data() {
     return {
+      type: "password",
+      typeR: "password",
+      showPassIcon: "fas fa-eye-slash",
+      showPassIconR: "fas fa-eye-slash",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       retypedPassword: "",
       submitIsActive: true,
-      errors:[],
+      errors: [],
     };
   },
   watch: {
@@ -94,78 +139,193 @@ export default {
           // ..
         });
     },
+    showHidePass() {
+      if (this.type == "password") {
+        this.type = "text";
+        this.showPassIcon = "fas fa-eye";
+      } else {
+        this.type = "password";
+        this.showPassIcon = "fas fa-eye-slash";
+      }
+    },
+    showHideRPass() {
+      if (this.typeR == "password") {
+        this.typeR = "text";
+        this.showPassIconR = "fas fa-eye";
+      } else {
+        this.typeR = "password";
+        this.showPassIconR = "fas fa-eye-slash";
+      }
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid"; // fas
+@import "~@fortawesome/fontawesome-free/scss/regular"; // far
+@import "~@fortawesome/fontawesome-free/scss/brands"; // fab
 @import "./colors";
 
 #register-container {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell,
+    "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #f2f2f2;
 }
 .register-component {
+  width: 390px;
   display: flex;
   flex-direction: column;
-  height: auto;
-  background-color: $first-color;
-  padding: 15px;
-  border-radius: 25px;
-  color: white;
-  min-width: 50vw;
-  min-height: 50vh;
-  font-size: 1.5rem;
+  box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
+  padding: 33px 55px 33px 55px;
+  border-radius: 10px;
+  margin: 0 auto;
+  background: #fff;
+  h1 {
+    font-size: 3.2rem;
+    line-height: 1.25;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    padding: 0 0 24px 0;
+    text-align: left;
+    margin-bottom: 20px;
+  }
 }
-.register-form{
+.register-form {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  .form-row{
+
+  .terms {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+
+  .terms a {
+    text-decoration: none;
+    color: #2f9df7;
+  }
+
+  .terms a:hover {
+    text-decoration: underline;
+  }
+
+  .form-row {
     display: flex;
-    flex-direction: column;
-    margin: 5px 0;
-    input{
-      margin-top:5px;
-      padding:10px;
-      border-radius: 25px;
-      border:none;
-      outline:none;
+    flex-direction: row;
+    width: 100%;
+    border-bottom: 2px solid #adadad;
+    margin-bottom: 32px;
+    input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      outline: none;
+      border: none;
+      font-size: 1.05rem;
+      opacity: 0.8;
     }
-    label{
-      text-align: start;
+    box-sizing: border-box;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    padding-top: 16px;
+    width: 100%;
+  }
+  .submit-button {
+    border-radius: 25px;
+    border: 0;
+    background-color: #2f9df7;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 500;
+    width: 100%;
+    font-family: inherit;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+      border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .submit-button:hover {
+    background: #015073;
+  }
+
+  .error-field {
+    margin: 0;
+    b {
+      font-size: 0.75rem;
+    }
+    ul {
+      margin: 0;
+      margin-bottom: 5px;
+      padding: 0;
     }
   }
-  .submit-button{
-      margin:15px 0;
-      padding:15px;
-      font-size: 2rem;
-      border-radius: 25px;
-      border:none;
+  .error-list-item {
+    list-style: none;
+    font-size: 1rem;
+    color: red;
   }
-  
- .error-field{
-   margin:0;
-   b{
-     font-size: 0.75rem;
-   }
-   ul{
-     margin:0;
-    margin-bottom:5px;
-    padding:0;
-   }
- } 
-      .error-list-item{
-        list-style: none;
-        font-size: 1rem;
-        color:red;
-      }
 }
 
-.link-in-register{
-  color:cyan;
+.link-in-register {
+  color: #2f9df7;
+  text-decoration: none;
+}
+
+.link-in-register:hover {
+  text-decoration: underline;
+}
+
+.btn-show-pass {
+  font-size: 18px;
+  color: #999999;
+  margin: auto;
+  margin-right: 8px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.btn-show-pass:hover {
+  color: #6a7dfe;
+  color: -webkit-linear-gradient(left, #21d4fd, #b721ff);
+  color: -o-linear-gradient(left, #21d4fd, #b721ff);
+  color: -moz-linear-gradient(left, #21d4fd, #b721ff);
+  color: linear-gradient(left, #21d4fd, #b721ff);
+}
+
+.btn-show-pass.active {
+  color: #6a7dfe;
+  color: -webkit-linear-gradient(left, #21d4fd, #b721ff);
+  color: -o-linear-gradient(left, #21d4fd, #b721ff);
+  color: -moz-linear-gradient(left, #21d4fd, #b721ff);
+  color: linear-gradient(left, #21d4fd, #b721ff);
 }
 </style>

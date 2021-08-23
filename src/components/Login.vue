@@ -89,7 +89,6 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="scss">
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
@@ -158,6 +157,15 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   vertical-align: middle;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    
+#login-container{
+    width:100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: $third-color;
 }
 
 .btn:hover {
