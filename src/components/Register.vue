@@ -1,14 +1,14 @@
 <template>
   <div id="register-container">
     <div class="register-component">
-      <h1>Register</h1>
+      <h1>Sign up</h1>
       <form class="register-form" @submit.prevent="register">
-        <!-- <p v-if="errors.length" class="error-field">
+        <p v-if="errors.length" class="error-field">
           <b>Please correct the following error(s):</b>
           <ul>
             <li class="error-list-item" :key="error" v-for="error in errors">{{error}}</li>
           </ul>
-        </p> -->
+        </p>
         <div class="form-row">
           <input
             type="text"
