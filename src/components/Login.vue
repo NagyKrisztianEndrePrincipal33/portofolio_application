@@ -112,8 +112,8 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
     .form-row{
         display: flex;
-        flex-direction: column;
-        align-self: stretch;
+        flex-direction: row;
+        
         label{
             align-self: flex-start;
             margin: 5px 0;
