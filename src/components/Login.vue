@@ -183,7 +183,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .form-row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   border-bottom: 2px solid #adadad;
   margin-bottom: 32px;
