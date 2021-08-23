@@ -14,12 +14,15 @@
         </div>
         <div class="form-row form-field">
           <input
-            type="password"
+            :type="type"
             placeholder="Password"
             v-model="password"
             minlength="6"
             required
           />
+          <span class="btn-show-pass" @click="showHidePass">
+            <i :class="showPassIcon"></i>
+          </span>
         </div>
         <a href="#" class="forgot-password">Forgot password?</a>
         <div class="actions">
@@ -39,9 +42,11 @@ export default {
   name: "Login",
   data() {
     return {
-      email: "",
-      password: "",
-      errors: [],
+        type: "password",
+        showPassIcon: "fas fa-eye-slash",
+        email: "",
+        password: "",
+        errors: [],
     };
   },
   methods: {
@@ -71,6 +76,15 @@ export default {
           var errorMessage = error.message;
           this.errors.push(errorMessage);
         });
+    },
+    showHidePass() {
+      if (this.type == "password") {
+        this.type = "text";
+        this.showPassIcon = "fas fa-eye";
+      } else {
+        this.type = "password";
+        this.showPassIcon = "fas fa-eye-slash";
+      }
     },
   },
 };
@@ -214,5 +228,40 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   list-style: none;
   font-size: 1rem;
   color: red;
+}
+.btn-show-pass {
+  font-size: 18px;
+  color: #999999;
+  margin: auto;
+  margin-right: 8px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding-right: 5px;
+  cursor: pointer;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+.btn-show-pass:hover {
+  color: #6a7dfe;
+  color: -webkit-linear-gradient(left, #21d4fd, #b721ff);
+  color: -o-linear-gradient(left, #21d4fd, #b721ff);
+  color: -moz-linear-gradient(left, #21d4fd, #b721ff);
+  color: linear-gradient(left, #21d4fd, #b721ff);
+}
+.btn-show-pass.active {
+  color: #6a7dfe;
+  color: -webkit-linear-gradient(left, #21d4fd, #b721ff);
+  color: -o-linear-gradient(left, #21d4fd, #b721ff);
+  color: -moz-linear-gradient(left, #21d4fd, #b721ff);
+  color: linear-gradient(left, #21d4fd, #b721ff);
 }
 </style>
