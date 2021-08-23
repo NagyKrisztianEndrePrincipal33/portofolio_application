@@ -1,7 +1,7 @@
 <template>
     <div id="login-container">
         <div class="login-component">
-            <h2>Login</h2>
+            <h1>Sign in</h1>
             <form class="login-form" @submit.prevent="login">
                 <p v-if="errors.length" class="error-field">
                     <b>Please correct the following error(s):</b>
@@ -10,17 +10,17 @@
                     </ul>
                     </p>
                 <div class="form-row form-field">
-                    <label>Email:</label>
                     <input type="email" placeholder="Email" v-model="email" required>
                 </div>
                 <div class="form-row form-field">
-                    <label>Password:</label>
                     <input type="password" placeholder="Password" v-model="password" minlength="6" required>
                 </div>
-                <button class="btn btn-login form-field">Login <i class="fas fa-arrow-right"></i></button>
+                <div class="actions">
+                    <button class="btn btn-login form-field">Sign in</button>
+                </div>
                 
             </form>
-            <p>Are you new here? <router-link to="/register">Register</router-link></p>
+            <p class="noAccount">Don't have an account?  <router-link to="/register">Sign up</router-link></p>
         </div>
     </div>
 </template>
@@ -31,6 +31,8 @@ export default {
     name:"Login",
     data(){
         return{
+            firstName: "",
+            lastName: "",
             email:"",
             password:"",
             errors:[],
@@ -74,67 +76,87 @@ export default {
 @import "~@fortawesome/fontawesome-free/scss/brands"; // fab
     @import "./colors";
     #login-container{
+        font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue","Fira Sans",Ubuntu,Oxygen,"Oxygen Sans",Cantarell,"Droid Sans","Apple Color Emoji","Segoe UI Emoji","Segoe UI Emoji","Segoe UI Symbol","Lucida Grande",Helvetica,Arial,sans-serif;
         width:100vw;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: $third-color;
+        background-color: #f2f2f2;
+    }
 
+    .noAccount {
+        font-size: 13px;
+        color: #333333;
+        margin-top: 30px;
     }
 
     .login-component{
-        min-width: 60vw;
-        min-height: 60vh;
-        background-color: white;
-        border-radius: 25px;
-        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        padding:15px;
-        h2{
-            margin:10px auto;    
+        width: 390px;
+        box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.10);
+        padding: 33px 55px 33px 55px;
+        border-radius: 10px;
+        margin: 0 auto;
+        background: #fff;
+        h1{
+           font-size: 3.2rem;
+            line-height: 1.25;
+            font-weight: 600;
+            color: rgba(0,0,0,0.9);
+            padding: 0 0 24px 0; 
+            text-align: left; 
+            margin-bottom: 20px; 
         }
-        box-sizing: border-box;
+    }
+
+    .actions {
+        display: flex;
+        flex-direction: row;
+        padding-top: 16px;
+        width: 100%;
     }
 
     .btn{
-        padding:10px 15px;
-        outline: none;
-        border:none;
         border-radius: 25px;
-        min-width: 30%;
-        max-width: 70%;
-        font-size: 1.25rem;
+        border: 0;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1.6rem;
+        font-weight: 600;
+        width: 100%;
+        font-family: inherit;
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
-    .form-field{
-        margin:10px 0;
+    .btn:hover {
+        background: #015073;
     }
 
     .form-row{
         display: flex;
         flex-direction: column;
-        align-self: stretch;
-        label{
-            align-self: flex-start;
-            margin: 5px 0;
-            box-sizing: border-box;
-            padding:10px;   
-        }
+        width: 95%;
+        border-bottom: 2px solid #adadad;
+        margin-bottom: 32px;
         input{
             width: 100%;
             padding:10px;
             box-sizing: border-box;
             outline: none;
             border:none;
-            border-radius: 25px;
-            font-size: 1.25rem;
-           box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            
+            font-size: 1.15rem;
+            opacity: 0.8;
         }
         box-sizing: border-box;
     }
 
     .btn-login{
-        background-color: $third-color;
+        background-color: #2f9df7;
         color:white;
     }
 
