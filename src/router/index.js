@@ -15,7 +15,7 @@ const routes = [{
         name: "About",
         component: About,
         beforeEnter: (to, from, next) => {
-            if (store.state.authenticated == false) {
+            if (store.state.user.loggedIn == false) {
                 next('/login');
             } else {
                 next();
