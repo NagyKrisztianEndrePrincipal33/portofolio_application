@@ -157,6 +157,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   vertical-align: middle;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
 
     
 #login-container{
@@ -165,7 +166,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: $third-color;
+    background-color: #f2f2f2;
 }
 
 .btn:hover {
