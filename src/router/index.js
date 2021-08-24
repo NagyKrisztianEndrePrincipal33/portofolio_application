@@ -16,13 +16,6 @@ const routes = [{
         path: "/about",
         name: "About",
         component: About,
-        beforeEnter: (to, from, next) => {
-            if (store.state.user.loggedIn == false) {
-                next('/login');
-            } else {
-                next();
-            }
-        }
     },
     {
         path: '/login',
@@ -47,8 +40,8 @@ const routes = [{
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;
