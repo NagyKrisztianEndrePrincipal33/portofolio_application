@@ -163,7 +163,7 @@ export default {
      
     },
     async getMatches(id){
-        return firebase.firestore().collection('users').where('webid',">",id).get(); //await debug test case
+        return firebase.firestore().collection('users').where('webid',">=",id).get(); //await debug test case
         //
     },
     showHidePass() {
