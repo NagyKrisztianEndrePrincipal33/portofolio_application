@@ -141,14 +141,14 @@ export default {
             webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase()+res.size;
           }
           console.log(webid);
-          // const data = {
-          //   uid : user.uid,
-          //   firstName : this.firstName,
-          //   lastName : this.lastName,
-          //   webid,
-          //   createdAt : new Date()
-          // }
-          //firebase.firestore().collection('users').doc().set(data);
+          const data = {
+            uid : user.uid,
+            firstName : this.firstName,
+            lastName : this.lastName,
+            webid,
+            createdAt : new Date()
+          }
+          firebase.firestore().collection('users').doc().set(data);
           
           this.$router.push("/login");
         })
