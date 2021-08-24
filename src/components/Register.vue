@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    register() {
+    async register() {
       this.errors = [];
       console.log("register");
       // eslint-disable-next-line
@@ -123,12 +123,34 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
-        .then((userCredential) => {
+        .then(async (userCredential) => {
           // Signed in
           var user = userCredential.user;
           console.log(user);
-          this.$router.push("/login");
           // ...
+          let tempid = this.firstName.toLowerCase() + "."+this.lastName.toLowerCase();
+          let res = await this.getMatches(tempid)
+          let webid;
+          console.log(res.size);
+          if(res.size==0)
+          {
+            webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase();
+          }
+          else
+          {
+            webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase()+res.size;
+          }
+          console.log(webid);
+          const data = {
+            uid : user.uid,
+            firstName : this.firstName,
+            lastName : this.lastName,
+            webid,
+            createdAt : new Date()
+          }
+          firebase.firestore().collection('users').doc().set(data);
+          
+          this.$router.push("/login");
         })
         .catch((error) => {
           var errorCode = error.code;
@@ -138,6 +160,11 @@ export default {
           this.errors.push(errorMessage);
           // ..
         });
+     
+    },
+    async getMatches(id){
+        return firebase.firestore().collection('users').where('webid',">=",id).get(); //await debug test case
+        //
     },
     showHidePass() {
       if (this.type == "password") {
