@@ -3,36 +3,40 @@ import Home from "@/components/Home.vue";
 import About from "@/components/About.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
-// import store from "../vuex";
+import ProfilePage from "@/components/ProfilePage.vue";
+import EditPage from "@/components/EditPage.vue";
+import store from "../vuex";
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home,
-  },
-  {
-    path: "/about",
-    name: "About",
-    component: About,
-    // beforeEnter: (to, from, next) => {
-    //     if (store.state.user.loggedIn == false) {
-    //         next('/login');
-    //     } else {
-    //         next();
-    //     }
-    // }
-  },
-  {
-    path: "/login",
-    name: "login",
-    component: Login,
-  },
-  {
-    path: "/register",
-    name: "register",
-    component: Register,
-  },
+const routes = [{
+        path: "/",
+        name: "Home",
+        component: Home,
+    },
+    {
+        path: "/about",
+        name: "About",
+        component: About,
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: Login,
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: Register,
+    },
+    {
+        path: '/CV/:webid',
+        name: 'profile_page',
+        component: ProfilePage
+    },
+    {
+        path: '/edit/:webid',
+        name: 'edit_page',
+        component: EditPage
+    }
 ];
 
 const router = createRouter({
