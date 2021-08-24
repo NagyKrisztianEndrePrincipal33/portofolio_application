@@ -34,7 +34,7 @@ const routes = [{
         component: Register,
     },
     {
-        path: '/CV/:profile_id',
+        path: '/CV/:webid',
         name: 'profile_page',
         component: ProfilePage
     }

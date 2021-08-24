@@ -27,6 +27,9 @@
       </div>
       <div class="rows">
         <div class="skills glow">
+          <div class="title">
+            <h1> Skills </h1>
+          </div>
           <div>HTML</div>
           <div>CSS</div>
           <div>Javascript</div>
@@ -156,7 +159,7 @@ template {
   padding: 15px;
 }
 
-.skills  div{
+.skills div {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,7 +181,7 @@ template {
   padding: 15px;
 }
 
-.hobbies div{
+.hobbies div {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -187,7 +190,6 @@ template {
   -moz-box-shadow: 0 0 20px grey; 
   box-shadow:0 0 20px grey;
   border-radius: 10px;
-  vertical-align: middle;
 }
 
 .bottom-row {
@@ -201,13 +203,13 @@ template {
   padding: 15px;
 }
 
-.bottom-left{
+.bottom-left {
   display: flex;
   flex-direction: column;
   margin-left: 20px;
 }
 
-.bottom-right{
+.bottom-right {
   display: flex;
   flex-direction: column;
   margin-left: auto;
@@ -218,6 +220,10 @@ template {
   -webkit-box-shadow:0 0 20px grey;
   -moz-box-shadow: 0 0 20px grey; 
   box-shadow:0 0 20px grey;
+}
+
+.title {
+  display: flex;
 }
 
 </style>
