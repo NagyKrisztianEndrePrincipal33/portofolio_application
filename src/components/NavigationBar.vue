@@ -11,6 +11,7 @@
       <button @click="logOut">Log out</button>
     </div>
     <div class="right-side">
+      <button @click="redirectToEdit">Edit</button>
       <img class="profile-image" src="../assets/default.png" @click="redirectToProfile">
     </div>
   </nav>
@@ -54,6 +55,13 @@ export default {
       firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
           this.$router.replace('/CV/' + doc.data().webid)
+        })
+      })
+    },
+    redirectToEdit () {
+      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          this.$router.replace('/edit/' + doc.data().webid)
         })
       })
     }
@@ -105,6 +113,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     width: 30px;
     height: 30px;
     border-radius: 100%;
+    cursor: pointer;
   }
 }
 </style>

@@ -8,21 +8,21 @@
           <img src="../assets/default.png">
         </div>
         <div class="description glow">
-          <h2>Timi Draghici</h2>
-          <h4>Ajutor Programator</h4>
-          <p>This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.</p>
+          <h2>{{firstName + " " + lastName}}</h2>
+          <h4>{{job}}</h4>
+          <p>{{description}}</p>
         </div>
       </div>
       <div class="rows">
         <div class="experience glow">
-          Proiect1
-          <br>Proiect2
-          <br>Proiect3
-          <br>Proiect4
+          <div v-for="item in experience" :key="item">
+            {{item}}
+          </div>
         </div>
         <div class="education glow">
-          Liceul Tehnologic Nr.1 Ludus
-          <br><br>Informatica UMFST
+          <div v-for="item in education" :key="item">
+            {{item}}
+          </div>
         </div>
       </div>
       <div class="rows">
@@ -31,13 +31,9 @@
             <h2> Skills </h2>
           </div>
           <div class="skills">
-            <div class="skills_div">HTML</div>
-            <div class="skills_div">CSS</div>
-            <div class="skills_div">Javascript</div>
-            <div class="skills_div">VueJS</div>
-            <div class="skills_div">Firebase</div>
-            <div class="skills_div">Bootstrap</div>
-            <div class="skills_div">Bootstrap</div>
+            <div v-for="item in skills" :key="item">
+              {{item}}
+            </div>
           </div>
         </div>
         <div class="grid-wrapper glow">
@@ -45,18 +41,20 @@
             <h2> Hobbies </h2>
           </div>
           <div class="hobbies">
-            <div>Airsoft</div>
-            <div>Fishing</div>
-            <div>Off-road</div>
+            <div v-for="item in hobbies" :key="item">
+              {{item}}
+            </div>
           </div>
         </div>
       </div>
       <div class="bottom-row">
         <div class="bottom-left">
-          SocialMedia
+          <img src="../assets/email.png">
+          {{contact}}
         </div>
         <div class="bottom-right">
-          GITHUB
+          <img src="../assets/github_logo.png">
+          <a :href="github">{{github}}</a>
         </div>
       </div>
     </div>
@@ -66,8 +64,23 @@
 <script>
 import NavigationBar from "./NavigationBar";
 import {mapGetters} from "vuex";
+import firebase from "../database/firebase";
 export default {
   name: "Home",
+  data () {
+    return {
+      firstName: "",
+      lastName: "",
+      job: "",
+      description: "",
+      experience: [],
+      education: [],
+      skills: [],
+      hobbies: [],
+      github: "",
+      contact: "",
+    }
+  },
   components: {
     NavigationBar,
   },
@@ -75,6 +88,30 @@ export default {
     ...mapGetters({
       user:"user",
     })
+  },
+  mounted () {
+    this.GetData()
+  },
+  methods: {
+    async GetData () {
+      setTimeout(function () { this.GetData() }.bind(this), 500)
+      if(this.user.data.uid != null) {
+        await firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            this.firstName = doc.data().firstName
+            this.lastName = doc.data().lastName
+            this.job = doc.data().job
+            this.description = doc.data().description
+            this.experience = doc.data().experience
+            this.education = doc.data().education
+            this.skills = doc.data().skills
+            this.hobbies = doc.data().hobbies
+            this.github = doc.data().github
+            this.contact = doc.data().contact
+          })
+        })
+      }
+    }
   }
 };
 </script>
@@ -84,6 +121,7 @@ export default {
 .wrapper {
   height: 100%;
   display: flex;
+  font-size: 14px;
 }
 
 .container {
@@ -112,6 +150,7 @@ export default {
 .picture img {
   width: 200px;
   height: 200px;
+  border-radius: 100%;
 }
 
 .description {
@@ -128,6 +167,10 @@ export default {
 .description h4 {
   margin-top: 0px;
   padding-top: 0px;
+}
+
+.description p {
+  text-align: start;
 }
 
 .experience {
@@ -206,17 +249,22 @@ export default {
   padding: 15px;
 }
 
+.bottom-row img {
+  width: 30px;
+  height: 30px;
+}
+
 .bottom-left {
   display: flex;
-  flex-direction: column;
-  margin-left: 20px;
+  align-items: center;
+  margin-left: 5px;
 }
 
 .bottom-right {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   margin-left: auto;
-  margin-right: 20px;
+  margin-right: 5px;
 }
 
 .glow {
@@ -230,4 +278,10 @@ export default {
   margin-top: 0px;
 }
 
+@media only screen and (max-width: 620px) {
+
+   .wrapper { 
+      font-size: 10px; 
+   }
+}
 </style>

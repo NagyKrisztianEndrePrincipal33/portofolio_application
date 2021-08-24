@@ -4,6 +4,7 @@ import About from "@/components/About.vue";
 import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
 import ProfilePage from "@/components/ProfilePage.vue";
+import EditPage from "@/components/EditPage.vue";
 import store from "../vuex";
 
 const routes = [{
@@ -37,6 +38,11 @@ const routes = [{
         path: '/CV/:webid',
         name: 'profile_page',
         component: ProfilePage
+    },
+    {
+        path: '/edit/:webid',
+        name: 'edit_page',
+        component: EditPage
     }
 ];
 
