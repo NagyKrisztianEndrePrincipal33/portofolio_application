@@ -1,7 +1,6 @@
 <template>
   <navigation-bar :user="user"></navigation-bar>
-  <p v-if="user.loggedIn">You are logged in!{{user.data}}</p>
-  <div v-if="isLoaded" class="wrapper">
+  <div class="wrapper">
     <div class="container glow">
       <div class="rows">
         <div class="picture">
@@ -85,7 +84,6 @@ export default {
       hobbies: [],
       github: "",
       contact: "",
-      isLoaded:false,
     }
   },
   components: {
@@ -116,7 +114,6 @@ export default {
           this.github = doc.data().github
           this.contact = doc.data().contact
         })
-        this.isLoaded=true;
       })
     }
   }
