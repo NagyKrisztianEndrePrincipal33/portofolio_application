@@ -2,31 +2,31 @@
   <navigation-bar :user="user"></navigation-bar>
   <p v-if="user.loggedIn">You are logged in!{{user.data}}</p>
   <div class="wrapper">
-    <div class="container">
+    <div class="container glow">
       <div class="rows">
         <div class="picture">
           <img src="../assets/default.png">
         </div>
-        <div class="description">
+        <div class="description glow">
           <h2>Timi Draghici</h2>
           <h4>Ajutor Programator</h4>
           <p>This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.This is a description.</p>
         </div>
       </div>
       <div class="rows">
-        <div class="experience">
+        <div class="experience glow">
           Proiect1
           <br>Proiect2
           <br>Proiect3
           <br>Proiect4
         </div>
-        <div class="education">
+        <div class="education glow">
           Liceul Tehnologic Nr.1 Ludus
-          <br><br>Informatica UMFST Facultatea de inginerie si Tehnologia Informatiei
+          <br><br>Informatica UMFST
         </div>
       </div>
       <div class="rows">
-        <div class="skills">
+        <div class="skills glow">
           <div>HTML</div>
           <div>CSS</div>
           <div>Javascript</div>
@@ -34,7 +34,7 @@
           <div>Firebase</div>
           <div>Bootstrap</div>
         </div>
-        <div class="hobbies">
+        <div class="hobbies glow">
           <div>Airsoft</div>
           <div>Fishing</div>
           <div>Off-road</div>
@@ -69,6 +69,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+template {
+  background: rgb(2,0,36);
+  background: linear-gradient(270deg, rgba(2,0,36,1) 0%, rgba(10,91,147,1) 25%, rgba(0,212,255,1) 100%);
+}
 
 .wrapper {
   height: 100%;
@@ -108,10 +113,9 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   margin-left: auto;
-  width: 55%;
-  border: solid black;
+  width: 50%;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
   margin-right: 20px;
 }
 
@@ -124,11 +128,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 50%;
+  width: 45%;
   margin-left: 20px;
-  border: solid black;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
 }
 
 .education {
@@ -138,9 +141,8 @@ export default {
   width: 35%;
   margin-right: 20px;
   margin-left: auto;
-  border: solid black;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
 }
 
 .skills {
@@ -149,15 +151,16 @@ export default {
   gap: 10px;
   width: 50%;
   margin-left: 20px;
-  border: solid black;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
 }
 
 .skills  div{
   padding: 10px;
-  background-color: black;
-  color: white;
+  -webkit-box-shadow:0 0 20px grey; 
+  -moz-box-shadow: 0 0 20px grey; 
+  box-shadow:0 0 20px grey;
+  border-radius: 10px;
 }
 
 .hobbies {
@@ -167,15 +170,16 @@ export default {
   width: 35%;
   margin-left: auto;
   margin-right: 20px;
-  border: solid black;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
 }
 
 .hobbies div{
   padding: 10px;
-  background-color: black;
-  color: white;
+  -webkit-box-shadow:0 0 20px grey; 
+  -moz-box-shadow: 0 0 20px grey; 
+  box-shadow:0 0 20px grey;
+  border-radius: 10px;
 }
 
 .bottom-row {
@@ -186,7 +190,7 @@ export default {
   margin-top: 20px;
   border: solid black;
   border-radius:10px;
-  padding: 5px;
+  padding: 15px;
 }
 
 .bottom-left{
@@ -200,6 +204,12 @@ export default {
   flex-direction: column;
   margin-left: auto;
   margin-right: 20px;
+}
+
+.glow {
+  -webkit-box-shadow:0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey; 
+  box-shadow:0 0 20px grey;
 }
 
 </style>
