@@ -10,6 +10,9 @@
     <div v-else>
       <button @click="logOut">Log out</button>
     </div>
+    <div class="right-side">
+      <img class="profile-image" src="../assets/default.png" @click="redirectToProfile">
+    </div>
   </nav>
 </template>
 
@@ -45,6 +48,15 @@ export default {
           console.log(error);
         });
     },
+    redirectToProfile () {
+      console.log(this.user)
+      console.log(this.user.data.uid)
+      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          this.$router.replace('/CV/' + doc.data().webid)
+        })
+      })
+    }
   },
 };
 </script>
@@ -82,6 +94,17 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
       border: none;
       padding: 10px;
     }
+  }
+  .right-side {
+    display: flex;
+    align-items: center;
+    margin-left : auto;
+    margin-right: 5px;
+  }
+  .profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
   }
 }
 </style>

@@ -26,22 +26,29 @@
         </div>
       </div>
       <div class="rows">
-        <div class="skills glow">
+        <div class="grid-wrapper glow">
           <div class="title">
-            <h1> Skills </h1>
+            <h2> Skills </h2>
           </div>
-          <div>HTML</div>
-          <div>CSS</div>
-          <div>Javascript</div>
-          <div>VueJS</div>
-          <div>Firebase</div>
-          <div>Bootstrap</div>
-          <div>Bootstrap</div>
+          <div class="skills">
+            <div class="skills_div">HTML</div>
+            <div class="skills_div">CSS</div>
+            <div class="skills_div">Javascript</div>
+            <div class="skills_div">VueJS</div>
+            <div class="skills_div">Firebase</div>
+            <div class="skills_div">Bootstrap</div>
+            <div class="skills_div">Bootstrap</div>
+          </div>
         </div>
-        <div class="hobbies glow">
-          <div>Airsoft</div>
-          <div>Fishing</div>
-          <div>Off-road</div>
+        <div class="grid-wrapper glow">
+          <div class="title">
+            <h2> Hobbies </h2>
+          </div>
+          <div class="hobbies">
+            <div>Airsoft</div>
+            <div>Fishing</div>
+            <div>Off-road</div>
+          </div>
         </div>
       </div>
       <div class="bottom-row">
@@ -73,11 +80,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
-template {
-  background: rgb(2,0,36);
-  background: linear-gradient(270deg, rgba(2,0,36,1) 0%, rgba(10,91,147,1) 25%, rgba(0,212,255,1) 100%);
-}
 
 .wrapper {
   height: 100%;
@@ -132,31 +134,37 @@ template {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 45%;
-  margin-left: 20px;
+  justify-content: center;
+  width: 40%;
   border-radius:10px;
   padding: 15px;
+  margin-left: 20px;
 }
 
 .education {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 35%;
-  margin-right: 20px;
-  margin-left: auto;
+  justify-content: center;
+  width: 40%;
   border-radius:10px;
   padding: 15px;
+  margin-left: 20px;
+}
+
+.grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  border-radius: 10px;
+  padding: 15px;
+  margin-left: 20px;
 }
 
 .skills {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  width: 50%;
-  margin-left: 20px;
-  border-radius:10px;
-  padding: 15px;
 }
 
 .skills div {
@@ -174,11 +182,6 @@ template {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  width: 35%;
-  margin-left: auto;
-  margin-right: 20px;
-  border-radius:10px;
-  padding: 15px;
 }
 
 .hobbies div {
@@ -222,8 +225,9 @@ template {
   box-shadow:0 0 20px grey;
 }
 
-.title {
+.title  h2{
   display: flex;
+  margin-top: 0px;
 }
 
 </style>
