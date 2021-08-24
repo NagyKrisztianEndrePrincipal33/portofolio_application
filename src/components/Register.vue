@@ -128,8 +128,10 @@ export default {
           var user = userCredential.user;
           console.log(user);
           // ...
-          let res = await this.getMatches()
+          let tempid = this.firstName.toLowerCase() + "."+this.lastName.toLowerCase();
+          let res = await this.getMatches(tempid)
           let webid;
+          console.log(res.size);
           if(res.size==0)
           {
             webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase();
@@ -138,14 +140,16 @@ export default {
           {
             webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase()+res.size;
           }
-          const data = {
-            uid : user.uid,
-            firstName : this.firstName,
-            lastName : this.lastName,
-            webid,
-            createdAt : new Date()
-          }
-          firebase.firestore().collection('users').doc().set(data);
+          console.log(webid);
+          // const data = {
+          //   uid : user.uid,
+          //   firstName : this.firstName,
+          //   lastName : this.lastName,
+          //   webid,
+          //   createdAt : new Date()
+          // }
+          //firebase.firestore().collection('users').doc().set(data);
+          
           this.$router.push("/login");
         })
         .catch((error) => {
@@ -158,8 +162,8 @@ export default {
         });
      
     },
-    async getMatches(){
-        return firebase.firestore().collection('users').where('webid',"<=",this.firstName.toLowerCase()+"."+this.firstName.toLowerCase()).get(); //await debug test case
+    async getMatches(id){
+        return firebase.firestore().collection('users').where('webid',">",id).get(); //await debug test case
         //
     },
     showHidePass() {
