@@ -33,6 +33,7 @@
           <div>VueJS</div>
           <div>Firebase</div>
           <div>Bootstrap</div>
+          <div>Bootstrap</div>
         </div>
         <div class="hobbies glow">
           <div>Airsoft</div>
@@ -156,6 +157,9 @@ template {
 }
 
 .skills  div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   -webkit-box-shadow:0 0 20px grey; 
   -moz-box-shadow: 0 0 20px grey; 
@@ -175,11 +179,15 @@ template {
 }
 
 .hobbies div{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
   -webkit-box-shadow:0 0 20px grey; 
   -moz-box-shadow: 0 0 20px grey; 
   box-shadow:0 0 20px grey;
   border-radius: 10px;
+  vertical-align: middle;
 }
 
 .bottom-row {
