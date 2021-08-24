@@ -65,7 +65,9 @@
       <img src="../assets/krisztian.png" />
       <p class="member-name">Krisztián-Endre Nagy</p>
       <p class="member-job">Ajutor programator</p>
-      <p class="member-email"></p>
+      <p class="member-email">
+        nagykrisztian.endre@gmail.com
+      </p>
     </div>
     <div class="team-member">
       <img src="../assets/timi.jpg" />
