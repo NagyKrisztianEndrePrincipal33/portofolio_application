@@ -1,7 +1,7 @@
 <template>
   <navigation-bar :user="user"></navigation-bar>
   <p v-if="user.loggedIn">You are logged in!{{user.data}}</p>
-  <div class="wrapper">
+  <div v-if="isLoaded" class="wrapper">
     <div class="container glow">
       <div class="rows">
         <div class="picture">
@@ -15,11 +15,17 @@
       </div>
       <div class="rows">
         <div class="experience glow">
+          <div class="title">
+            <h2> Experience </h2>
+          </div>
           <div v-for="item in experience" :key="item">
             {{item}}
           </div>
         </div>
         <div class="education glow">
+          <div class="title">
+            <h2> Education </h2>
+          </div>
           <div v-for="item in education" :key="item">
             {{item}}
           </div>
@@ -79,6 +85,7 @@ export default {
       hobbies: [],
       github: "",
       contact: "",
+      isLoaded:false,
     }
   },
   components: {
@@ -87,30 +94,30 @@ export default {
   computed:{
     ...mapGetters({
       user:"user",
-    })
+
+    }),
   },
   mounted () {
     this.GetData()
   },
   methods: {
     async GetData () {
-      setTimeout(function () { this.GetData() }.bind(this), 500)
-      if(this.user.data.uid != null) {
-        await firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            this.firstName = doc.data().firstName
-            this.lastName = doc.data().lastName
-            this.job = doc.data().job
-            this.description = doc.data().description
-            this.experience = doc.data().experience
-            this.education = doc.data().education
-            this.skills = doc.data().skills
-            this.hobbies = doc.data().hobbies
-            this.github = doc.data().github
-            this.contact = doc.data().contact
-          })
+      //setTimeout(function () { this.GetData() }.bind(this), 500)
+      await firebase.firestore().collection('users').where('webid','==',this.$route.params.webid).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          this.firstName = doc.data().firstName
+          this.lastName = doc.data().lastName
+          this.job = doc.data().job
+          this.description = doc.data().description
+          this.experience = doc.data().experience
+          this.education = doc.data().education
+          this.skills = doc.data().skills
+          this.hobbies = doc.data().hobbies
+          this.github = doc.data().github
+          this.contact = doc.data().contact
         })
-      }
+        this.isLoaded=true;
+      })
     }
   }
 };
