@@ -1,12 +1,13 @@
 <template>
   <div id="register-container">
-     <div class="logo-holder">
-      <router-link class="navigation-link-logo" to="/"
-        ><img class="logo" src="../assets/logo.png"
-      /></router-link>
-    </div>
     <div class="register-component">
-      <h1>Sign up</h1>
+      <div class="logo-holder">
+        <h1>Sign up</h1>
+        <router-link class="navigation-link-logo" to="/"
+          ><img class="logo" src="../assets/logo.png"
+        /></router-link>
+      </div>
+      
       <form class="register-form" @submit.prevent="register">
         <p v-if="errors.length" class="error-field">
           <b>Please correct the following error(s):</b>
@@ -363,6 +364,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 .logo-holder {
   display: flex;
   padding-bottom: 15px;
+  justify-content: space-between;
+}
+
+.navigation-link-logo {
+  margin: auto 0;
 }
 
 .logo {

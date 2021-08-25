@@ -1,12 +1,13 @@
 <template>
   <div id="login-container">
-    <div class="logo-holder">
-      <router-link class="navigation-link-logo" to="/"
-        ><img class="logo" src="../assets/logo.png"
-      /></router-link>
-    </div>
     <div class="login-component">
-      <h1>Sign in</h1>
+      <div class="logo-holder">
+        <h1>Sign in</h1>
+        <router-link class="navigation-link-logo" to="/"
+          ><img class="logo" src="../assets/logo.png"
+        /></router-link>
+      </div>
+      
       <form class="login-form" @submit.prevent="login">
         <p v-if="errors.length" class="error-field">
             <b>Please correct the following error(s):</b>
@@ -292,6 +293,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 .logo-holder {
   display: flex;
   padding-bottom: 15px;
+  justify-content: space-between;
 }
 
 .logo {
@@ -299,5 +301,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   padding: 10px;
   background-color: #2f9df7;
   border-radius: 15px;
+}
+
+.navigation-link-logo {
+  margin: auto 0;
 }
 </style>
