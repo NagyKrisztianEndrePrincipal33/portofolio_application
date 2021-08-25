@@ -11,8 +11,13 @@
       <button @click="logOut">Log out</button>
     </div>
     <div class="right-side">
-      <button @click="redirectToEdit">Edit</button>
-      <img class="profile-image" src="../assets/default.png" @click="redirectToProfile">
+      <button @click="redirectToEdit" v-if="user.loggedIn">Edit</button>
+      <img
+        class="profile-image"
+        v-if="user.loggedIn"
+        src="../assets/default.png"
+        @click="redirectToProfile"
+      />
     </div>
   </nav>
 </template>
@@ -49,22 +54,32 @@ export default {
           console.log(error);
         });
     },
-    redirectToProfile () {
-      console.log(this.user)
-      console.log(this.user.data.uid)
-      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.$router.replace('/CV/' + doc.data().webid)
-        })
-      })
+    redirectToProfile() {
+      console.log(this.user);
+      console.log(this.user.data.uid);
+      firebase
+        .firestore()
+        .collection("users")
+        .where("uid", "==", this.user.data.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.$router.replace("/CV/" + doc.data().webid);
+          });
+        });
     },
-    redirectToEdit () {
-      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.$router.replace('/edit/' + doc.data().webid)
-        })
-      })
-    }
+    redirectToEdit() {
+      firebase
+        .firestore()
+        .collection("users")
+        .where("uid", "==", this.user.data.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.$router.replace("/edit/" + doc.data().webid);
+          });
+        });
+    },
   },
 };
 </script>
@@ -106,7 +121,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .right-side {
     display: flex;
     align-items: center;
-    margin-left : auto;
+    margin-left: auto;
     margin-right: 5px;
   }
   .profile-image {
