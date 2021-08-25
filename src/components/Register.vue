@@ -131,12 +131,10 @@ export default {
         .then(async (userCredential) => {
           // Signed in
           var user = userCredential.user;
-          console.log(user);
           // ...
           let tempid = this.firstName.toLowerCase() + "."+this.lastName.toLowerCase();
           let res = await this.getMatches(tempid)
           let webid;
-          console.log(res.size);
           if(res.size==0)
           {
             webid = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase();
