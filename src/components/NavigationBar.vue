@@ -1,5 +1,5 @@
 <template>
-  <nav class="navigation-bar">
+  <nav class="navigation-bar sticky">
     <div class="mobile-nav" :class="{ open: showNav }" v-if="mobileView">
       <ul>
         <li v-if="user.loggedIn">
@@ -31,6 +31,7 @@
         </li>
       </ul>
     </div>
+
     <div class="left-side">
       <router-link class="navigation-link-logo" to="/"
         ><img class="logo" src="../assets/logo.png"
@@ -39,8 +40,42 @@
 
     <div class="middle" v-if="!mobileView">
       <router-link class="navigation-link" to="/">Home</router-link>
-      <!-- <p v-if="this.$route.name == 'Home'">baaa</p> -->
+      <div v-if="user.loggedIn" class="searchBox">
+        <input
+          class="searchInput"
+          type="text"
+          name=""
+          placeholder="Search"
+          v-model="searchText"
+        />
+        <button
+          class="searchButton"
+          href="#"
+          @click="redirectToSearch(searchText)"
+        >
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
       <router-link class="navigation-link" to="/about">About</router-link>
+    </div>
+
+    <div class="middle" v-if="mobileView && user.loggedIn">
+      <div class="searchBox">
+        <input
+          class="searchInput"
+          type="text"
+          name=""
+          placeholder="Search"
+          v-model="searchText"
+        />
+        <button
+          class="searchButton"
+          href="#"
+          @click="redirectToSearch(searchText)"
+        >
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
     </div>
 
     <div class="right-side">
@@ -76,6 +111,7 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
+
 export default {
   data() {
     return {
@@ -96,7 +132,13 @@ export default {
   },
   methods: {
     handleView() {
-      this.mobileView = window.innerWidth <= 990;
+      this.mobileView = window.innerWidth <= 800;
+    },
+    redirectToSearch(searchText) {
+      this.$router.replace({
+        name: "search_page",
+        params: { searchText: searchText },
+      });
     },
     redirectToLogin() {
       this.$router.replace({ name: "login" });
@@ -172,12 +214,12 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: center;
   vertical-align: middle;
   justify-content: space-between;
-  padding: 15px;
+  padding: 0 15px 0 15px 0;
   .navigation-link {
     text-decoration: none;
     color: white;
     font-size: 1.5rem;
-    padding: 10px 15px;
+    padding: 16.5px 15px 16.5px 15px;
   }
   .navigation-link:hover {
     padding-top: 16.5px;
@@ -189,6 +231,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     padding-bottom: 16.5px;
     border-bottom: 5px solid #015073;
   }
+
   .navigation-link-logo {
     text-decoration: none;
     color: white;
@@ -243,11 +286,24 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
       background: #015073;
     }
   }
+  .left-side {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: auto 0;
+  }
+  .middle {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0 auto;
+  }
   .right-side {
     display: flex;
     align-items: center;
-    margin-left: auto;
-    margin-right: 5px;
+    justify-content: flex-end;
+    margin: auto 0;
+    padding: 0 15px;
   }
   .profile-image {
     width: 40px;
@@ -293,16 +349,23 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   color: #015073;
 }
 
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 1;
+}
+
 .mobile-nav {
   color: black;
   display: none;
   position: absolute;
   top: 70px;
-  left: calc(100% - 380px);
+  left: calc(100% - 328px);
   box-sizing: border-box;
   margin: 0;
   height: auto;
-  width: 300px;
+  width: 328px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
@@ -314,8 +377,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   border-top: 1px solid #2f9df7;
   border-bottom: 8px solid #2f9df7;
   border-left: 8px solid #2f9df7;
-  transform: translateX(80px);
+  transform: translateY(-8px);
   border-bottom-left-radius: 20px;
+  opacity: 1;
 }
 
 .navigation-link-mobile {
@@ -354,4 +418,77 @@ ul {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
+/*Search bar part*/
+.searchBox {
+  display: flex;
+  flex-wrap: nowrap;
+  background: #165572;
+  height: 50px;
+  border-radius: 50px;
+  vertical-align: middle;
+  justify-items: center;
+  justify-content: center;
+  align-items: center;
+  padding-right: 5px;
+  padding-left: 5px;
+  margin: auto 15px;
+}
+
+.searchBox:hover > .searchInput,
+.searchInput:focus {
+  width: 240px;
+  padding: 0 6px;
+}
+
+.searchInput:focus + .searchButton,
+.searchBox:hover > .searchButton {
+  background: white;
+  color: #165572;
+}
+
+.searchBox:focus-within {
+  padding-right: 0;
+}
+
+.searchInput:focus + .searchButton {
+  width: 50px;
+  height: 50px;
+}
+
+.searchButton {
+  color: white;
+  float: right;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #165572;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  border: 2px solid #4498be;
+}
+
+.searchInput {
+  border: none;
+  background: none;
+  outline: none;
+  float: left;
+  padding: 0;
+  color: white;
+  font-size: 16px;
+  transition: 0.4s;
+  line-height: 40px;
+  width: 0px;
+}
+
+@media screen and (max-width: 620px) {
+  .searchBox:hover > .searchInput,
+  .searchInput:focus {
+    width: 150px;
+    padding: 0 6px;
+  }
+}
+/*Search bar part end*/
 </style>

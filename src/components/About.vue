@@ -108,6 +108,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   background-color: #f2f2f2;
+  padding-top: 70px;
 }
 .about-header {
   color: rgba(0, 0, 0, 0.85);

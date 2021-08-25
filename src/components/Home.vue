@@ -1,6 +1,8 @@
 <template>
   <navigation-bar :user="user"></navigation-bar>
-  <p v-if="user.loggedIn">You are logged in!{{ user.data }}</p>
+  <div class="body">
+    <p v-if="user.loggedIn">You are logged in!{{ user.data }}</p>
+  </div>
 </template>
 
 <script>
@@ -18,3 +20,8 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.body {
+  padding-top: 70px;
+}
+</style>
