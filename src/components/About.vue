@@ -1,5 +1,5 @@
 <template>
-  <navigation-bar></navigation-bar>
+  <navigation-bar v-if="!mobileView"></navigation-bar>
   <div class="body">
     <div class="about-header-container">
       <p class="about-header">About CVbook</p>
@@ -108,6 +108,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   background-color: #f2f2f2;
+  padding-top: 70px;
 }
 .about-header {
   color: rgba(0, 0, 0, 0.85);
