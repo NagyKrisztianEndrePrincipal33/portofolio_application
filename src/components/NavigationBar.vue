@@ -224,12 +224,13 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .navigation-link:hover {
     padding-top: 16.5px;
     padding-bottom: 16.5px;
-    border-bottom: 5px solid #015073;
+    background-color: rgba($color: #000000, $alpha: 0.1);
   }
   .middle .router-link-active {
     padding-top: 16.5px;
     padding-bottom: 16.5px;
     border-bottom: 5px solid #015073;
+    background-color: rgba($color: #000000, $alpha: 0.1);
   }
 
   .navigation-link-logo {
@@ -455,6 +456,9 @@ ul {
 .searchInput:focus + .searchButton {
   width: 50px;
   height: 50px;
+  .fa-search {
+    font-size: 1.15rem;
+  }
 }
 
 .searchButton {
