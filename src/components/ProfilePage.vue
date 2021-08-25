@@ -13,17 +13,34 @@
         </div>
       </div>
       <div class="rows">
-        <div class="experience glow">
+        <div v-if="edit_experience == false" class="experience glow">
           <div class="title">
-            <h2> Experience </h2>
+            <h2>
+              Experience
+              <i class="fas fa-user-edit edit-icon" @click="edit_experience=true"></i>
+            </h2>
           </div>
           <div v-for="item in experience" :key="item">
             {{item}}
           </div>
         </div>
+        <div v-if="edit_experience == true" class="experience glow">
+          <div class="title">
+            <h2>
+              Experience
+              <i class="fas fa-check-circle edit-icon" @click="submitExperience"></i>
+            </h2>
+          </div>
+          <form v-for="(item, index) in experience" :key="item">
+            <input type="text" v-model="experience[index]">
+          </form>
+        </div>
         <div class="education glow">
           <div class="title">
-            <h2> Education </h2>
+            <h2> 
+              Education
+              <i class="fas fa-user-edit edit-icon"></i>
+            </h2>
           </div>
           <div v-for="item in education" :key="item">
             {{item}}
@@ -33,7 +50,10 @@
       <div class="rows">
         <div class="grid-wrapper glow">
           <div class="title">
-            <h2> Skills </h2>
+            <h2>
+              Skills 
+              <i class="fas fa-user-edit edit-icon"></i>
+            </h2>
           </div>
           <div class="skills">
             <div v-for="item in skills" :key="item">
@@ -43,7 +63,10 @@
         </div>
         <div class="grid-wrapper glow">
           <div class="title">
-            <h2> Hobbies </h2>
+            <h2>
+              Hobbies
+              <i class="fas fa-user-edit edit-icon"></i>
+            </h2>
           </div>
           <div class="hobbies">
             <div v-for="item in hobbies" :key="item">
@@ -84,6 +107,10 @@ export default {
       hobbies: [],
       github: "",
       contact: "",
+      edit_experience: false,
+      edit_education: false,
+      edit_skills: false,
+      edit_hobbies: false,
     }
   },
   components: {
@@ -100,7 +127,6 @@ export default {
   },
   methods: {
     async GetData () {
-      //setTimeout(function () { this.GetData() }.bind(this), 500)
       await firebase.firestore().collection('users').where('webid','==',this.$route.params.webid).get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
           this.firstName = doc.data().firstName
@@ -115,12 +141,50 @@ export default {
           this.contact = doc.data().contact
         })
       })
+    },
+    async submitExperience () {
+      this.edit_experience = false
+      let docid='';
+      await firebase
+      .firestore()
+      .collection('users')
+      .where('webid','==',this.$route.params.webid).get().then((doc) => {
+        doc.forEach((doc)=>{
+          docid=doc.id
+        })
+      });
+      await firebase
+      .firestore()
+      .collection('users')
+      .doc(docid)
+      .update({'experience': this.experience})
+      .then(() => {
+        console.log("Experience Updated")
+      })
+    },
+    submitEducation () {
+      this.edit_education = false
+
+    },
+    submitSkills () {
+      this.edit_skills = false
+      
+    },
+    submitHobbies () {
+      this.edit_hobbies = false
+      
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid"; // fas
+@import "~@fortawesome/fontawesome-free/scss/regular"; // far
+@import "~@fortawesome/fontawesome-free/scss/brands"; // fab
+@import "./colors";
 
 .wrapper {
   height: 100%;
@@ -181,7 +245,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
   width: 40%;
   border-radius:10px;
   padding: 15px;
@@ -192,7 +255,6 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
   width: 40%;
   border-radius:10px;
   padding: 15px;
@@ -277,9 +339,13 @@ export default {
   box-shadow:0 0 20px grey;
 }
 
-.title  h2{
+.title  h2 {
   display: flex;
   margin-top: 0px;
+}
+
+.edit-icon {
+  margin-left: 10px;
 }
 
 @media only screen and (max-width: 620px) {
