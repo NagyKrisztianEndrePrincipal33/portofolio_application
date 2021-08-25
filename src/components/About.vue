@@ -241,9 +241,12 @@ hr {
   display: flex;
   justify-content: space-around;
   flex-flow: row wrap;
+  background-color: #f2f2f2;
+  padding: 50px 0;
 }
 
 .team-member {
+  background-color: #fff;
   display: flex;
   justify-content: center;
   flex-direction: column;
