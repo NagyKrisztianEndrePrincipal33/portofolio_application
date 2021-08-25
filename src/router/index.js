@@ -5,6 +5,7 @@ import Login from "@/components/Login.vue";
 import Register from "@/components/Register.vue";
 import ProfilePage from "@/components/ProfilePage.vue";
 import EditPage from "@/components/EditPage.vue";
+import SearchPage from "@/components/SearchPage.vue";
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: "/edit/:webid",
     name: "edit_page",
     component: EditPage,
+  },
+  {
+    path: "/search/:searchText",
+    name: "search_page",
+    component: SearchPage,
   },
 ];
 

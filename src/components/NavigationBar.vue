@@ -10,9 +10,29 @@
     <div v-else>
       <button @click="logOut">Log out</button>
     </div>
+    <div v-if="user.loggedIn" class="searchBox">
+      <input
+        class="searchInput"
+        type="text"
+        name=""
+        placeholder="Search"
+        v-model="searchText"
+      />
+      <button
+        class="searchButton"
+        href="#"
+        @click="redirectToSearch(searchText)"
+      >
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
     <div class="right-side">
       <button @click="redirectToEdit">Edit</button>
-      <img class="profile-image" src="../assets/default.png" @click="redirectToProfile">
+      <img
+        class="profile-image"
+        src="../assets/default.png"
+        @click="redirectToProfile"
+      />
     </div>
   </nav>
 </template>
@@ -20,7 +40,14 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
+import { mdiAccountSearchOutline } from "@mdi/js";
+
 export default {
+  data: () => ({
+    icons: {
+      mdiAccountSearchOutline,
+    },
+  }),
   name: "NavigationBar",
   computed: {
     ...mapGetters({
@@ -29,6 +56,13 @@ export default {
     }),
   },
   methods: {
+    redirectToSearch(searchText) {
+      this.$router.replace({
+        name: "search_page",
+        params: { searchText: searchText },
+      });
+    },
+
     redirectToLogin() {
       this.$router.replace({ name: "login" });
     },
@@ -49,22 +83,32 @@ export default {
           console.log(error);
         });
     },
-    redirectToProfile () {
-      console.log(this.user)
-      console.log(this.user.data.uid)
-      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.$router.replace('/CV/' + doc.data().webid)
-        })
-      })
+    redirectToProfile() {
+      console.log(this.user);
+      console.log(this.user.data.uid);
+      firebase
+        .firestore()
+        .collection("users")
+        .where("uid", "==", this.user.data.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.$router.replace("/CV/" + doc.data().webid);
+          });
+        });
     },
-    redirectToEdit () {
-      firebase.firestore().collection('users').where('uid','==',this.user.data.uid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.$router.replace('/edit/' + doc.data().webid)
-        })
-      })
-    }
+    redirectToEdit() {
+      firebase
+        .firestore()
+        .collection("users")
+        .where("uid", "==", this.user.data.uid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.$router.replace("/edit/" + doc.data().webid);
+          });
+        });
+    },
   },
 };
 </script>
@@ -106,7 +150,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .right-side {
     display: flex;
     align-items: center;
-    margin-left : auto;
+    margin-left: auto;
     margin-right: 5px;
   }
   .profile-image {
@@ -115,5 +159,76 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     border-radius: 100%;
     cursor: pointer;
   }
+
+  /*Search bar part*/
+  .searchBox {
+    display: flex;
+    flex-wrap: nowrap;
+    background: #165572;
+    height: 50px;
+    border-radius: 50px;
+    vertical-align: middle;
+    justify-items: center;
+    align-items: center;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .searchBox:hover > .searchInput,
+  .searchInput:focus {
+    width: 240px;
+    padding: 0 6px;
+  }
+
+  .searchInput:focus + .searchButton,
+  .searchBox:hover > .searchButton {
+    background: white;
+    color: #165572;
+  }
+
+  .searchBox:focus-within {
+    padding-right: 0;
+  }
+
+  .searchInput:focus + .searchButton {
+    width: 50px;
+    height: 50px;
+  }
+
+  .searchButton {
+    color: white;
+    float: right;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #165572;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.4s;
+    border: 2px solid #4498be;
+  }
+
+  .searchInput {
+    border: none;
+    background: none;
+    outline: none;
+    float: left;
+    padding: 0;
+    color: white;
+    font-size: 16px;
+    transition: 0.4s;
+    line-height: 40px;
+    width: 0px;
+  }
+
+  @media screen and (max-width: 620px) {
+    .searchBox:hover > .searchInput,
+    .searchInput:focus {
+      width: 150px;
+      padding: 0 6px;
+    }
+  }
+  /*Search bar part end*/
 }
 </style>
