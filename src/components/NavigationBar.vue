@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    <div class="right-side">
+    <div class="right-side" style="width: 228px;">
       <div
         id="right-side navigation-icon "
         v-if="mobileView"
@@ -214,7 +214,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: center;
   vertical-align: middle;
   justify-content: space-between;
-  padding: 0 15px 0 15px 0;
+  padding: 0 45px 0 0px;
   .navigation-link {
     text-decoration: none;
     color: white;
@@ -243,7 +243,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .login-register {
     display: flex;
     justify-content: space-between;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
     gap: 10px;
 
     .login-button {
@@ -290,6 +290,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    width: 228px;
     margin: auto 0;
   }
   .middle {
@@ -302,8 +303,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    margin: auto 0;
-    padding: 0 15px;
+    padding: 0 15px 0 0;
   }
   .profile-image {
     width: 40px;
@@ -330,7 +330,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     font-size: 1.9rem;
     vertical-align: middle;
   }
-  margin-left: 20px;
+  margin: 0 20px 0 20px;
 }
 
 .log-out-button:hover {
@@ -380,6 +380,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   transform: translateY(-8px);
   border-bottom-left-radius: 20px;
   opacity: 1;
+  padding-right: 65px;
 }
 
 .navigation-link-mobile {
@@ -467,7 +468,7 @@ ul {
   justify-content: center;
   align-items: center;
   transition: 0.4s;
-  border: 2px solid #4498be;
+  border: 2px solid #2f9df7;
 }
 
 .searchInput {
