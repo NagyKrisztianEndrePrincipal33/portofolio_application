@@ -1,5 +1,10 @@
 <template>
   <div id="login-container">
+    <div class="logo-holder">
+      <router-link class="navigation-link-logo" to="/"
+        ><img class="logo" src="../assets/logo.png"
+      /></router-link>
+    </div>
     <div class="login-component">
       <h1>Sign in</h1>
       <form class="login-form" @submit.prevent="login">
@@ -29,8 +34,8 @@
           <button class="btn btn-login form-field">Sign in</button>
         </div>
       </form>
-      <p class="noAccount">
-        Don't have an account? <router-link to="/register">Sign up</router-link>
+      <p>
+        Don't have an account? <router-link to="/register" class="link-in-login">Sign up</router-link>
       </p>
     </div>
   </div>
@@ -107,6 +112,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   justify-content: center;
   align-items: center;
   background-color: #f2f2f2;
+  flex-direction: column;
 }
 
 .noAccount {
@@ -272,5 +278,26 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   color: -o-linear-gradient(left, #21d4fd, #b721ff);
   color: -moz-linear-gradient(left, #21d4fd, #b721ff);
   color: linear-gradient(left, #21d4fd, #b721ff);
+}
+
+.link-in-login {
+  color: #2f9df7;
+  text-decoration: none;
+}
+
+.link-in-login:hover {
+  text-decoration: underline;
+}
+
+.logo-holder {
+  display: flex;
+  padding-bottom: 15px;
+}
+
+.logo {
+  width: 128px;
+  padding: 10px;
+  background-color: #2f9df7;
+  border-radius: 15px;
 }
 </style>

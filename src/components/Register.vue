@@ -1,5 +1,10 @@
 <template>
   <div id="register-container">
+     <div class="logo-holder">
+      <router-link class="navigation-link-logo" to="/"
+        ><img class="logo" src="../assets/logo.png"
+      /></router-link>
+    </div>
     <div class="register-component">
       <h1>Sign up</h1>
       <form class="register-form" @submit.prevent="register">
@@ -207,6 +212,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   justify-content: center;
   align-items: center;
   background-color: #f2f2f2;
+  flex-direction: column;
 }
 .register-component {
   width: 390px;
@@ -354,5 +360,17 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   color: -o-linear-gradient(left, #21d4fd, #b721ff);
   color: -moz-linear-gradient(left, #21d4fd, #b721ff);
   color: linear-gradient(left, #21d4fd, #b721ff);
+}
+
+.logo-holder {
+  display: flex;
+  padding-bottom: 15px;
+}
+
+.logo {
+  width: 128px;
+  padding: 10px;
+  background-color: #2f9df7;
+  border-radius: 15px;
 }
 </style>

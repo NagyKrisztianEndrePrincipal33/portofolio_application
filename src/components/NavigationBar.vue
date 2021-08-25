@@ -1,23 +1,74 @@
 <template>
   <nav class="navigation-bar">
-    <i class="fas fa-users"></i>
-    <router-link class="navigation-link" to="/">Home</router-link>
-    <router-link class="navigation-link" to="/about">About</router-link>
-    <div class="login-register" v-if="!user.loggedIn">
-      <button @click="redirectToLogin">Login</button>
-      <button @click="redirectToRegister">Register</button>
+    <div class="mobile-nav" :class="{ open: showNav }" v-if="mobileView">
+      <ul>
+        <li v-if="user.loggedIn">
+          <img
+            class="profile-image-mobile"
+            v-if="user.loggedIn"
+            src="../assets/default.png"
+            @click="redirectToProfile"
+          />
+        </li>
+        <li>
+          <router-link class="navigation-link-mobile" to="/">Home</router-link>
+        </li>
+        <li>
+          <router-link class="navigation-link-mobile" to="/about"
+            >About</router-link
+          >
+        </li>
+        <li v-if="!user.loggedIn">
+          <button @click="redirectToRegister" class="register-button">
+            Register
+          </button>
+        </li>
+        <li v-if="!user.loggedIn">
+          <button @click="redirectToLogin" class="login-button">Login</button>
+        </li>
+        <li v-else>
+          <button @click="logOut" class="log-out">Log out</button>
+        </li>
+      </ul>
     </div>
-    <div v-else>
-      <button @click="logOut">Log out</button>
+    <div class="left-side">
+      <router-link class="navigation-link-logo" to="/"
+        ><img class="logo" src="../assets/logo.png"
+      /></router-link>
     </div>
+
+    <div class="middle" v-if="!mobileView">
+      <router-link class="navigation-link" to="/">Home</router-link>
+      <!-- <p v-if="this.$route.name == 'Home'">baaa</p> -->
+      <router-link class="navigation-link" to="/about">About</router-link>
+    </div>
+
     <div class="right-side">
-      <button @click="redirectToEdit" v-if="user.loggedIn">Edit</button>
-      <img
-        class="profile-image"
-        v-if="user.loggedIn"
-        src="../assets/default.png"
-        @click="redirectToProfile"
-      />
+      <div
+        id="right-side navigation-icon "
+        v-if="mobileView"
+        @click="showNav = !showNav"
+      >
+        <i class="fas fa-bars"></i>
+      </div>
+      <div class="login-register" v-else-if="!user.loggedIn">
+        <button @click="redirectToRegister" class="register-button">
+          Register
+        </button>
+        <button @click="redirectToLogin" class="login-button">Login</button>
+      </div>
+
+      <div class="right-side" v-if="!mobileView">
+        <img
+          class="profile-image"
+          v-if="user.loggedIn"
+          src="../assets/default.png"
+          @click="redirectToProfile"
+        />
+        <div v-if="user.loggedIn" class="log-out-button">
+          <i @click="logOut" class="fas fa-sign-out-alt"></i>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
@@ -26,6 +77,16 @@
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 export default {
+  data() {
+    return {
+      mobileView: false,
+      showNav: false,
+    };
+  },
+  created() {
+    this.handleView();
+    window.addEventListener("resize", this.handleView);
+  },
   name: "NavigationBar",
   computed: {
     ...mapGetters({
@@ -34,6 +95,9 @@ export default {
     }),
   },
   methods: {
+    handleView() {
+      this.mobileView = window.innerWidth <= 990;
+    },
     redirectToLogin() {
       this.$router.replace({ name: "login" });
     },
@@ -41,6 +105,7 @@ export default {
       this.$router.replace({ name: "register" });
     },
     logOut() {
+      this.showNav = false;
       console.log("Loggin out!");
       firebase
         .auth()
@@ -92,30 +157,90 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/brands"; // fab
 @import "./colors";
 
+* {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell,
+    "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
 .navigation-bar {
   font-size: 1.5rem;
-  background-color: $second-color;
+  background-color: #2f9df7;
   color: white;
-  padding: 15px 10px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  vertical-align: middle;
+  justify-content: space-between;
+  padding: 15px;
   .navigation-link {
     text-decoration: none;
     color: white;
-    font-family: "sans-serif", cursive;
-    font-size: 2rem;
+    font-size: 1.5rem;
+    padding: 10px 15px;
+  }
+  .navigation-link:hover {
+    padding-top: 16.5px;
+    padding-bottom: 16.5px;
+    border-bottom: 5px solid #015073;
+  }
+  .middle .router-link-active {
+    padding-top: 16.5px;
+    padding-bottom: 16.5px;
+    border-bottom: 5px solid #015073;
+  }
+  .navigation-link-logo {
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem;
+    padding: 10px 15px;
+    background-color: transparent;
+    border: none;
   }
   .login-register {
-    justify-self: end;
     display: flex;
+    justify-content: space-between;
     padding: 0 10px;
     gap: 10px;
-    button {
-      height: 100%;
-      border-radius: 25px;
+
+    .login-button {
+      display: flex;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 24px;
       border: none;
-      padding: 10px;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: inherit;
+      letter-spacing: 0.75px;
+      padding: 12px 24px 12px 24px;
+      border: 1px solid #015073;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .register-button {
+      border-radius: 24px;
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: inherit;
+      letter-spacing: 0.75px;
+      padding: 12px 24px 12px 24px;
+      border: 1px transparent;
+      transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .login-button:hover {
+      cursor: pointer;
+      background: #015073;
+    }
+    .register-button:hover {
+      cursor: pointer;
+      background: #015073;
     }
   }
   .right-side {
@@ -125,10 +250,108 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     margin-right: 5px;
   }
   .profile-image {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 100%;
     cursor: pointer;
   }
+
+  .profile-image-mobile {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    cursor: pointer;
+  }
+
+  .logo {
+    width: 128px;
+    vertical-align: middle;
+  }
+}
+
+.log-out-button {
+  i {
+    font-size: 1.9rem;
+    vertical-align: middle;
+  }
+  margin-left: 20px;
+}
+
+.log-out-button:hover {
+  color: darkred;
+}
+
+#navigation-icon {
+  cursor: pointer;
+  i {
+    font-size: 2rem;
+  }
+}
+
+.fa-bars:hover {
+  cursor: pointer;
+  color: #015073;
+}
+
+.mobile-nav {
+  color: black;
+  display: none;
+  position: absolute;
+  top: 70px;
+  left: calc(100% - 380px);
+  box-sizing: border-box;
+  margin: 0;
+  height: auto;
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.open {
+  display: block;
+  background: #fff;
+  border-top: 1px solid #2f9df7;
+  border-bottom: 8px solid #2f9df7;
+  border-left: 8px solid #2f9df7;
+  transform: translateX(80px);
+  border-bottom-left-radius: 20px;
+}
+
+.navigation-link-mobile {
+  color: rgba($color: #000000, $alpha: 0.9);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+  line-height: 4rem;
+  li:not(:last-child) {
+    text-align: center;
+    border-bottom: 2px solid rgba($color: #015073, $alpha: 0.3);
+    .router-link-active {
+      color: #2f9df7;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+  }
+
+  .register-button,
+  .login-button {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+.log-out {
+  color: darkred;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 </style>

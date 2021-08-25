@@ -1,5 +1,5 @@
 <template>
-  <navigation-bar></navigation-bar>
+  <navigation-bar v-if="!mobileView"></navigation-bar>
   <div class="body">
     <div class="about-header-container">
       <p class="about-header">About CVbook</p>
