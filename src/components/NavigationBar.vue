@@ -209,7 +209,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .navigation-bar {
   font-size: 1.5rem;
-  background-color: #2f9df7;
+  background-color: #4a89dc;
   color: white;
   display: flex;
   align-items: center;
@@ -458,7 +458,7 @@ ul {
   width: 50px;
   height: 50px;
   .fa-search {
-    font-size: 1.15rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -473,7 +473,11 @@ ul {
   justify-content: center;
   align-items: center;
   transition: 0.4s;
-  border: 2px solid #2f9df7;
+  border: 2px solid #4a89dc;
+}
+
+.fa-search {
+  font-size: 1.11rem;
 }
 
 .searchInput {
