@@ -1,5 +1,5 @@
 <template>
-  <navigation-bar :user="user"></navigation-bar>
+  <navigation-bar :user="user" :pic="picURL"></navigation-bar>
   <div class="wrapper">
     <div class="container glow">
       <div class="rows">
@@ -198,6 +198,10 @@ export default {
   },
   methods: {
     async GetData() {
+      while(!this.user.loggedIn) {
+        setTimeout(function () { this.GetData() }.bind(this), 1000)
+        this.user.loggedIn = true;
+      }
       this.getPicture()
       await firebase
         .firestore()
@@ -274,20 +278,21 @@ export default {
         let metadata = {
             contentType: "image/jpeg",
         };
-        await storageRef.child(this.$route.params.webid).put(image, metadata).then(() => {
+        await storageRef.child(this.user.data.uid).put(image, metadata).then(() => {
             console.log("file uploaded!");
         });
         this.getPicture()
       }
     },
     async getPicture () {
-      await storageRef.child(this.$route.params.webid).getDownloadURL().then((url) => {
+      await storageRef.child(this.user.data.uid).getDownloadURL().then((url) => {
           this.picURL = url;
       }).catch(()=>{
         storageRef.child('default.png').getDownloadURL().then((url) => {
           this.picURL = url;
         })
       })
+      window.localStorage.setItem("picURL", this.picURL);
     },
   },
 };
