@@ -4,8 +4,8 @@
     <div class="container glow">
       <div class="rows">
         <div class="picture">
-          <img src="../assets/default.png" @click="$refs.file.click()" />
-          <input type="file" ref="file" style="display: none" />
+          <img :src="picURL" @click="$refs.file.click()" />
+          <input type="file" ref="file" @change="UploadImage($refs.file.files[0])" style="display: none" />
         </div>
         <div class="description glow">
           <h2>{{ firstName + " " + lastName }}</h2>
@@ -163,6 +163,7 @@
 import NavigationBar from "./NavigationBar";
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
+import storageRef from '../database/storageRef';
 export default {
   name: "Home",
   data() {
@@ -177,6 +178,7 @@ export default {
       hobbies: [],
       github: "",
       contact: "",
+      picURL: "",
       edit_experience: false,
       edit_education: false,
       edit_skills: false,
@@ -196,6 +198,7 @@ export default {
   },
   methods: {
     async GetData() {
+      this.getPicture()
       await firebase
         .firestore()
         .collection("users")
@@ -217,7 +220,6 @@ export default {
         });
     },
     async submitExperience() {
-      console.log(this.$refs.file.files[0]);
       this.edit_experience = false;
       let docid = "";
       await firebase
@@ -266,6 +268,26 @@ export default {
     },
     submitHobbies() {
       this.edit_hobbies = false;
+    },
+    async UploadImage (image) {
+      if(image != null) {
+        let metadata = {
+            contentType: "image/jpeg",
+        };
+        await storageRef.child(this.$route.params.webid).put(image, metadata).then(() => {
+            console.log("file uploaded!");
+        });
+        this.getPicture()
+      }
+    },
+    async getPicture () {
+      await storageRef.child(this.$route.params.webid).getDownloadURL().then((url) => {
+          this.picURL = url;
+      }).catch(()=>{
+        storageRef.child('default.png').getDownloadURL().then((url) => {
+          this.picURL = url;
+        })
+      })
     },
   },
 };
