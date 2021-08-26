@@ -4,7 +4,8 @@
     <div class="container glow">
       <div class="rows">
         <div class="picture">
-          <img src="../assets/default.png">
+          <img src="../assets/default.png" @click="$refs.file.click()">
+          <input type="file" ref="file" style="display: none">
         </div>
         <div class="description glow">
           <h2>{{firstName + " " + lastName}}</h2>
@@ -31,28 +32,43 @@
               <i class="fas fa-check-circle edit-icon" @click="submitExperience"></i>
             </h2>
           </div>
-          <form v-for="(item, index) in experience" :key="item">
-            <input type="text" v-model="experience[index]">
+          <form>
+            <div v-for="(item, index) in experience" :key="index">
+              <input type="text" v-model="experience[index]">
+            </div>
           </form>
         </div>
-        <div class="education glow">
+        <div v-if="edit_education == false" class="education glow">
           <div class="title">
             <h2> 
               Education
-              <i class="fas fa-user-edit edit-icon"></i>
+              <i class="fas fa-user-edit edit-icon" @click="edit_education=true"></i>
             </h2>
           </div>
           <div v-for="item in education" :key="item">
             {{item}}
           </div>
         </div>
+        <div v-if="edit_education == true" class="education glow">
+          <div class="title">
+            <h2> 
+              Education
+              <i class="fas fa-check-circle edit-icon" @click="submitEducation"></i>
+            </h2>
+          </div>
+          <form>
+            <div v-for="(item, index) in education" :key="index">
+              <input type="text" v-model="education[index]">
+            </div>
+          </form>
+        </div>
       </div>
       <div class="rows">
-        <div class="grid-wrapper glow">
+        <div v-if="edit_skills == false" class="grid-wrapper glow">
           <div class="title">
             <h2>
               Skills 
-              <i class="fas fa-user-edit edit-icon"></i>
+              <i class="fas fa-user-edit edit-icon" @click="edit_skills=true"></i>
             </h2>
           </div>
           <div class="skills">
@@ -61,17 +77,47 @@
             </div>
           </div>
         </div>
-        <div class="grid-wrapper glow">
+        <div v-if="edit_skills == true" class="grid-wrapper glow">
+          <div class="title">
+            <h2>
+              Skills 
+              <i class="fas fa-check-circle edit-icon" @click="edit_skills=false"></i>
+            </h2>
+          </div>
+          <div class="skills">
+            <form>
+              <div v-for="(item, index) in skills" :key="index">
+                <input type="text" v-model="skills[index]">
+              </div>
+            </form>
+          </div>
+        </div>
+        <div v-if="edit_hobbies == false" class="grid-wrapper glow">
           <div class="title">
             <h2>
               Hobbies
-              <i class="fas fa-user-edit edit-icon"></i>
+              <i class="fas fa-user-edit edit-icon" @click="edit_hobbies=true"></i>
             </h2>
           </div>
           <div class="hobbies">
             <div v-for="item in hobbies" :key="item">
               {{item}}
             </div>
+          </div>
+        </div>
+        <div v-if="edit_hobbies == true" class="grid-wrapper glow">
+          <div class="title">
+            <h2>
+              Hobbies
+              <i class="fas fa-check-circle edit-icon" @click="edit_hobbies=false"></i>
+            </h2>
+          </div>
+          <div class="hobbies">
+            <form>
+              <div v-for="(item, index) in hobbies" :key="index">
+                <input type="text" v-model="hobbies[index]">
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -143,6 +189,7 @@ export default {
       })
     },
     async submitExperience () {
+      console.log(this.$refs.file.files[0])
       this.edit_experience = false
       let docid='';
       await firebase
@@ -162,9 +209,25 @@ export default {
         console.log("Experience Updated")
       })
     },
-    submitEducation () {
+    async submitEducation () {
       this.edit_education = false
-
+      let docid='';
+      await firebase
+      .firestore()
+      .collection('users')
+      .where('webid','==',this.$route.params.webid).get().then((doc) => {
+        doc.forEach((doc)=>{
+          docid=doc.id
+        })
+      });
+      await firebase
+      .firestore()
+      .collection('users')
+      .doc(docid)
+      .update({'education': this.education})
+      .then(() => {
+        console.log("Education Updated")
+      })
     },
     submitSkills () {
       this.edit_skills = false
