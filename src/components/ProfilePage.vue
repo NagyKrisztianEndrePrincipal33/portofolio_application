@@ -4,62 +4,62 @@
     <div class="container glow">
       <div class="rows">
         <div class="picture">
-          <img src="../assets/default.png">
+          <img src="../assets/default.png" />
         </div>
         <div class="description glow">
-          <h2>{{firstName + " " + lastName}}</h2>
-          <h4>{{job}}</h4>
-          <p>{{description}}</p>
+          <h2>{{ firstName + " " + lastName }}</h2>
+          <h4>{{ job }}</h4>
+          <p>{{ description }}</p>
         </div>
       </div>
       <div class="rows">
         <div class="experience glow">
           <div class="title">
-            <h2> Experience </h2>
+            <h2>Experience</h2>
           </div>
           <div v-for="item in experience" :key="item">
-            {{item}}
+            {{ item }}
           </div>
         </div>
         <div class="education glow">
           <div class="title">
-            <h2> Education </h2>
+            <h2>Education</h2>
           </div>
           <div v-for="item in education" :key="item">
-            {{item}}
+            {{ item }}
           </div>
         </div>
       </div>
       <div class="rows">
         <div class="grid-wrapper glow">
           <div class="title">
-            <h2> Skills </h2>
+            <h2>Skills</h2>
           </div>
           <div class="skills">
             <div v-for="item in skills" :key="item">
-              {{item}}
+              {{ item }}
             </div>
           </div>
         </div>
         <div class="grid-wrapper glow">
           <div class="title">
-            <h2> Hobbies </h2>
+            <h2>Hobbies</h2>
           </div>
           <div class="hobbies">
             <div v-for="item in hobbies" :key="item">
-              {{item}}
+              {{ item }}
             </div>
           </div>
         </div>
       </div>
       <div class="bottom-row">
         <div class="bottom-left">
-          <img src="../assets/email.png">
-          {{contact}}
+          <img src="../assets/email.png" />
+          {{ contact }}
         </div>
         <div class="bottom-right">
-          <img src="../assets/github_logo.png">
-          <a :href="github">{{github}}</a>
+          <img src="../assets/github_logo.png" />
+          <a :href="github">{{ github }}</a>
         </div>
       </div>
     </div>
@@ -68,11 +68,11 @@
 
 <script>
 import NavigationBar from "./NavigationBar";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 export default {
   name: "Home",
-  data () {
+  data() {
     return {
       firstName: "",
       lastName: "",
@@ -84,44 +84,47 @@ export default {
       hobbies: [],
       github: "",
       contact: "",
-    }
+    };
   },
   components: {
     NavigationBar,
   },
-  computed:{
+  computed: {
     ...mapGetters({
-      user:"user",
-
+      user: "user",
     }),
   },
-  mounted () {
-    this.GetData()
+  mounted() {
+    this.GetData();
   },
   methods: {
-    async GetData () {
+    async GetData() {
       //setTimeout(function () { this.GetData() }.bind(this), 500)
-      await firebase.firestore().collection('users').where('webid','==',this.$route.params.webid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.firstName = doc.data().firstName
-          this.lastName = doc.data().lastName
-          this.job = doc.data().job
-          this.description = doc.data().description
-          this.experience = doc.data().experience
-          this.education = doc.data().education
-          this.skills = doc.data().skills
-          this.hobbies = doc.data().hobbies
-          this.github = doc.data().github
-          this.contact = doc.data().contact
-        })
-      })
-    }
-  }
+      await firebase
+        .firestore()
+        .collection("users")
+        .where("webid", "==", this.$route.params.webid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.firstName = doc.data().firstName;
+            this.lastName = doc.data().lastName;
+            this.job = doc.data().job;
+            this.description = doc.data().description;
+            this.experience = doc.data().experience;
+            this.education = doc.data().education;
+            this.skills = doc.data().skills;
+            this.hobbies = doc.data().hobbies;
+            this.github = doc.data().github;
+            this.contact = doc.data().contact;
+          });
+        });
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
-
 .wrapper {
   height: 100%;
   display: flex;
@@ -134,15 +137,13 @@ export default {
   flex-direction: column;
   margin: 0 auto;
   border: solid black;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 5px;
 }
 
 .rows {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  margin-top: 20px;
 }
 
 .picture {
@@ -163,7 +164,7 @@ export default {
   align-items: flex-start;
   margin-left: auto;
   width: 50%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-right: 20px;
 }
@@ -183,7 +184,7 @@ export default {
   align-items: flex-start;
   justify-content: center;
   width: 40%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-left: 20px;
 }
@@ -194,7 +195,7 @@ export default {
   align-items: flex-start;
   justify-content: center;
   width: 40%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-left: 20px;
 }
@@ -219,9 +220,9 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  -webkit-box-shadow:0 0 20px grey; 
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
   border-radius: 10px;
 }
 
@@ -236,9 +237,9 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 10px;
-  -webkit-box-shadow:0 0 20px grey; 
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
   border-radius: 10px;
 }
 
@@ -249,7 +250,7 @@ export default {
   margin: 0 auto;
   margin-top: 20px;
   border: solid black;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
 }
 
@@ -272,20 +273,19 @@ export default {
 }
 
 .glow {
-  -webkit-box-shadow:0 0 20px grey;
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
 }
 
-.title  h2{
+.title h2 {
   display: flex;
   margin-top: 0px;
 }
 
 @media only screen and (max-width: 620px) {
-
-   .wrapper { 
-      font-size: 10px; 
-   }
+  .wrapper {
+    font-size: 10px;
+  }
 }
 </style>
