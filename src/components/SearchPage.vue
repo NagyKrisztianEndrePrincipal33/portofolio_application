@@ -1,5 +1,6 @@
 <template>
   <navigation-bar :user="user"></navigation-bar>
+  <div class="initial-padding"></div>
 
   <div v-for="result in searchResult" :key="result">
     <div v-if="result.job || result.skills" class="row">
@@ -139,5 +140,9 @@ export default {
 
 label {
   padding-right: 1em;
+}
+
+.initial-padding {
+  padding-top: 90px;
 }
 </style>
