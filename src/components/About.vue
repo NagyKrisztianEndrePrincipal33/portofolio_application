@@ -1,5 +1,5 @@
 <template>
-  <navigation-bar></navigation-bar>
+  <navigation-bar v-if="!mobileView"></navigation-bar>
   <div class="body">
     <div class="about-header-container">
       <p class="about-header">About CVbook</p>
@@ -108,6 +108,7 @@ export default {
   justify-content: space-around;
   align-items: center;
   background-color: #f2f2f2;
+  padding-top: 70px;
 }
 .about-header {
   color: rgba(0, 0, 0, 0.85);
@@ -240,9 +241,12 @@ hr {
   display: flex;
   justify-content: space-around;
   flex-flow: row wrap;
+  background-color: #f2f2f2;
+  padding: 50px 0;
 }
 
 .team-member {
+  background-color: #fff;
   display: flex;
   justify-content: center;
   flex-direction: column;
