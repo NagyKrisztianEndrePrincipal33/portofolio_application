@@ -109,6 +109,7 @@ export default {
       }
     },
   },
+  
   methods: {
     async register() {
       this.errors = [];

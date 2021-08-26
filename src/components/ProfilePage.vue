@@ -4,8 +4,8 @@
     <div class="container glow">
       <div class="rows">
         <div class="picture">
-          <img src="../assets/default.png" @click="$refs.file.click()">
-          <input type="file" ref="file" style="display: none">
+          <img src="../assets/default.png" @click="$refs.file.click()" />
+          <input type="file" ref="file" style="display: none" />
         </div>
         <div class="description glow">
           <h2>{{ firstName + " " + lastName }}</h2>
@@ -18,7 +18,10 @@
           <div class="title">
             <h2>
               Experience
-              <i class="fas fa-user-edit edit-icon" @click="edit_experience=true"></i>
+              <i
+                class="fas fa-user-edit edit-icon"
+                @click="edit_experience = true"
+              ></i>
             </h2>
           </div>
           <div v-for="item in experience" :key="item">
@@ -29,20 +32,26 @@
           <div class="title">
             <h2>
               Experience
-              <i class="fas fa-check-circle edit-icon" @click="submitExperience"></i>
+              <i
+                class="fas fa-check-circle edit-icon"
+                @click="submitExperience"
+              ></i>
             </h2>
           </div>
           <form>
             <div v-for="(item, index) in experience" :key="index">
-              <input type="text" v-model="experience[index]">
+              <input type="text" v-model="experience[index]" />
             </div>
           </form>
         </div>
         <div v-if="edit_education == false" class="education glow">
           <div class="title">
-            <h2> 
+            <h2>
               Education
-              <i class="fas fa-user-edit edit-icon" @click="edit_education=true"></i>
+              <i
+                class="fas fa-user-edit edit-icon"
+                @click="edit_education = true"
+              ></i>
             </h2>
           </div>
           <div v-for="item in education" :key="item">
@@ -51,14 +60,17 @@
         </div>
         <div v-if="edit_education == true" class="education glow">
           <div class="title">
-            <h2> 
+            <h2>
               Education
-              <i class="fas fa-check-circle edit-icon" @click="submitEducation"></i>
+              <i
+                class="fas fa-check-circle edit-icon"
+                @click="submitEducation"
+              ></i>
             </h2>
           </div>
           <form>
             <div v-for="(item, index) in education" :key="index">
-              <input type="text" v-model="education[index]">
+              <input type="text" v-model="education[index]" />
             </div>
           </form>
         </div>
@@ -67,8 +79,11 @@
         <div v-if="edit_skills == false" class="grid-wrapper glow">
           <div class="title">
             <h2>
-              Skills 
-              <i class="fas fa-user-edit edit-icon" @click="edit_skills=true"></i>
+              Skills
+              <i
+                class="fas fa-user-edit edit-icon"
+                @click="edit_skills = true"
+              ></i>
             </h2>
           </div>
           <div class="skills">
@@ -80,14 +95,17 @@
         <div v-if="edit_skills == true" class="grid-wrapper glow">
           <div class="title">
             <h2>
-              Skills 
-              <i class="fas fa-check-circle edit-icon" @click="edit_skills=false"></i>
+              Skills
+              <i
+                class="fas fa-check-circle edit-icon"
+                @click="edit_skills = false"
+              ></i>
             </h2>
           </div>
           <div class="skills">
             <form>
               <div v-for="(item, index) in skills" :key="index">
-                <input type="text" v-model="skills[index]">
+                <input type="text" v-model="skills[index]" />
               </div>
             </form>
           </div>
@@ -96,7 +114,10 @@
           <div class="title">
             <h2>
               Hobbies
-              <i class="fas fa-user-edit edit-icon" @click="edit_hobbies=true"></i>
+              <i
+                class="fas fa-user-edit edit-icon"
+                @click="edit_hobbies = true"
+              ></i>
             </h2>
           </div>
           <div class="hobbies">
@@ -109,13 +130,16 @@
           <div class="title">
             <h2>
               Hobbies
-              <i class="fas fa-check-circle edit-icon" @click="edit_hobbies=false"></i>
+              <i
+                class="fas fa-check-circle edit-icon"
+                @click="edit_hobbies = false"
+              ></i>
             </h2>
           </div>
           <div class="hobbies">
             <form>
               <div v-for="(item, index) in hobbies" :key="index">
-                <input type="text" v-model="hobbies[index]">
+                <input type="text" v-model="hobbies[index]" />
               </div>
             </form>
           </div>
@@ -157,7 +181,7 @@ export default {
       edit_education: false,
       edit_skills: false,
       edit_hobbies: false,
-    }
+    };
   },
   components: {
     NavigationBar,
@@ -171,72 +195,79 @@ export default {
     this.GetData();
   },
   methods: {
-    async GetData () {
-      await firebase.firestore().collection('users').where('webid','==',this.$route.params.webid).get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.firstName = doc.data().firstName
-          this.lastName = doc.data().lastName
-          this.job = doc.data().job
-          this.description = doc.data().description
-          this.experience = doc.data().experience
-          this.education = doc.data().education
-          this.skills = doc.data().skills
-          this.hobbies = doc.data().hobbies
-          this.github = doc.data().github
-          this.contact = doc.data().contact
-        })
-      })
-    },
-    async submitExperience () {
-      console.log(this.$refs.file.files[0])
-      this.edit_experience = false
-      let docid='';
+    async GetData() {
       await firebase
-      .firestore()
-      .collection('users')
-      .where('webid','==',this.$route.params.webid).get().then((doc) => {
-        doc.forEach((doc)=>{
-          docid=doc.id
-        })
-      });
-      await firebase
-      .firestore()
-      .collection('users')
-      .doc(docid)
-      .update({'experience': this.experience})
-      .then(() => {
-        console.log("Experience Updated")
-      })
+        .firestore()
+        .collection("users")
+        .where("webid", "==", this.$route.params.webid)
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.firstName = doc.data().firstName;
+            this.lastName = doc.data().lastName;
+            this.job = doc.data().job;
+            this.description = doc.data().description;
+            this.experience = doc.data().experience;
+            this.education = doc.data().education;
+            this.skills = doc.data().skills;
+            this.hobbies = doc.data().hobbies;
+            this.github = doc.data().github;
+            this.contact = doc.data().contact;
+          });
+        });
     },
-    async submitEducation () {
-      this.edit_education = false
-      let docid='';
+    async submitExperience() {
+      console.log(this.$refs.file.files[0]);
+      this.edit_experience = false;
+      let docid = "";
       await firebase
-      .firestore()
-      .collection('users')
-      .where('webid','==',this.$route.params.webid).get().then((doc) => {
-        doc.forEach((doc)=>{
-          docid=doc.id
-        })
-      });
+        .firestore()
+        .collection("users")
+        .where("webid", "==", this.$route.params.webid)
+        .get()
+        .then((doc) => {
+          doc.forEach((doc) => {
+            docid = doc.id;
+          });
+        });
       await firebase
-      .firestore()
-      .collection('users')
-      .doc(docid)
-      .update({'education': this.education})
-      .then(() => {
-        console.log("Education Updated")
-      })
+        .firestore()
+        .collection("users")
+        .doc(docid)
+        .update({ experience: this.experience })
+        .then(() => {
+          console.log("Experience Updated");
+        });
     },
-    submitSkills () {
-      this.edit_skills = false
-      
+    async submitEducation() {
+      this.edit_education = false;
+      let docid = "";
+      await firebase
+        .firestore()
+        .collection("users")
+        .where("webid", "==", this.$route.params.webid)
+        .get()
+        .then((doc) => {
+          doc.forEach((doc) => {
+            docid = doc.id;
+          });
+        });
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(docid)
+        .update({ education: this.education })
+        .then(() => {
+          console.log("Education Updated");
+        });
     },
-    submitHobbies () {
-      this.edit_hobbies = false
-      
-    }
-  }
+    submitSkills() {
+      this.edit_skills = false;
+    },
+    submitHobbies() {
+      this.edit_hobbies = false;
+    },
+  },
 };
 </script>
 
@@ -267,8 +298,6 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 .rows {
   display: flex;
   flex-direction: row;
-  width: 100%;
-  margin-top: 20px;
 }
 
 .picture {
@@ -401,7 +430,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   box-shadow: 0 0 20px grey;
 }
 
-.title  h2 {
+.title h2 {
   display: flex;
   margin-top: 0px;
 }
