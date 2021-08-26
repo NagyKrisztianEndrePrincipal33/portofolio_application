@@ -6,7 +6,7 @@
           <img
             class="profile-image-mobile"
             v-if="user.loggedIn"
-            src="../assets/default.png"
+            :src="pic"
             @click="redirectToProfile"
           />
         </li>
@@ -97,7 +97,7 @@
         <img
           class="profile-image"
           v-if="user.loggedIn"
-          src="../assets/default.png"
+          :src="pic"
           @click="redirectToProfile"
         />
         <div v-if="user.loggedIn" class="log-out-button">
@@ -113,6 +113,7 @@ import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 
 export default {
+  props: ["pic"],
   data() {
     return {
       mobileView: false,

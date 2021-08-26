@@ -1,6 +1,11 @@
 <template>
-  <navigation-bar :user="user"></navigation-bar>
-  <div class="contact" style="margin-top: 100px">
+  <navigation-bar
+    v-if="loadedData"
+    :user="user"
+    :pic="picURL"
+    class="fade-in-navbar"
+  ></navigation-bar>
+  <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
     </div>
@@ -21,12 +26,17 @@
       </div>
     </div>
   </div>
-  <div class="container">
+  <div v-if="loadedData" class="container fade-in">
     <div class="header p-3 p-lg-4 text-white">
       <div class="row">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
-            <img :src="picURL" @click="$refs.file.click()" />
+            <img
+              v-if="!loadedImage"
+              src="https://ik.imagekit.io/demo/img/image4.jpeg?tr=w-1,h-1:w-400,h-300"
+              alt="dominant color placeholder"
+            />
+            <img v-if="loadedImage" :src="picURL" @click="$refs.file.click()" />
             <input
               type="file"
               ref="file"
@@ -87,8 +97,8 @@
     <div class="px-3 px-lg-5 skills-section ">
       <h2 class="h3 mb-3 text-left">Professional Skills</h2>
       <div class="skills">
-        <div class="col-md-5" v-for="item in skills" :key="item">
-          <div class="mb-2">{{ item }}</div>
+        <div class="col-md-5" v-for="skill in skills" :key="skill">
+          <div class="mb-2">{{ skill }}</div>
           <div class="progress my-1">
             <div
               class="progress-bar"
@@ -151,6 +161,14 @@
       </div>
     </div>
     <hr />
+    <div class="hobbies-section px-3 px-lg-5">
+      <h2 class="h3 mb-4 text-left">Hobbies</h2>
+      <div class="hobbies">
+        <div class="hobby" v-for="(hobby, index) in hobbies" :key="index">
+          {{ hobby }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -163,6 +181,8 @@ export default {
   name: "Home",
   data() {
     return {
+      loadedData: false,
+      loadedImage: false,
       firstName: "",
       lastName: "",
       job: "",
@@ -201,6 +221,7 @@ export default {
   },
   methods: {
     async GetData() {
+      this.loadedData = false;
       this.getPicture();
       await firebase
         .firestore()
@@ -229,6 +250,7 @@ export default {
             this.contact = doc.data().contact;
           });
         });
+      this.loadedData = true;
     },
     async submitExperience() {
       this.edit_experience = false;
@@ -295,6 +317,7 @@ export default {
       }
     },
     async getPicture() {
+      this.loadedImage = false;
       await storageRef
         .child(this.$route.params.webid)
         .getDownloadURL()
@@ -309,6 +332,7 @@ export default {
               this.picURL = url;
             });
         });
+      this.loadedImage = true;
     },
   },
 };
@@ -375,6 +399,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-self: center;
   margin-left: 1rem;
   margin-top: 0px;
+  p {
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
 }
 
 h2 {
@@ -382,6 +411,24 @@ h2 {
   margin-bottom: 1rem;
   font-weight: 600;
   line-height: 1.2;
+  position: relative;
+}
+
+.fade-in {
+  animation: fadein 1.2s;
+}
+
+.fade-in-navbar {
+  animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 p {
@@ -396,6 +443,15 @@ img {
   height: 200px;
   border: 8px solid #fff;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.05);
+  transition: transform ease 300ms;
+}
+
+img:hover {
+  -moz-transform: translate(0, -4px);
+  -ms-transform: translate(0, -4px);
+  -o-transform: translate(0, -4px);
+  -webkit-transform: translate(0, -4px);
+  transform: translate(0, -4px);
 }
 
 .col-md-5 {
@@ -442,6 +498,7 @@ hr {
 .my-1 {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
+  transition: width 3s ease;
 }
 
 .progress {
@@ -451,6 +508,7 @@ hr {
   font-size: 0.75rem;
   background-color: #e9ecef;
   border-radius: 0.25rem;
+  transition: width 3s ease;
 }
 
 .progress-bar {
@@ -462,9 +520,21 @@ hr {
   text-align: center;
   white-space: nowrap;
   background-color: #4a89dc;
-  transition: width 0.6s ease;
+  transition: width 3s ease;
+  animation: progress-bar-stripes 2s linear;
 }
 
+.progress-bar:hover {
+  background-color: #2f9df7;
+}
+
+@keyframes progress-bar-stripes {
+  0% {
+    width: 0%;
+    left: 0;
+    right: 0;
+  }
+}
 .short-info {
   text-align: left;
   align-self: center;
@@ -484,6 +554,23 @@ hr {
   margin-left: 31px;
   border-left: 2px solid;
   margin-bottom: 2rem;
+}
+
+.btn-success {
+  border-radius: 25px;
+  padding: 8px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  transition: 0.3s ease-in-out;
+}
+
+.btn-success:hover {
+  -moz-transform: translate(0, -4px);
+  -ms-transform: translate(0, -4px);
+  -o-transform: translate(0, -4px);
+  -webkit-transform: translate(0, -4px);
+  transform: translate(0, -4px);
 }
 
 @media (min-width: 48em) {
@@ -587,7 +674,11 @@ hr {
 
 .fab {
   color: #4a89dc;
-  font-size: 21px;
+  font-size: 24px;
+}
+
+.fab:hover {
+  color: #2f9df7;
 }
 
 @media (min-width: 1200px) {
@@ -627,5 +718,32 @@ hr {
     flex-wrap: wrap;
     flex-direction: column;
   }
+}
+
+.hobbies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+}
+
+.hobby {
+  border-radius: 25px;
+  color: white;
+  border: 5px solid #4a89dc;
+  background-color: #4a89dc;
+  padding: 10px 20px;
+  transition: 0.2s ease-in-out;
+  margin: 20px;
+}
+
+.hobby:hover {
+  cursor: default;
+  -moz-transform: translate(0, -4px);
+  -ms-transform: translate(0, -4px);
+  -o-transform: translate(0, -4px);
+  -webkit-transform: translate(0, -4px);
+  transform: translate(0, -4px);
 }
 </style>
