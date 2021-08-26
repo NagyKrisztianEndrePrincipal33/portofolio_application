@@ -8,9 +8,9 @@
           <input type="file" ref="file" style="display: none">
         </div>
         <div class="description glow">
-          <h2>{{firstName + " " + lastName}}</h2>
-          <h4>{{job}}</h4>
-          <p>{{description}}</p>
+          <h2>{{ firstName + " " + lastName }}</h2>
+          <h4>{{ job }}</h4>
+          <p>{{ description }}</p>
         </div>
       </div>
       <div class="rows">
@@ -22,7 +22,7 @@
             </h2>
           </div>
           <div v-for="item in experience" :key="item">
-            {{item}}
+            {{ item }}
           </div>
         </div>
         <div v-if="edit_experience == true" class="experience glow">
@@ -46,7 +46,7 @@
             </h2>
           </div>
           <div v-for="item in education" :key="item">
-            {{item}}
+            {{ item }}
           </div>
         </div>
         <div v-if="edit_education == true" class="education glow">
@@ -73,7 +73,7 @@
           </div>
           <div class="skills">
             <div v-for="item in skills" :key="item">
-              {{item}}
+              {{ item }}
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@
           </div>
           <div class="hobbies">
             <div v-for="item in hobbies" :key="item">
-              {{item}}
+              {{ item }}
             </div>
           </div>
         </div>
@@ -123,12 +123,12 @@
       </div>
       <div class="bottom-row">
         <div class="bottom-left">
-          <img src="../assets/email.png">
-          {{contact}}
+          <img src="../assets/email.png" />
+          {{ contact }}
         </div>
         <div class="bottom-right">
-          <img src="../assets/github_logo.png">
-          <a :href="github">{{github}}</a>
+          <img src="../assets/github_logo.png" />
+          <a :href="github">{{ github }}</a>
         </div>
       </div>
     </div>
@@ -137,11 +137,11 @@
 
 <script>
 import NavigationBar from "./NavigationBar";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 export default {
   name: "Home",
-  data () {
+  data() {
     return {
       firstName: "",
       lastName: "",
@@ -162,14 +162,13 @@ export default {
   components: {
     NavigationBar,
   },
-  computed:{
+  computed: {
     ...mapGetters({
-      user:"user",
-
+      user: "user",
     }),
   },
-  mounted () {
-    this.GetData()
+  mounted() {
+    this.GetData();
   },
   methods: {
     async GetData () {
@@ -248,11 +247,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/regular"; // far
 @import "~@fortawesome/fontawesome-free/scss/brands"; // fab
 @import "./colors";
-
 .wrapper {
   height: 100%;
   display: flex;
   font-size: 14px;
+  padding-top: 8rem;
 }
 
 .container {
@@ -261,7 +260,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   flex-direction: column;
   margin: 0 auto;
   border: solid black;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 5px;
 }
 
@@ -290,7 +289,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: flex-start;
   margin-left: auto;
   width: 50%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-right: 20px;
 }
@@ -309,7 +308,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   flex-direction: column;
   align-items: flex-start;
   width: 40%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-left: 20px;
 }
@@ -319,7 +318,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   flex-direction: column;
   align-items: flex-start;
   width: 40%;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
   margin-left: 20px;
 }
@@ -344,9 +343,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: center;
   justify-content: center;
   padding: 10px;
-  -webkit-box-shadow:0 0 20px grey; 
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
   border-radius: 10px;
 }
 
@@ -361,9 +360,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: center;
   justify-content: center;
   padding: 10px;
-  -webkit-box-shadow:0 0 20px grey; 
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
   border-radius: 10px;
 }
 
@@ -374,7 +373,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   margin: 0 auto;
   margin-top: 20px;
   border: solid black;
-  border-radius:10px;
+  border-radius: 10px;
   padding: 15px;
 }
 
@@ -397,9 +396,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 }
 
 .glow {
-  -webkit-box-shadow:0 0 20px grey;
-  -moz-box-shadow: 0 0 20px grey; 
-  box-shadow:0 0 20px grey;
+  -webkit-box-shadow: 0 0 20px grey;
+  -moz-box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 20px grey;
 }
 
 .title  h2 {
@@ -412,9 +411,8 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 }
 
 @media only screen and (max-width: 620px) {
-
-   .wrapper { 
-      font-size: 10px; 
-   }
+  .wrapper {
+    font-size: 10px;
+  }
 }
 </style>
