@@ -214,7 +214,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   align-items: center;
   vertical-align: middle;
   justify-content: space-between;
-  padding: 0 45px 0 0px;
+  padding: 0;
   .navigation-link {
     text-decoration: none;
     color: white;
@@ -229,7 +229,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .middle .router-link-active {
     padding-top: 16.5px;
     padding-bottom: 16.5px;
-    border-bottom: 5px solid #015073;
+    //border-bottom: 5px solid #015073;
     background-color: rgba($color: #000000, $alpha: 0.1);
   }
 
@@ -355,6 +355,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   top: 0;
   width: 100%;
   opacity: 1;
+  z-index: 3;
 }
 
 .mobile-nav {
@@ -381,7 +382,6 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   transform: translateY(-8px);
   border-bottom-left-radius: 20px;
   opacity: 1;
-  padding-right: 65px;
 }
 
 .navigation-link-mobile {
