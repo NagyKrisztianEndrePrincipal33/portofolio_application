@@ -286,7 +286,7 @@ import NavigationBar from "./NavigationBar";
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 import storageRef from "../database/storageRef";
-import EditPersonalData from "./editPersonalData.vue";
+import EditPersonalData from "./edit/editPersonalData.vue";
 export default {
   name: "Home",
   emits: ["edit"],
@@ -384,13 +384,30 @@ export default {
       else e.preventDefault();
     },
     validateForm() {
+      //Validate First name & Last name
+      let char = String(this.profileInfo.firstName);
+      if (
+        !/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u.test(
+          char
+        )
+      )
+        return false;
+
+      char = String(this.profileInfo.lastName);
+      if (
+        !/^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u.test(
+          char
+        )
+      )
+        return false;
+
       //Validate Phone
-      let char = String(this.profileInfo.phone);
+      char = String(this.profileInfo.phone);
       if (!/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(char))
         return false;
       //Validate Age
-      let char1 = String(this.profileInfo.age);
-      if (!/[0-9]/.test(char1)) return false;
+      char = String(this.profileInfo.age);
+      if (!/[0-9]/.test(char)) return false;
       if (this.profileInfo.age < 18 || this.profileInfo.age > 100) return false;
       //Validate email
       const re = /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
