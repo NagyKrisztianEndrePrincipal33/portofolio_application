@@ -35,7 +35,7 @@
           <button class="btn btn-login form-field">Sign in</button>
         </div>
       </form>
-      <p>
+      <p class="sign-up">
         Don't have an account? <router-link to="/register" class="link-in-login">Sign up</router-link>
       </p>
     </div>
@@ -95,6 +95,7 @@ export default {
   },
 };
 </script>
+
 <style scoped lang="scss">
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
@@ -123,11 +124,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 }
 
 .login-component {
-  width: 390px;
+  width: 500px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
-  padding: 33px 55px 33px 55px;
+  padding: 60px 55px 33px 55px;
   border-radius: 10px;
   margin: 0 auto;
   background: #fff;
@@ -136,9 +137,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     line-height: 1.25;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.9);
-    padding: 0 0 24px 0;
     text-align: left;
-    margin-bottom: 20px;
   }
 }
 
@@ -266,6 +265,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   -moz-transition: all 0.4s;
   transition: all 0.4s;
 }
+
+.sign-up {
+  margin-top: 2rem;
+}
+
 .btn-show-pass:hover {
   color: #6a7dfe;
   color: -webkit-linear-gradient(left, #21d4fd, #b721ff);
@@ -292,8 +296,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .logo-holder {
   display: flex;
-  padding-bottom: 15px;
+  padding: 32px 0 48px 0;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -305,5 +310,24 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .navigation-link-logo {
   margin: auto 0;
+}
+
+@media (max-width: 550px) {
+  .login-component {
+    width: 450px;
+  }
+}
+
+@media (max-width: 461px) {
+  .login-component {
+    width: 350px;
+    justify-content: center;
+  }
+  .logo-holder {
+    justify-content: center;
+    h1 {
+      padding-bottom: 20px;
+    }
+  }
 }
 </style>
