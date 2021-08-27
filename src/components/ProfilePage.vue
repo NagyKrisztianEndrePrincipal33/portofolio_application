@@ -333,6 +333,7 @@ export default {
               this.picURL = url;
             });
         });
+      window.localStorage.setItem("picURL", this.picURL);
       this.loadedImage = true;
     },
   },
