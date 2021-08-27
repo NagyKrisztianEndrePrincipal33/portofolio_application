@@ -323,6 +323,7 @@ export default {
         .getDownloadURL()
         .then((url) => {
           this.picURL = url;
+          window.localStorage.setItem("picURL", this.picURL);
         })
         .catch(() => {
           storageRef
@@ -330,9 +331,9 @@ export default {
             .getDownloadURL()
             .then((url) => {
               this.picURL = url;
+              window.localStorage.setItem("picURL", this.picURL);
             });
         });
-      window.localStorage.setItem("picURL", this.picURL);
       this.loadedImage = true;
     },
   },
