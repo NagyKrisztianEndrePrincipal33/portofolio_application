@@ -28,6 +28,7 @@
             type="text"
             class="form-control"
             v-model="profileInfo.firstName"
+            required
           />
         </div>
         <div class="col-lg-10">
@@ -36,6 +37,7 @@
             type="text"
             class="form-control"
             v-model="profileInfo.lastName"
+            required
           />
         </div>
         <div class="col-lg-10">
@@ -71,7 +73,7 @@
         <div class="col-lg-10">
           <label>Phone number</label>
           <input
-            type="tel"
+            type="number"
             v-on:keypress="isNumber($event)"
             class="form-control"
             v-model="profileInfo.phone"
@@ -95,13 +97,13 @@
         <button
           type="button"
           class="btn btn-primary"
-          v-if="!isPending"
+          v-if="!isPending && profileInfo.firstName != &quot;&quot; && profileInfo.lastName != &quot;&quot;"
           @click="updateProfileInfo"
         >
           Save changes
         </button>
         <button type="button" class="btn btn-primary" v-else disabled>
-          Saving...
+          Save changes
         </button>
       </div>
     </template>
@@ -179,7 +181,7 @@
               <div class="pb-1 text-secondary">{{ contact }}</div>
             </div>
             <div class="col-sm-4">
-              <div class="pb-1">Phone</div>
+              <div class="pb-1">Phone(+40)</div>
             </div>
             <div class="col-sm-8">
               <div class="pb-1 text-secondary">{{ phone }}</div>
@@ -332,32 +334,39 @@ export default {
   },
   methods: {
     async updateProfileInfo() {
-      this.isPending = true;
-      this.firstName = this.profileInfo.firstName;
-      this.lastName = this.profileInfo.lastName;
-      this.job = this.profileInfo.job;
-      this.description = this.profileInfo.description;
-      this.age = this.profileInfo.age;
-      this.contact = this.profileInfo.contact;
-      this.phone = this.profileInfo.phone;
-      this.address = this.profileInfo.address;
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(this.userID)
-        .update({
-          firstName: this.firstName,
-          lastName: this.lastName,
-          job: this.job,
-          description: this.description,
-          age: this.age,
-          contact: this.contact,
-          phone: this.phone,
-          address: this.address,
-          dateModified: new Date(),
-        });
-      this.isPending = false;
-      this.closeModal();
+      if(this.validateForm()) {
+        if(this.somethingChanged()) {
+          this.isPending = true;
+          this.firstName = this.profileInfo.firstName;
+          this.lastName = this.profileInfo.lastName;
+          this.job = this.profileInfo.job;
+          this.description = this.profileInfo.description;
+          this.age = this.profileInfo.age;
+          this.contact = this.profileInfo.contact;
+          this.phone = this.profileInfo.phone;
+          this.address = this.profileInfo.address;
+          await firebase
+            .firestore()
+            .collection("users")
+            .doc(this.userID)
+            .update({
+              firstName: this.firstName,
+              lastName: this.lastName,
+              job: this.job,
+              description: this.description,
+              age: this.age,
+              contact: this.contact,
+              phone: this.phone,
+              address: this.address,
+              dateModified: new Date(),
+            });
+          this.isPending = false;
+        }
+        this.closeModal();
+      }
+      else{
+        alert("Check your fields!")
+      }
     },
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
@@ -370,6 +379,29 @@ export default {
       let char = String.fromCharCode(e.keyCode);
       if (/[0-9]/.test(char)) return true;
       else e.preventDefault();
+    },
+    validateForm() {
+      //Validate Phone
+      let char = String(this.profileInfo.phone);
+      if (!/[0-9]/.test(char)) return false;
+      //Validate Age
+      let char1 = String(this.profileInfo.age);
+      if (!/[0-9]/.test(char1)) return false;
+      //Validate email
+      const re = /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+      if(!re.test(String(this.profileInfo.contact))) return false;
+      return true;
+    },
+    somethingChanged () {
+      if(this.firstName != this.profileInfo.firstName)return true;
+      if(this.lastName != this.profileInfo.lastName) return true;
+      if(this.job != this.profileInfo.job) return true;
+      if(this.description != this.profileInfo.description) return true;
+      if(this.age != this.profileInfo.age) return true;
+      if(this.contact != this.profileInfo.contact) return true;
+      if(this.phone != this.profileInfo.phone) return true;
+      if(this.address != this.profileInfo.address) return true;
+      return false
     },
     async GetData() {
       this.loadedData = false;
@@ -405,56 +437,6 @@ export default {
           });
         });
       this.loadedData = true;
-    },
-    async submitExperience() {
-      this.edit_experience = false;
-      let docid = "";
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.$route.params.webid)
-        .get()
-        .then((doc) => {
-          doc.forEach((doc) => {
-            docid = doc.id;
-          });
-        });
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(docid)
-        .update({ experience: this.experience })
-        .then(() => {
-          console.log("Experience Updated");
-        });
-    },
-    async submitEducation() {
-      this.edit_education = false;
-      let docid = "";
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.$route.params.webid)
-        .get()
-        .then((doc) => {
-          doc.forEach((doc) => {
-            docid = doc.id;
-          });
-        });
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(docid)
-        .update({ education: this.education })
-        .then(() => {
-          console.log("Education Updated");
-        });
-    },
-    submitSkills() {
-      this.edit_skills = false;
-    },
-    submitHobbies() {
-      this.edit_hobbies = false;
     },
     async UploadImage(image) {
       if (image != null) {
