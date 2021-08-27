@@ -112,6 +112,47 @@
       </div>
     </template>
   </edit-personal-data>
+  <edit-skills v-if="showEditSkills">
+    <template #header>
+      <h5 class="modal-title">
+        Edit information
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeSkillsModal"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <template #default>
+      <i class="fas fa-plus-circle"></i>
+    </template>
+    <template #actions>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeSkillsModal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateProfileInfo"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Save changes
+        </button>
+      </div>
+    </template>
+  </edit-skills>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -135,7 +176,7 @@
   </div>
   <div v-if="loadedData" class="container fade-in">
     <div class="header p-3 p-lg-4 text-white">
-      <div class="row">
+      <div class="row" style="justify-content: space-between">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
             <div v-if="!loadedImage" class="lds-ring">
@@ -156,8 +197,11 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <i @click="editPersonalData()" class="fas fa-user-edit"></i>
-          <h2>{{ firstName + " " + lastName }}</h2>
+          <div style="display: flex; justify-content: space-between;">
+            <h2>{{ firstName + " " + lastName }}</h2>
+            <i @click="editPersonalData()" class="fas fa-user-edit"></i>
+          </div>
+
           <p>{{ job }}</p>
 
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
@@ -204,7 +248,11 @@
     </div>
     <hr />
     <div class="px-3 px-lg-5 skills-section ">
-      <h2 class="h3 mb-3 text-left">Professional Skills</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-3 text-left">Professional Skills</h2>
+        <i @click="editSkills()" class="fas fa-edit"></i>
+      </div>
+
       <div class="skills">
         <div class="col-md-5" v-for="skill in skills" :key="skill">
           <div class="mb-2">{{ skill }}</div>
@@ -287,6 +335,7 @@ import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 import storageRef from "../database/storageRef";
 import EditPersonalData from "./edit/editPersonalData.vue";
+import EditSkills from "./edit/editSkills.vue";
 export default {
   name: "Home",
   emits: ["edit"],
@@ -296,6 +345,7 @@ export default {
       isPending: false,
       profileInfo: {},
       showEditPersonalData: false,
+      showEditSkills: false,
       loadedData: false,
       loadedImage: false,
       firstName: "",
@@ -327,6 +377,7 @@ export default {
   components: {
     NavigationBar,
     EditPersonalData,
+    EditSkills,
   },
   computed: {
     ...mapGetters({
@@ -373,10 +424,15 @@ export default {
     },
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
-      // console.log(this.showEditPersonalData);
+    },
+    async editSkills() {
+      this.showEditSkills = !this.showEditSkills;
     },
     closeModal() {
       this.showEditPersonalData = false;
+    },
+    closeSkillsModal() {
+      this.showEditSkills = false;
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -769,6 +825,11 @@ hr {
   border-left-color: #4a89dc;
 }
 
+.skills-edit {
+  display: flex;
+  justify-content: space-between;
+}
+
 .timeline-card:before {
   content: "";
   display: inline-block;
@@ -968,7 +1029,8 @@ h5 {
   }
 }
 
-.fa-user-edit {
+.fa-user-edit,
+.fa-edit {
   font-size: 24px;
   color: darkslategray;
   display: flex;
@@ -978,6 +1040,11 @@ h5 {
 
 .fa-user-edit:hover {
   color: #fff;
+  cursor: pointer;
+}
+
+.fa-edit:hover {
+  color: #4a89dc;
   cursor: pointer;
 }
 
