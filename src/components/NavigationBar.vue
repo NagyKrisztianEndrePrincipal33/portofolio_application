@@ -97,7 +97,7 @@
         <img
           class="profile-image"
           v-if="user.loggedIn"
-          :src="pic"
+          :src="pic || picURL"
           @click="redirectToProfile"
         />
         <div v-if="user.loggedIn" class="log-out-button">
@@ -111,18 +111,21 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
+//import storageRef from '../database/storageRef';
 
 export default {
-  props: ["pic"],
+  props: ['pic'],
   data() {
     return {
       mobileView: false,
       showNav: false,
+      picURL: "",
     };
   },
   created() {
     this.handleView();
     window.addEventListener("resize", this.handleView);
+    this.getPicture();
   },
   name: "NavigationBar",
   computed: {
@@ -187,6 +190,20 @@ export default {
             this.$router.replace("/edit/" + doc.data().webid);
           });
         });
+    },
+    async getPicture () {
+      // if(!this.$store.getters.user.data.uid == null){
+      //   await storageRef.child(this.$store.getters.user.data.uid).getDownloadURL().then((url) => {
+      //       this.picURL = url;
+      //   }).catch(()=>{
+      //     storageRef.child('default.png').getDownloadURL().then((url) => {
+      //       this.picURL = url;
+      //     })
+      //   })
+      // }
+      // else {
+      this.picURL = window.localStorage.getItem("picURL")
+      // }
     },
   },
 };

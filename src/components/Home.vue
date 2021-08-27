@@ -8,6 +8,7 @@
 <script>
 import NavigationBar from "./NavigationBar";
 import { mapGetters } from "vuex";
+import storageRef from '../database/storageRef';
 export default {
   name: "Home",
   components: {
@@ -18,6 +19,22 @@ export default {
       user: "user",
     }),
   },
+  created () {
+    this.getPicture()
+  },
+  methods: {
+    async getPicture () {
+      let picURL = ""
+      await storageRef.child(this.user.data.uid).getDownloadURL().then((url) => {
+          picURL = url;
+      }).catch(()=>{
+        storageRef.child('default.png').getDownloadURL().then((url) => {
+          picURL = url;
+        })
+      })
+      window.localStorage.setItem("picURL", picURL);
+    },
+  }
 };
 </script>
 <style scoped lang="scss">
