@@ -5,6 +5,107 @@
     :pic="picURL"
     class="fade-in-navbar"
   ></navigation-bar>
+  <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit information
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeModal"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <template #default>
+      <div class="modal-body">
+        <div class="col-lg-10">
+          <label>First name</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.firstName"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Last name</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.lastName"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Job title</label>
+          <input type="text" class="form-control" v-model="profileInfo.job" />
+        </div>
+        <div class="col-lg-10">
+          <label>Description</label>
+          <textarea
+            style="min-height: 10rem;"
+            class="form-control"
+            v-model="profileInfo.description"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Age</label>
+          <input
+            type="number"
+            min="18"
+            max="100"
+            class="form-control"
+            v-model="profileInfo.age"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Contact</label>
+          <input
+            type="email"
+            class="form-control"
+            v-model="profileInfo.contact"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Phone number</label>
+          <input
+            type="tel"
+            v-on:keypress="isNumber($event)"
+            class="form-control"
+            v-model="profileInfo.phone"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Address</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.address"
+          />
+        </div>
+      </div>
+    </template>
+    <template #actions>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" @click="closeModal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateProfileInfo"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving...
+        </button>
+      </div>
+    </template>
+  </edit-personal-data>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -49,6 +150,7 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
+          <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           <h2>{{ firstName + " " + lastName }}</h2>
           <p>{{ job }}</p>
 
@@ -68,10 +170,10 @@
               <div class="pb-1">Age</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">21</div>
+              <div class="pb-1 text-secondary">{{ age }}</div>
             </div>
             <div class="col-sm-4">
-              <div class="pb-1">Email</div>
+              <div class="pb-1">Contact</div>
             </div>
             <div class="col-sm-8">
               <div class="pb-1 text-secondary">{{ contact }}</div>
@@ -178,15 +280,22 @@ import NavigationBar from "./NavigationBar";
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 import storageRef from "../database/storageRef";
+import EditPersonalData from "./editPersonalData.vue";
 export default {
   name: "Home",
+  emits: ["edit"],
   data() {
     return {
+      userID: "",
+      isPending: false,
+      profileInfo: {},
+      showEditPersonalData: false,
       loadedData: false,
       loadedImage: false,
       firstName: "",
       lastName: "",
       job: "",
+      age: "",
       phone: "",
       address: "",
       description: "",
@@ -211,6 +320,7 @@ export default {
   },
   components: {
     NavigationBar,
+    EditPersonalData,
   },
   computed: {
     ...mapGetters({
@@ -221,6 +331,46 @@ export default {
     this.GetData();
   },
   methods: {
+    async updateProfileInfo() {
+      this.isPending = true;
+      this.firstName = this.profileInfo.firstName;
+      this.lastName = this.profileInfo.lastName;
+      this.job = this.profileInfo.job;
+      this.description = this.profileInfo.description;
+      this.age = this.profileInfo.age;
+      this.contact = this.profileInfo.contact;
+      this.phone = this.profileInfo.phone;
+      this.address = this.profileInfo.address;
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .update({
+          firstName: this.firstName,
+          lastName: this.lastName,
+          job: this.job,
+          description: this.description,
+          age: this.age,
+          contact: this.contact,
+          phone: this.phone,
+          address: this.address,
+          dateModified: new Date(),
+        });
+      this.isPending = false;
+      this.closeModal();
+    },
+    async editPersonalData() {
+      this.showEditPersonalData = !this.showEditPersonalData;
+      // console.log(this.showEditPersonalData);
+    },
+    closeModal() {
+      this.showEditPersonalData = false;
+    },
+    isNumber(e) {
+      let char = String.fromCharCode(e.keyCode);
+      if (/[0-9]/.test(char)) return true;
+      else e.preventDefault();
+    },
     async GetData() {
       this.loadedData = false;
       this.getPicture();
@@ -231,6 +381,7 @@ export default {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            this.userID = doc.id;
             this.firstName = doc.data().firstName;
             this.lastName = doc.data().lastName;
             this.job = doc.data().job;
@@ -249,6 +400,8 @@ export default {
             this.linkedin = doc.data().linkedin;
             this.facebook = doc.data().facebook;
             this.contact = doc.data().contact;
+            this.age = doc.data().age;
+            this.profileInfo = doc.data();
           });
         });
       this.loadedData = true;
@@ -407,6 +560,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     font-size: 16px;
     letter-spacing: 1px;
   }
+}
+
+label {
+  display: flex;
+  margin: 5px 5px;
 }
 
 h2 {
@@ -668,6 +826,21 @@ hr {
   align-self: center;
 }
 
+.close {
+  padding: 1rem;
+  margin: 0rem 0rem 0rem auto;
+}
+
+.close:hover {
+  color: gray;
+}
+
+h5 {
+  margin: 0;
+  margin-left: 1em;
+  line-height: 1.5;
+}
+
 .links div {
   margin: 0 10px;
 }
@@ -789,5 +962,22 @@ hr {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.fa-user-edit {
+  font-size: 24px;
+  color: darkslategray;
+  display: flex;
+  justify-content: flex-end;
+  transition: 0.2s ease-in-out;
+}
+
+.fa-user-edit:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+.col-lg-10 {
+  margin: 10px auto;
 }
 </style>
