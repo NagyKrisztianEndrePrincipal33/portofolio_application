@@ -31,11 +31,12 @@
       <div class="row">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
-            <img
-              v-if="!loadedImage"
-              src="https://ik.imagekit.io/demo/img/image4.jpeg?tr=w-1,h-1:w-400,h-300"
-              alt="dominant color placeholder"
-            />
+            <div v-if="!loadedImage" class="lds-ring">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
             <img v-if="loadedImage" :src="picURL" @click="$refs.file.click()" />
             <input
               type="file"
@@ -222,7 +223,7 @@ export default {
   methods: {
     async GetData() {
       this.loadedData = false;
-      this.getPicture()
+      this.getPicture();
       await firebase
         .firestore()
         .collection("users")
@@ -490,9 +491,6 @@ hr {
   justify-content: space-between;
 }
 
-.skills-section {
-}
-
 .text-left {
   text-align: left;
 }
@@ -747,5 +745,49 @@ hr {
   -o-transform: translate(0, -4px);
   -webkit-transform: translate(0, -4px);
   transform: translate(0, -4px);
+}
+
+.lds-ring {
+  display: flex;
+  justify-content: center;
+  background-color: grey;
+  align-items: center;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  width: 200px;
+  aspect-ratio: auto 200 / 200;
+  height: 200px;
+  border: 8px solid #fff;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.05);
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
