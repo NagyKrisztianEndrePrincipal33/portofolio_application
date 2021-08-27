@@ -97,7 +97,11 @@
         <button
           type="button"
           class="btn btn-primary"
-          v-if="!isPending && profileInfo.firstName != &quot;&quot; && profileInfo.lastName != &quot;&quot;"
+          v-if="
+            !isPending &&
+              profileInfo.firstName != '' &&
+              profileInfo.lastName != ''
+          "
           @click="updateProfileInfo"
         >
           Save changes
@@ -334,8 +338,8 @@ export default {
   },
   methods: {
     async updateProfileInfo() {
-      if(this.validateForm()) {
-        if(this.somethingChanged()) {
+      if (this.validateForm()) {
+        if (this.somethingChanged()) {
           this.isPending = true;
           this.firstName = this.profileInfo.firstName;
           this.lastName = this.profileInfo.lastName;
@@ -363,9 +367,8 @@ export default {
           this.isPending = false;
         }
         this.closeModal();
-      }
-      else{
-        alert("Check your fields!")
+      } else {
+        alert("Check your fields!");
       }
     },
     async editPersonalData() {
@@ -390,19 +393,19 @@ export default {
       if(this.profileInfo.age < 18 || this.profileInfo.age>100) return false;
       //Validate email
       const re = /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-      if(!re.test(String(this.profileInfo.contact))) return false;
+      if (!re.test(String(this.profileInfo.contact))) return false;
       return true;
     },
-    somethingChanged () {
-      if(this.firstName != this.profileInfo.firstName)return true;
-      if(this.lastName != this.profileInfo.lastName) return true;
-      if(this.job != this.profileInfo.job) return true;
-      if(this.description != this.profileInfo.description) return true;
-      if(this.age != this.profileInfo.age) return true;
-      if(this.contact != this.profileInfo.contact) return true;
-      if(this.phone != this.profileInfo.phone) return true;
-      if(this.address != this.profileInfo.address) return true;
-      return false
+    somethingChanged() {
+      if (this.firstName != this.profileInfo.firstName) return true;
+      if (this.lastName != this.profileInfo.lastName) return true;
+      if (this.job != this.profileInfo.job) return true;
+      if (this.description != this.profileInfo.description) return true;
+      if (this.age != this.profileInfo.age) return true;
+      if (this.contact != this.profileInfo.contact) return true;
+      if (this.phone != this.profileInfo.phone) return true;
+      if (this.address != this.profileInfo.address) return true;
+      return false;
     },
     async GetData() {
       this.loadedData = false;
