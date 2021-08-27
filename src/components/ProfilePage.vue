@@ -73,7 +73,7 @@
         <div class="col-lg-10">
           <label>Phone number</label>
           <input
-            type="number"
+            type="tel"
             v-on:keypress="isNumber($event)"
             class="form-control"
             v-model="profileInfo.phone"
@@ -181,7 +181,7 @@
               <div class="pb-1 text-secondary">{{ contact }}</div>
             </div>
             <div class="col-sm-4">
-              <div class="pb-1">Phone(+40)</div>
+              <div class="pb-1">Phone</div>
             </div>
             <div class="col-sm-8">
               <div class="pb-1 text-secondary">{{ phone }}</div>
@@ -377,16 +377,17 @@ export default {
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
-      if (/[0-9]/.test(char)) return true;
+      if (/[0-9],[+]/.test(char)) return true;
       else e.preventDefault();
     },
     validateForm() {
       //Validate Phone
       let char = String(this.profileInfo.phone);
-      if (!/[0-9]/.test(char)) return false;
+      if (!/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(char)) return false;
       //Validate Age
       let char1 = String(this.profileInfo.age);
       if (!/[0-9]/.test(char1)) return false;
+      if(this.profileInfo.age < 18 || this.profileInfo.age>100) return false;
       //Validate email
       const re = /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
       if(!re.test(String(this.profileInfo.contact))) return false;
