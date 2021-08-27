@@ -33,7 +33,7 @@
           <div class="avatar p-1">
             <img
               v-if="!loadedImage"
-              src="https://ik.imagekit.io/demo/img/image4.jpeg?tr=w-1,h-1:w-400,h-300"
+              src="https://www.pngfind.com/pngs/m/343-3434049_loading-cargando-tumblr-sticker-png-stickers-loading-avatar.png"
               alt="dominant color placeholder"
             />
             <img v-if="loadedImage" :src="picURL" @click="$refs.file.click()" />
