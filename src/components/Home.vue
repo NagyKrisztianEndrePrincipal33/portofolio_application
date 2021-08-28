@@ -5,15 +5,23 @@
     <div v-if="user.loggedIn">
       <div v-if="newsFeed">
         <div class="person" v-for="news in newsFeed" :key="news">
+          <img
+            class="profilePic"
+            :src="news.profilePic"
+            style="width: 40px; height: 40px;"
+          />
           <div class="name">
             {{ news.lastName + " " + news.firstName }} just edited
-            <div v-if="news.gender == male">his</div>
-            <div v-else>her</div>
           </div>
+          <div v-if="news.gender == male">his</div>
+          <div v-else>her</div>
           <div v-for="editField in lastEdited.slice(0, 3)" :key="editField">
             {{ editField }}
           </div>
           <div v-if="lastEdited.length > 3">and more! check it out.</div>
+        </div>
+        <div class="post">
+          post here
         </div>
       </div>
     </div>
@@ -41,30 +49,48 @@ export default {
     }),
   },
   created() {
-    console.log("Loaded");
-    firebase
-      .firestore()
-      .collection("users")
-      .orderBy("editedAt")
-      .limit(5)
-      .get()
-      .then((doc) => {
-        doc.forEach((doc) => {
-          this.newsFeed.push(doc.data());
-          this.lastEdited = doc.data().lastEdited;
-          console.log(doc.data());
+    this.initLoad();
+  },
+  methods: {
+    initLoad() {
+      console.log("Loaded");
+      firebase
+        .firestore()
+        .collection("users")
+        .orderBy("editedAt")
+        .limit(5)
+        .get()
+        .then((doc) => {
+          doc.forEach(async (doc) => {
+            const data = doc.data();
+            await firebase
+              .storage()
+              .ref()
+              .child(doc.data().webid)
+              .getDownloadURL()
+              .then((url) => {
+                data.profilePic = url;
+                console.log(data.profilePic);
+              });
+            this.newsFeed.push(data);
+            this.lastEdited = doc.data().lastEdited;
+            console.log(doc.data());
+          });
         });
-      });
+    },
   },
 };
 </script>
 <style scoped lang="scss">
 .body {
   padding-top: 70px;
+  width: 100%;
 }
 
 .person {
-  display: block;
+  display: flex;
+  margin-left: 10%;
+  margin-right: 10%;
   justify-content: space-between;
   background-color: blue;
 }
