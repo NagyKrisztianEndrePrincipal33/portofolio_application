@@ -115,7 +115,7 @@
   <edit-skills v-if="showEditSkills">
     <template #header>
       <h5 class="modal-title">
-        Edit information
+        Edit skills
       </h5>
       <button
         type="button"
@@ -129,6 +129,20 @@
     </template>
     <template #default>
       <i class="fas fa-plus-circle"></i>
+      <div v-for="(skill, index) in skills" :key="index">
+        <input type="text" :value="skill" />
+        <select
+          v-model="skillExperience[index]"
+          name="skill-exp"
+          id="skill-exp"
+        >
+          <option value="20%">Beginner</option>
+          <option value="40%">Entry-Level</option>
+          <option value="60%">Mid-Level</option>
+          <option value="80%">Senior-Level </option>
+          <option value="100%">Expert</option>
+        </select>
+      </div>
     </template>
     <template #actions>
       <div class="modal-footer">
@@ -254,13 +268,13 @@
       </div>
 
       <div class="skills">
-        <div class="col-md-5" v-for="skill in skills" :key="skill">
+        <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
           <div class="mb-2">{{ skill }}</div>
           <div class="progress my-1">
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 90%"
+              :style="{ width: skillExperience[index] }"
               aria-valuenow="90"
               aria-valuemin="0"
               aria-valuemax="100"
@@ -361,6 +375,7 @@ export default {
       educationPeriod: [],
       educationArea: [],
       skills: [],
+      skillExperience: [],
       hobbies: [],
       github: "",
       instagram: "",
@@ -413,7 +428,7 @@ export default {
               contact: this.contact,
               phone: this.phone,
               address: this.address,
-              dateModified: new Date(),
+              datePersInfoModified: new Date(),
             });
           this.isPending = false;
         }
@@ -504,6 +519,7 @@ export default {
             this.educationPeriod = doc.data().educationPeriod;
             this.educationArea = doc.data().educationArea;
             this.skills = doc.data().skills;
+            this.skillExperience = doc.data().skillExperience;
             this.hobbies = doc.data().hobbies;
             this.github = doc.data().github;
             this.instagram = doc.data().instagram;
@@ -1038,12 +1054,22 @@ h5 {
   transition: 0.2s ease-in-out;
 }
 
+.fa-plus-circle {
+  font-size: 24px;
+  color: darkslategray;
+  display: flex;
+  justify-content: center;
+  transition: 0.2s ease-in-out;
+  padding: 10px 0;
+}
+
 .fa-user-edit:hover {
   color: #fff;
   cursor: pointer;
 }
 
-.fa-edit:hover {
+.fa-edit:hover,
+.fa-plus-circle:hover {
   color: #4a89dc;
   cursor: pointer;
 }
