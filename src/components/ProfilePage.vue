@@ -5,6 +5,199 @@
     :pic="picURL"
     class="fade-in-navbar"
   ></navigation-bar>
+  <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit information
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeModal"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <template #default>
+      <div class="modal-body">
+        <div class="col-lg-10">
+          <label>First name</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.firstName"
+            required
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Last name</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.lastName"
+            required
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Job title</label>
+          <input type="text" class="form-control" v-model="profileInfo.job" />
+        </div>
+        <div class="col-lg-10">
+          <label>Description</label>
+          <textarea
+            style="min-height: 10rem;"
+            class="form-control"
+            v-model="profileInfo.description"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Age</label>
+          <input
+            type="number"
+            min="18"
+            max="100"
+            class="form-control"
+            v-model="profileInfo.age"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Contact</label>
+          <input
+            type="email"
+            class="form-control"
+            v-model="profileInfo.contact"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Phone number</label>
+          <input
+            type="tel"
+            v-on:keypress="isNumber($event)"
+            class="form-control"
+            v-model="profileInfo.phone"
+          />
+        </div>
+        <div class="col-lg-10">
+          <label>Address</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="profileInfo.address"
+          />
+        </div>
+      </div>
+    </template>
+    <template #actions>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" @click="closeModal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="
+            !isPending &&
+              profileInfo.firstName != '' &&
+              profileInfo.lastName != ''
+          "
+          @click="updateProfileInfo"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Save changes
+        </button>
+      </div>
+    </template>
+  </edit-personal-data>
+  <edit-skills v-if="showEditSkills">
+    <template #header>
+      <h5 class="modal-title">
+        Edit skills
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeSkillsModal"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <template #default>
+      <i @click="addInputField" class="fas fa-plus-circle"></i>
+      <div
+        class="skills-input"
+        v-for="(skill, index) in toAddSkills"
+        :key="index"
+      >
+        <input type="text" v-model="toAddSkills[index]" />
+        <select
+          class="btn btn-primary dropdown-toggle"
+          style="background-color: #4A89DC"
+          v-model="toAddSkillExp[index]"
+          name="skill-exp"
+          id="skill-exp"
+        >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="20%"
+            >Beginner</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="40%"
+            >Entry-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="60%"
+            >Mid-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="80%"
+            >Senior-Level
+          </option>
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="100%"
+            >Expert</option
+          >
+        </select>
+      </div>
+    </template>
+    <template #actions>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeSkillsModal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateSkills"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-skills>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -28,7 +221,7 @@
   </div>
   <div v-if="loadedData" class="container fade-in">
     <div class="header p-3 p-lg-4 text-white">
-      <div class="row">
+      <div class="row" style="justify-content: space-between">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
             <div v-if="!loadedImage" class="lds-ring">
@@ -49,9 +242,11 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <h2>{{ firstName + " " + lastName }}</h2>
+          <div style="display: flex; justify-content: space-between;">
+            <h2>{{ firstName + " " + lastName }}</h2>
+            <i @click="editPersonalData()" class="fas fa-user-edit"></i>
+          </div>
           <p>{{ job }}</p>
-
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
       </div>
@@ -68,10 +263,10 @@
               <div class="pb-1">Age</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">21</div>
+              <div class="pb-1 text-secondary">{{ age }}</div>
             </div>
             <div class="col-sm-4">
-              <div class="pb-1">Email</div>
+              <div class="pb-1">Contact</div>
             </div>
             <div class="col-sm-8">
               <div class="pb-1 text-secondary">{{ contact }}</div>
@@ -96,16 +291,20 @@
     </div>
     <hr />
     <div class="px-3 px-lg-5 skills-section ">
-      <h2 class="h3 mb-3 text-left">Professional Skills</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-3 text-left">Professional Skills</h2>
+        <i @click="editSkills()" class="fas fa-edit"></i>
+      </div>
+
       <div class="skills">
-        <div class="col-md-5" v-for="skill in skills" :key="skill">
-          <div class="mb-2">{{ skill }}</div>
+        <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
+          <p class="mb-2">{{ skill }}</p>
           <div class="progress my-1">
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 90%"
-              aria-valuenow="90"
+              :style="{ width: skillExperience[index] }"
+              :aria-valuenow="{ width: skillExperience[index] }"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -178,15 +377,24 @@ import NavigationBar from "./NavigationBar";
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
 import storageRef from "../database/storageRef";
+import EditPersonalData from "./edit/editPersonalData.vue";
+import EditSkills from "./edit/editSkills.vue";
 export default {
   name: "Home",
+  emits: ["edit"],
   data() {
     return {
+      userID: "",
+      isPending: false,
+      profileInfo: {},
+      showEditPersonalData: false,
+      showEditSkills: false,
       loadedData: false,
       loadedImage: false,
       firstName: "",
       lastName: "",
       job: "",
+      age: "",
       phone: "",
       address: "",
       description: "",
@@ -196,6 +404,9 @@ export default {
       educationPeriod: [],
       educationArea: [],
       skills: [],
+      skillExperience: [],
+      toAddSkills: [],
+      toAddSkillExp: [],
       hobbies: [],
       github: "",
       instagram: "",
@@ -207,10 +418,13 @@ export default {
       edit_education: false,
       edit_skills: false,
       edit_hobbies: false,
+      lastEdited: [],
     };
   },
   components: {
     NavigationBar,
+    EditPersonalData,
+    EditSkills,
   },
   computed: {
     ...mapGetters({
@@ -221,6 +435,159 @@ export default {
     this.GetData();
   },
   methods: {
+    addInputField() {
+      if (!this.toAddSkills) {
+        this.toAddSkills = [""];
+        this.toAddSkillExp = ["20%"];
+      } else {
+        this.toAddSkills.unshift("");
+        this.toAddSkillExp.unshift("20%");
+      }
+
+      console.log("Skills:", this.skills);
+      console.log("Skills to update:", this.toAddSkills);
+    },
+    async updateSkills() {
+      this.skills = this.toAddSkills;
+      this.skillExperience = this.toAddSkillExp;
+      this.isPending = true;
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .update({
+          skills: this.skills,
+          skillExperience: this.skillExperience,
+        });
+      this.isPending = false;
+    },
+    async updateProfileInfo() {
+      if (this.validateForm()) {
+        if (this.somethingChanged()) {
+          this.isPending = true;
+          this.firstName = this.profileInfo.firstName;
+          this.lastName = this.profileInfo.lastName;
+          this.job = this.profileInfo.job;
+          this.description = this.profileInfo.description;
+          this.age = this.profileInfo.age;
+          this.contact = this.profileInfo.contact;
+          this.phone = this.profileInfo.phone;
+          this.address = this.profileInfo.address;
+          await firebase
+            .firestore()
+            .collection("users")
+            .doc(this.userID)
+            .update({
+              firstName: this.firstName,
+              lastName: this.lastName,
+              job: this.job,
+              description: this.description,
+              age: this.age,
+              contact: this.contact,
+              phone: this.phone,
+              address: this.address,
+              editedAt: new Date(),
+              lastEdited: this.lastEdited,
+            });
+          this.isPending = false;
+        }
+        this.closeModal();
+      } else {
+        alert("Check your fields!");
+      }
+    },
+    async editPersonalData() {
+      this.showEditPersonalData = !this.showEditPersonalData;
+    },
+    editSkills() {
+      this.showEditSkills = !this.showEditSkills;
+    },
+    closeModal() {
+      this.showEditPersonalData = false;
+    },
+    closeSkillsModal() {
+      this.showEditSkills = false;
+      this.toAddSkillExp = this.skillExperience;
+    },
+    isNumber(e) {
+      let char = String.fromCharCode(e.keyCode);
+      if (/[0-9]/.test(char)) return true;
+      else e.preventDefault();
+    },
+    validateForm() {
+      //Validate First name & Last name
+      let char = String(this.profileInfo.firstName);
+      if (
+        !/^[a-zA-ZàáâäãățșåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u.test(
+          char
+        )
+      )
+        return false;
+
+      char = String(this.profileInfo.lastName);
+      if (
+        !/^[a-zA-ZàáâățșäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/u.test(
+          char
+        )
+      )
+        return false;
+
+      //Validate Phone
+      char = String(this.profileInfo.phone);
+      if (!/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(char))
+        return false;
+      //Validate Age
+      char = String(this.profileInfo.age);
+      if (!/[0-9]/.test(char)) return false;
+      if (this.profileInfo.age < 18 || this.profileInfo.age > 100) return false;
+      //Validate email
+      const re = /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+      if (!re.test(String(this.profileInfo.contact))) return false;
+      return true;
+    },
+    somethingChanged() {
+      let edited = false;
+      if (this.firstName != this.profileInfo.firstName) {
+        this.lastEdited.push("firstName");
+        edited = true;
+      }
+
+      if (this.lastName != this.profileInfo.lastName) {
+        this.lastEdited.push("lastName");
+        edited = true;
+      }
+
+      if (this.job != this.profileInfo.job) {
+        this.lastEdited.push("job");
+        edited = true;
+      }
+
+      if (this.description != this.profileInfo.description) {
+        this.lastEdited.push("description");
+        edited = true;
+      }
+
+      if (this.age != this.profileInfo.age) {
+        this.lastEdited.push("age");
+        edited = true;
+      }
+
+      if (this.contact != this.profileInfo.contact) {
+        this.lastEdited.push("contact");
+        edited = true;
+      }
+
+      if (this.phone != this.profileInfo.phone) {
+        this.lastEdited.push("phone");
+        edited = true;
+      }
+
+      if (this.address != this.profileInfo.address) {
+        this.lastEdited.push("address");
+        edited = true;
+      }
+      return edited;
+    },
     async GetData() {
       this.loadedData = false;
       this.getPicture();
@@ -231,6 +598,7 @@ export default {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            this.userID = doc.id;
             this.firstName = doc.data().firstName;
             this.lastName = doc.data().lastName;
             this.job = doc.data().job;
@@ -243,65 +611,20 @@ export default {
             this.educationPeriod = doc.data().educationPeriod;
             this.educationArea = doc.data().educationArea;
             this.skills = doc.data().skills;
+            this.skillExperience = doc.data().skillExperience;
             this.hobbies = doc.data().hobbies;
             this.github = doc.data().github;
             this.instagram = doc.data().instagram;
             this.linkedin = doc.data().linkedin;
             this.facebook = doc.data().facebook;
             this.contact = doc.data().contact;
+            this.age = doc.data().age;
+            this.profileInfo = doc.data();
+            this.toAddSkills = doc.data().skills;
+            this.toAddSkillExp = doc.data().skillExperience;
           });
         });
       this.loadedData = true;
-    },
-    async submitExperience() {
-      this.edit_experience = false;
-      let docid = "";
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.$route.params.webid)
-        .get()
-        .then((doc) => {
-          doc.forEach((doc) => {
-            docid = doc.id;
-          });
-        });
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(docid)
-        .update({ experience: this.experience })
-        .then(() => {
-          console.log("Experience Updated");
-        });
-    },
-    async submitEducation() {
-      this.edit_education = false;
-      let docid = "";
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.$route.params.webid)
-        .get()
-        .then((doc) => {
-          doc.forEach((doc) => {
-            docid = doc.id;
-          });
-        });
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(docid)
-        .update({ education: this.education })
-        .then(() => {
-          console.log("Education Updated");
-        });
-    },
-    submitSkills() {
-      this.edit_skills = false;
-    },
-    submitHobbies() {
-      this.edit_hobbies = false;
     },
     async UploadImage(image) {
       if (image != null) {
@@ -407,6 +730,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     font-size: 16px;
     letter-spacing: 1px;
   }
+}
+
+label {
+  display: flex;
+  margin: 5px 5px;
 }
 
 h2 {
@@ -607,6 +935,11 @@ hr {
   border-left-color: #4a89dc;
 }
 
+.skills-edit {
+  display: flex;
+  justify-content: space-between;
+}
+
 .timeline-card:before {
   content: "";
   display: inline-block;
@@ -668,6 +1001,21 @@ hr {
   align-self: center;
 }
 
+.close {
+  padding: 1rem;
+  margin: 0rem 0rem 0rem auto;
+}
+
+.close:hover {
+  color: gray;
+}
+
+h5 {
+  margin: 0;
+  margin-left: 1em;
+  line-height: 1.5;
+}
+
 .links div {
   margin: 0 10px;
 }
@@ -718,6 +1066,13 @@ hr {
     flex-wrap: wrap;
     flex-direction: column;
   }
+}
+
+.skills-input {
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .hobbies {
@@ -789,5 +1144,38 @@ hr {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.fa-user-edit,
+.fa-edit {
+  font-size: 24px;
+  color: darkslategray;
+  display: flex;
+  justify-content: flex-end;
+  transition: 0.2s ease-in-out;
+}
+
+.fa-plus-circle {
+  font-size: 24px;
+  color: darkslategray;
+  display: flex;
+  justify-content: center;
+  transition: 0.2s ease-in-out;
+  padding: 10px 0;
+}
+
+.fa-user-edit:hover {
+  color: #fff;
+  cursor: pointer;
+}
+
+.fa-edit:hover,
+.fa-plus-circle:hover {
+  color: #4a89dc;
+  cursor: pointer;
+}
+
+.col-lg-10 {
+  margin: 10px auto;
 }
 </style>
