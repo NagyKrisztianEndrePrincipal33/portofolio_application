@@ -129,14 +129,49 @@
     </template>
     <template #default>
       <i @click="addInputField" class="fas fa-plus-circle"></i>
-      <div v-for="(skill, index) in toAddSkills" :key="index">
-        <input type="text" :value="skill" />
-        <select v-model="toAddSkillExp[index]" name="skill-exp" id="skill-exp">
-          <option value="20%">Beginner</option>
-          <option value="40%">Entry-Level</option>
-          <option value="60%">Mid-Level</option>
-          <option value="80%">Senior-Level </option>
-          <option value="100%">Expert</option>
+      <div
+        class="skills-input"
+        v-for="(skill, index) in toAddSkills"
+        :key="index"
+      >
+        <input type="text" v-model="toAddSkills[index]" />
+        <select
+          class="btn btn-primary dropdown-toggle"
+          style="background-color: #4A89DC"
+          v-model="toAddSkillExp[index]"
+          name="skill-exp"
+          id="skill-exp"
+        >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="20%"
+            >Beginner</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="40%"
+            >Entry-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="60%"
+            >Mid-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="80%"
+            >Senior-Level
+          </option>
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="100%"
+            >Expert</option
+          >
         </select>
       </div>
     </template>
@@ -263,7 +298,7 @@
 
       <div class="skills">
         <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
-          <div class="mb-2">{{ skill }}</div>
+          <p class="mb-2">{{ skill }}</p>
           <div class="progress my-1">
             <div
               class="progress-bar"
@@ -401,12 +436,30 @@ export default {
   },
   methods: {
     addInputField() {
-      this.toAddSkills.unshift("");
-      this.toAddSkillExp.unshift("20%");
+      if (!this.toAddSkills) {
+        this.toAddSkills = [""];
+        this.toAddSkillExp = ["20%"];
+      } else {
+        this.toAddSkills.unshift("");
+        this.toAddSkillExp.unshift("20%");
+      }
+
+      console.log("Skills:", this.skills);
+      console.log("Skills to update:", this.toAddSkills);
     },
-    updateSkills() {
-      this.skills.unshift(this.toAddSkills);
-      this.skillExperience.unshift(this.toAddSkillExp);
+    async updateSkills() {
+      this.skills = this.toAddSkills;
+      this.skillExperience = this.toAddSkillExp;
+      this.isPending = true;
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .update({
+          skills: this.skills,
+          skillExperience: this.skillExperience,
+        });
+      this.isPending = false;
     },
     async updateProfileInfo() {
       if (this.validateForm()) {
@@ -446,16 +499,15 @@ export default {
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
     },
-    async editSkills() {
+    editSkills() {
       this.showEditSkills = !this.showEditSkills;
-      this.toAddSkills = this.skills;
-      this.toAddSkillExp = this.skillExperience;
     },
     closeModal() {
       this.showEditPersonalData = false;
     },
     closeSkillsModal() {
       this.showEditSkills = false;
+      this.toAddSkillExp = this.skillExperience;
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -568,6 +620,8 @@ export default {
             this.contact = doc.data().contact;
             this.age = doc.data().age;
             this.profileInfo = doc.data();
+            this.toAddSkills = doc.data().skills;
+            this.toAddSkillExp = doc.data().skillExperience;
           });
         });
       this.loadedData = true;
@@ -1012,6 +1066,13 @@ h5 {
     flex-wrap: wrap;
     flex-direction: column;
   }
+}
+
+.skills-input {
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .hobbies {
