@@ -169,6 +169,8 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  background-color: #fff;
+  padding-top: 50px;
 }
 
 .target-title {
@@ -193,6 +195,7 @@ hr {
   width: 20%;
   border-radius: 50px;
   margin: 2rem auto;
+  opacity: 1;
 }
 
 .post-cv-container {

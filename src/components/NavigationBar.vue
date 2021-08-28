@@ -6,7 +6,7 @@
           <img
             class="profile-image-mobile"
             v-if="user.loggedIn"
-            src="../assets/default.png"
+            :src="pic"
             @click="redirectToProfile"
           />
         </li>
@@ -97,7 +97,7 @@
         <img
           class="profile-image"
           v-if="user.loggedIn"
-          src="../assets/default.png"
+          :src="pic || picURL"
           @click="redirectToProfile"
         />
         <div v-if="user.loggedIn" class="log-out-button">
@@ -111,17 +111,21 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
+//import storageRef from '../database/storageRef';
 
 export default {
+  props: ["pic"],
   data() {
     return {
       mobileView: false,
       showNav: false,
+      picURL: "",
     };
   },
   created() {
     this.handleView();
     window.addEventListener("resize", this.handleView);
+    this.getPicture();
   },
   name: "NavigationBar",
   computed: {
@@ -187,6 +191,9 @@ export default {
           });
         });
     },
+    async getPicture() {
+      this.picURL = window.localStorage.getItem("picURL");
+    },
   },
 };
 </script>
@@ -208,13 +215,13 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .navigation-bar {
   font-size: 1.5rem;
-  background-color: #2f9df7;
+  background-color: #4a89dc;
   color: white;
   display: flex;
   align-items: center;
   vertical-align: middle;
   justify-content: space-between;
-  padding: 0 45px 0 0px;
+  padding: 0;
   .navigation-link {
     text-decoration: none;
     color: white;
@@ -229,7 +236,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   .middle .router-link-active {
     padding-top: 16.5px;
     padding-bottom: 16.5px;
-    border-bottom: 5px solid #015073;
+    //border-bottom: 5px solid #015073;
     background-color: rgba($color: #000000, $alpha: 0.1);
   }
 
@@ -355,6 +362,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   top: 0;
   width: 100%;
   opacity: 1;
+  z-index: 3;
 }
 
 .mobile-nav {
@@ -381,7 +389,6 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   transform: translateY(-8px);
   border-bottom-left-radius: 20px;
   opacity: 1;
-  padding-right: 65px;
 }
 
 .navigation-link-mobile {
@@ -457,7 +464,7 @@ ul {
   width: 50px;
   height: 50px;
   .fa-search {
-    font-size: 1.15rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -472,7 +479,11 @@ ul {
   justify-content: center;
   align-items: center;
   transition: 0.4s;
-  border: 2px solid #2f9df7;
+  border: 2px solid #4a89dc;
+}
+
+.fa-search {
+  font-size: 1.11rem;
 }
 
 .searchInput {

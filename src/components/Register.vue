@@ -71,7 +71,7 @@
           </button>
         </div>
       </form>
-      <p>
+      <p  style="margin-top: 1rem;">
         Do you allready have an account?
         <router-link to="/login" class="link-in-register">Sign in</router-link>
       </p>
@@ -215,8 +215,8 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   flex-direction: column;
 }
 .register-component {
-  width: 390px;
   display: flex;
+  max-width: 500px;
   flex-direction: column;
   box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
   padding: 33px 55px 33px 55px;
@@ -228,9 +228,9 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
     line-height: 1.25;
     font-weight: 600;
     color: rgba(0, 0, 0, 0.9);
-    padding: 0 0 24px 0;
+    
     text-align: left;
-    margin-bottom: 20px;
+    
   }
 }
 .register-form {
@@ -364,7 +364,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 
 .logo-holder {
   display: flex;
-  padding-bottom: 15px;
+  padding: 32px 0 48px 0;
   justify-content: space-between;
 }
 
