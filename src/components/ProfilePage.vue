@@ -241,11 +241,11 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
+          <h2>{{ firstName + " " + lastName }}</h2>
           <div
             v-if="isCurrUserProfile"
             style="display: flex; justify-content: space-between;"
           >
-            <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
           <p>{{ job }}</p>
@@ -458,17 +458,25 @@ export default {
       console.log("Skills to update:", this.toAddSkills);
     },
     async updateSkills() {
-      this.skills = this.toAddSkills;
-      this.skillExperience = this.toAddSkillExp;
-      this.isPending = true;
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(this.userID)
-        .update({
-          skills: this.skills,
-          skillExperience: this.skillExperience,
-        });
+      if (this.somethingChanged()) {
+        this.skills = this.toAddSkills;
+        this.skillExperience = this.toAddSkillExp;
+        this.isPending = true;
+        await firebase
+          .firestore()
+          .collection("users")
+          .doc(this.userID)
+          .set(
+            {
+              skills: this.skills,
+              skillExperience: this.skillExperience,
+              skills_lowercase: this.skills.map((v) => v.toLowerCase()),
+              editedAt: new Date(),
+              lastEdited: this.lastEdited,
+            },
+            { merge: true }
+          );
+      }
       this.isPending = false;
     },
     async updateProfileInfo() {
@@ -487,18 +495,21 @@ export default {
             .firestore()
             .collection("users")
             .doc(this.userID)
-            .update({
-              firstName: this.firstName,
-              lastName: this.lastName,
-              job: this.job,
-              description: this.description,
-              age: this.age,
-              contact: this.contact,
-              phone: this.phone,
-              address: this.address,
-              editedAt: new Date(),
-              lastEdited: this.lastEdited,
-            });
+            .set(
+              {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                job: this.job,
+                description: this.description,
+                age: this.age,
+                contact: this.contact,
+                phone: this.phone,
+                address: this.address,
+                editedAt: new Date(),
+                lastEdited: this.lastEdited,
+              },
+              { merge: true }
+            );
           this.isPending = false;
         }
         this.closeModal();
@@ -557,6 +568,7 @@ export default {
     },
     somethingChanged() {
       let edited = false;
+      this.lastEdited = [];
       if (this.firstName != this.profileInfo.firstName) {
         this.lastEdited.push("firstName");
         edited = true;
@@ -594,6 +606,10 @@ export default {
 
       if (this.address != this.profileInfo.address) {
         this.lastEdited.push("address");
+        edited = true;
+      }
+      if (this.skills != this.toAddSkills) {
+        this.lastEdited.push("skills");
         edited = true;
       }
       return edited;

@@ -160,6 +160,7 @@ export default {
         .then(() => {
           console.log("Logged out!");
           // Sign-out successful.
+          window.localStorage.clear();
         })
         .catch((error) => {
           // An error happened.
