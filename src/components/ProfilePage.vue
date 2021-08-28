@@ -405,7 +405,13 @@ export default {
     }),
   },
   mounted() {
+    this.webid = this.$route.params.webid;
     this.GetData();
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.webid = to.params.webid;
+    this.GetData();
+    next();
   },
   methods: {
     async updateProfileInfo() {
@@ -536,12 +542,13 @@ export default {
     },
     async GetData() {
       let currUserWebid = window.localStorage.getItem("currUserWebid");
+      console.log(this.webid, "hi");
       this.isCurrUserProfile = false;
       this.loadedData = false;
       await firebase
         .firestore()
         .collection("users")
-        .where("webid", "==", this.$route.params.webid)
+        .where("webid", "==", this.webid)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {

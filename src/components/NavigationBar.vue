@@ -3,12 +3,12 @@
     <div class="mobile-nav" :class="{ open: showNav }" v-if="mobileView">
       <ul>
         <li v-if="user.loggedIn">
-          <img
-            class="profile-image-mobile"
-            v-if="user.loggedIn"
-            :src="pic"
-            @click="redirectToProfile"
-          />
+          <router-link
+            :to="{ name: 'profile_page', params: { webid: 'webid' } }"
+          >
+            |
+            <img class="profile-image-mobile" v-if="user.loggedIn" :src="pic" />
+          </router-link>
         </li>
         <li>
           <router-link class="navigation-link-mobile" to="/">Home</router-link>
@@ -120,6 +120,7 @@ export default {
       showNav: false,
       picURL: "",
       isPicStored: false,
+      webid: "",
     };
   },
   created() {
@@ -191,7 +192,6 @@ export default {
     },
     async getPicture() {
       if (!window.localStorage.getItem("picURL")) {
-        let webid;
         await firebase
           .firestore()
           .collection("users")
@@ -199,15 +199,14 @@ export default {
           .get()
           .then((dataList) => {
             dataList.forEach((data) => {
-              webid = data.data().webid;
-              console.log("hi", webid);
-              window.localStorage.setItem("currUserWebid", webid);
+              this.webid = data.data().webid;
+              window.localStorage.setItem("currUserWebid", this.webid);
             });
           });
         await firebase
           .storage()
           .ref()
-          .child(webid)
+          .child(this.webid)
           .getDownloadURL()
           .then((url) => {
             this.picURL = url;
