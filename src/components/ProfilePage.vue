@@ -387,6 +387,7 @@ export default {
       edit_education: false,
       edit_skills: false,
       edit_hobbies: false,
+      lastEdited: [],
     };
   },
   components: {
@@ -428,7 +429,8 @@ export default {
               contact: this.contact,
               phone: this.phone,
               address: this.address,
-              datePersInfoModified: new Date(),
+              editedAt: new Date(),
+              lastEdited: this.lastEdited,
             });
           this.isPending = false;
         }
@@ -486,15 +488,47 @@ export default {
       return true;
     },
     somethingChanged() {
-      if (this.firstName != this.profileInfo.firstName) return true;
-      if (this.lastName != this.profileInfo.lastName) return true;
-      if (this.job != this.profileInfo.job) return true;
-      if (this.description != this.profileInfo.description) return true;
-      if (this.age != this.profileInfo.age) return true;
-      if (this.contact != this.profileInfo.contact) return true;
-      if (this.phone != this.profileInfo.phone) return true;
-      if (this.address != this.profileInfo.address) return true;
-      return false;
+      let edited = false;
+      if (this.firstName != this.profileInfo.firstName) {
+        this.lastEdited.push("firstName");
+        edited = true;
+      }
+
+      if (this.lastName != this.profileInfo.lastName) {
+        this.lastEdited.push("lastName");
+        edited = true;
+      }
+
+      if (this.job != this.profileInfo.job) {
+        this.lastEdited.push("job");
+        edited = true;
+      }
+
+      if (this.description != this.profileInfo.description) {
+        this.lastEdited.push("description");
+        edited = true;
+      }
+
+      if (this.age != this.profileInfo.age) {
+        this.lastEdited.push("age");
+        edited = true;
+      }
+
+      if (this.contact != this.profileInfo.contact) {
+        this.lastEdited.push("contact");
+        edited = true;
+      }
+
+      if (this.phone != this.profileInfo.phone) {
+        this.lastEdited.push("phone");
+        edited = true;
+      }
+
+      if (this.address != this.profileInfo.address) {
+        this.lastEdited.push("address");
+        edited = true;
+      }
+      return edited;
     },
     async GetData() {
       this.loadedData = false;
