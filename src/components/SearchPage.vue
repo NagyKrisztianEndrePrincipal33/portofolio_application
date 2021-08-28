@@ -4,7 +4,16 @@
 
   <div v-for="result in searchResult" :key="result">
     <div v-if="result.job || result.skills" class="row">
-      <div class="name">{{ result.firstName + " " + result.lastName }}</div>
+      <div class="post">
+        <router-link
+          class="navigation-link"
+          :to="{ name: 'profile_page', params: { webid: result.webid } }"
+          ><div class="name">
+            {{ result.firstName + " " + result.lastName }}
+          </div></router-link
+        >
+      </div>
+
       <label v-if="result.skills" class="skill-label">
         Skills:
       </label>
@@ -79,6 +88,7 @@ export default {
               lastName: element.data().lastName,
               skills: element.data().skills,
               job: element.data().job,
+              webid: element.data().webid,
             };
             this.searchResult.push(data);
           });
@@ -90,7 +100,7 @@ export default {
     searchName(text) {
       const fireSQL = new FireSQL(firebase.firestore());
       const usersPromis = fireSQL.query(
-        `SELECT firstName,lastName, skills, job
+        `SELECT firstName,lastName, skills, job, webid
             FROM users
             WHERE firstName like '${text}%'
             OR lastName like '${text}%'`

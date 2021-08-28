@@ -2,7 +2,6 @@
   <navigation-bar
     v-if="loadedData"
     :user="user"
-    :pic="picURL"
     class="fade-in-navbar"
   ></navigation-bar>
   <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
@@ -242,7 +241,10 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <div style="display: flex; justify-content: space-between;">
+          <div
+            v-if="isCurrUserProfile"
+            style="display: flex; justify-content: space-between;"
+          >
             <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
@@ -290,7 +292,7 @@
       </div>
     </div>
     <hr />
-    <div class="px-3 px-lg-5 skills-section ">
+    <div v-if="isCurrUserProfile" class="px-3 px-lg-5 skills-section ">
       <div class="skills-edit">
         <h2 class="h3 mb-3 text-left">Professional Skills</h2>
         <i @click="editSkills()" class="fas fa-edit"></i>
@@ -389,6 +391,7 @@ export default {
       profileInfo: {},
       showEditPersonalData: false,
       showEditSkills: false,
+      webid: "",
       loadedData: false,
       loadedImage: false,
       firstName: "",
@@ -414,6 +417,7 @@ export default {
       facebook: "",
       contact: "",
       picURL: "",
+      isCurrUserProfile: false,
       edit_experience: false,
       edit_education: false,
       edit_skills: false,
@@ -432,7 +436,13 @@ export default {
     }),
   },
   mounted() {
+    this.webid = this.$route.params.webid;
     this.GetData();
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.webid = to.params.webid;
+    this.GetData();
+    next();
   },
   methods: {
     addInputField() {
@@ -589,15 +599,21 @@ export default {
       return edited;
     },
     async GetData() {
+      let currUserWebid = window.localStorage.getItem("currUserWebid");
+      console.log(this.webid, "hi");
+      this.isCurrUserProfile = false;
       this.loadedData = false;
-      this.getPicture();
       await firebase
         .firestore()
         .collection("users")
-        .where("webid", "==", this.$route.params.webid)
+        .where("webid", "==", this.webid)
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            if (currUserWebid == doc.data().webid) {
+              this.isCurrUserProfile = true;
+            }
+
             this.userID = doc.id;
             this.firstName = doc.data().firstName;
             this.lastName = doc.data().lastName;
@@ -620,10 +636,12 @@ export default {
             this.contact = doc.data().contact;
             this.age = doc.data().age;
             this.profileInfo = doc.data();
+            this.webid = doc.data().webid;
             this.toAddSkills = doc.data().skills;
             this.toAddSkillExp = doc.data().skillExperience;
           });
         });
+      await this.getPicture();
       this.loadedData = true;
     },
     async UploadImage(image) {
@@ -637,26 +655,14 @@ export default {
           .then(() => {
             console.log("file uploaded!");
           });
-        this.getPicture();
       }
     },
     async getPicture() {
-      this.loadedImage = false;
       await storageRef
-        .child(this.$route.params.webid)
+        .child(this.webid)
         .getDownloadURL()
         .then((url) => {
           this.picURL = url;
-          window.localStorage.setItem("picURL", this.picURL);
-        })
-        .catch(() => {
-          storageRef
-            .child("default.png")
-            .getDownloadURL()
-            .then((url) => {
-              this.picURL = url;
-              window.localStorage.setItem("picURL", this.picURL);
-            });
         });
       this.loadedImage = true;
     },
