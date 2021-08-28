@@ -128,14 +128,10 @@
       </button>
     </template>
     <template #default>
-      <i class="fas fa-plus-circle"></i>
-      <div v-for="(skill, index) in skills" :key="index">
+      <i @click="addInputField" class="fas fa-plus-circle"></i>
+      <div v-for="(skill, index) in toAddSkills" :key="index">
         <input type="text" :value="skill" />
-        <select
-          v-model="skillExperience[index]"
-          name="skill-exp"
-          id="skill-exp"
-        >
+        <select v-model="toAddSkillExp[index]" name="skill-exp" id="skill-exp">
           <option value="20%">Beginner</option>
           <option value="40%">Entry-Level</option>
           <option value="60%">Mid-Level</option>
@@ -157,12 +153,12 @@
           type="button"
           class="btn btn-primary"
           v-if="!isPending"
-          @click="updateProfileInfo"
+          @click="updateSkills"
         >
           Save changes
         </button>
         <button type="button" class="btn btn-primary" v-else disabled>
-          Save changes
+          Saving changes...
         </button>
       </div>
     </template>
@@ -215,9 +211,7 @@
             <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
-
           <p>{{ job }}</p>
-
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
       </div>
@@ -275,7 +269,7 @@
               class="progress-bar"
               role="progressbar"
               :style="{ width: skillExperience[index] }"
-              aria-valuenow="90"
+              :aria-valuenow="{ width: skillExperience[index] }"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -376,6 +370,8 @@ export default {
       educationArea: [],
       skills: [],
       skillExperience: [],
+      toAddSkills: [],
+      toAddSkillExp: [],
       hobbies: [],
       github: "",
       instagram: "",
@@ -404,6 +400,14 @@ export default {
     this.GetData();
   },
   methods: {
+    addInputField() {
+      this.toAddSkills.unshift("");
+      this.toAddSkillExp.unshift("20%");
+    },
+    updateSkills() {
+      this.skills.unshift(this.toAddSkills);
+      this.skillExperience.unshift(this.toAddSkillExp);
+    },
     async updateProfileInfo() {
       if (this.validateForm()) {
         if (this.somethingChanged()) {
@@ -444,6 +448,8 @@ export default {
     },
     async editSkills() {
       this.showEditSkills = !this.showEditSkills;
+      this.toAddSkills = this.skills;
+      this.toAddSkillExp = this.skillExperience;
     },
     closeModal() {
       this.showEditPersonalData = false;
