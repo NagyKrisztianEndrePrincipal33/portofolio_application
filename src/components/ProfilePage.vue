@@ -127,19 +127,50 @@
       </button>
     </template>
     <template #default>
-      <i class="fas fa-plus-circle"></i>
-      <div v-for="(skill, index) in skills" :key="index">
-        <input type="text" :value="skill" />
+      <i @click="addInputField" class="fas fa-plus-circle"></i>
+      <div
+        class="skills-input"
+        v-for="(skill, index) in toAddSkills"
+        :key="index"
+      >
+        <input type="text" v-model="toAddSkills[index]" />
         <select
-          v-model="skillExperience[index]"
+          class="btn btn-primary dropdown-toggle"
+          style="background-color: #4A89DC"
+          v-model="toAddSkillExp[index]"
           name="skill-exp"
           id="skill-exp"
         >
-          <option value="20%">Beginner</option>
-          <option value="40%">Entry-Level</option>
-          <option value="60%">Mid-Level</option>
-          <option value="80%">Senior-Level </option>
-          <option value="100%">Expert</option>
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="20%"
+            >Beginner</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="40%"
+            >Entry-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="60%"
+            >Mid-Level</option
+          >
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="80%"
+            >Senior-Level
+          </option>
+          <option
+            class="dropdown-item"
+            style="background-color: #fff"
+            value="100%"
+            >Expert</option
+          >
         </select>
       </div>
     </template>
@@ -156,12 +187,12 @@
           type="button"
           class="btn btn-primary"
           v-if="!isPending"
-          @click="updateProfileInfo"
+          @click="updateSkills"
         >
           Save changes
         </button>
         <button type="button" class="btn btn-primary" v-else disabled>
-          Save changes
+          Saving changes...
         </button>
       </div>
     </template>
@@ -217,9 +248,7 @@
             <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
-
           <p>{{ job }}</p>
-
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
       </div>
@@ -271,13 +300,13 @@
 
       <div class="skills">
         <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
-          <div class="mb-2">{{ skill }}</div>
+          <p class="mb-2">{{ skill }}</p>
           <div class="progress my-1">
             <div
               class="progress-bar"
               role="progressbar"
               :style="{ width: skillExperience[index] }"
-              aria-valuenow="90"
+              :aria-valuenow="{ width: skillExperience[index] }"
               aria-valuemin="0"
               aria-valuemax="100"
             ></div>
@@ -379,6 +408,8 @@ export default {
       educationArea: [],
       skills: [],
       skillExperience: [],
+      toAddSkills: [],
+      toAddSkillExp: [],
       hobbies: [],
       github: "",
       instagram: "",
@@ -414,6 +445,32 @@ export default {
     next();
   },
   methods: {
+    addInputField() {
+      if (!this.toAddSkills) {
+        this.toAddSkills = [""];
+        this.toAddSkillExp = ["20%"];
+      } else {
+        this.toAddSkills.unshift("");
+        this.toAddSkillExp.unshift("20%");
+      }
+
+      console.log("Skills:", this.skills);
+      console.log("Skills to update:", this.toAddSkills);
+    },
+    async updateSkills() {
+      this.skills = this.toAddSkills;
+      this.skillExperience = this.toAddSkillExp;
+      this.isPending = true;
+      await firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .update({
+          skills: this.skills,
+          skillExperience: this.skillExperience,
+        });
+      this.isPending = false;
+    },
     async updateProfileInfo() {
       if (this.validateForm()) {
         if (this.somethingChanged()) {
@@ -452,7 +509,7 @@ export default {
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
     },
-    async editSkills() {
+    editSkills() {
       this.showEditSkills = !this.showEditSkills;
     },
     closeModal() {
@@ -460,6 +517,7 @@ export default {
     },
     closeSkillsModal() {
       this.showEditSkills = false;
+      this.toAddSkillExp = this.skillExperience;
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -579,6 +637,8 @@ export default {
             this.age = doc.data().age;
             this.profileInfo = doc.data();
             this.webid = doc.data().webid;
+            this.toAddSkills = doc.data().skills;
+            this.toAddSkillExp = doc.data().skillExperience;
           });
         });
       await this.getPicture();
@@ -1012,6 +1072,13 @@ h5 {
     flex-wrap: wrap;
     flex-direction: column;
   }
+}
+
+.skills-input {
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
 .hobbies {
