@@ -210,7 +210,10 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <div style="display: flex; justify-content: space-between;">
+          <div
+            v-if="isCurrUserProfile"
+            style="display: flex; justify-content: space-between;"
+          >
             <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
@@ -260,7 +263,7 @@
       </div>
     </div>
     <hr />
-    <div class="px-3 px-lg-5 skills-section ">
+    <div v-if="isCurrUserProfile" class="px-3 px-lg-5 skills-section ">
       <div class="skills-edit">
         <h2 class="h3 mb-3 text-left">Professional Skills</h2>
         <i @click="editSkills()" class="fas fa-edit"></i>
@@ -383,6 +386,7 @@ export default {
       facebook: "",
       contact: "",
       picURL: "",
+      isCurrUserProfile: false,
       edit_experience: false,
       edit_education: false,
       edit_skills: false,
@@ -531,6 +535,8 @@ export default {
       return edited;
     },
     async GetData() {
+      let currUserWebid = window.localStorage.getItem("currUserWebid");
+      this.isCurrUserProfile = false;
       this.loadedData = false;
       await firebase
         .firestore()
@@ -539,6 +545,10 @@ export default {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
+            if (currUserWebid == doc.data().webid) {
+              this.isCurrUserProfile = true;
+            }
+
             this.userID = doc.id;
             this.firstName = doc.data().firstName;
             this.lastName = doc.data().lastName;

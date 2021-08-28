@@ -199,8 +199,9 @@ export default {
           .get()
           .then((dataList) => {
             dataList.forEach((data) => {
-              console.log("hi");
               webid = data.data().webid;
+              console.log("hi", webid);
+              window.localStorage.setItem("currUserWebid", webid);
             });
           });
         await firebase
