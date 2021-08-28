@@ -2,7 +2,6 @@
   <navigation-bar
     v-if="loadedData"
     :user="user"
-    :pic="picURL"
     class="fade-in-navbar"
   ></navigation-bar>
   <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
@@ -360,6 +359,7 @@ export default {
       profileInfo: {},
       showEditPersonalData: false,
       showEditSkills: false,
+      webid: "",
       loadedData: false,
       loadedImage: false,
       firstName: "",
@@ -532,7 +532,6 @@ export default {
     },
     async GetData() {
       this.loadedData = false;
-      this.getPicture();
       await firebase
         .firestore()
         .collection("users")
@@ -562,8 +561,10 @@ export default {
             this.contact = doc.data().contact;
             this.age = doc.data().age;
             this.profileInfo = doc.data();
+            this.webid = doc.data().webid;
           });
         });
+      await this.getPicture();
       this.loadedData = true;
     },
     async UploadImage(image) {
@@ -577,26 +578,14 @@ export default {
           .then(() => {
             console.log("file uploaded!");
           });
-        this.getPicture();
       }
     },
     async getPicture() {
-      this.loadedImage = false;
       await storageRef
-        .child(this.$route.params.webid)
+        .child(this.webid)
         .getDownloadURL()
         .then((url) => {
           this.picURL = url;
-          window.localStorage.setItem("picURL", this.picURL);
-        })
-        .catch(() => {
-          storageRef
-            .child("default.png")
-            .getDownloadURL()
-            .then((url) => {
-              this.picURL = url;
-              window.localStorage.setItem("picURL", this.picURL);
-            });
         });
       this.loadedImage = true;
     },

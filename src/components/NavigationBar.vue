@@ -111,7 +111,6 @@
 <script>
 import { mapGetters } from "vuex";
 import firebase from "../database/firebase";
-//import storageRef from '../database/storageRef';
 
 export default {
   props: ["pic"],
@@ -120,6 +119,7 @@ export default {
       mobileView: false,
       showNav: false,
       picURL: "",
+      isPicStored: false,
     };
   },
   created() {
@@ -166,8 +166,6 @@ export default {
         });
     },
     redirectToProfile() {
-      console.log(this.user);
-      console.log(this.user.data.uid);
       firebase
         .firestore()
         .collection("users")
@@ -192,6 +190,42 @@ export default {
         });
     },
     async getPicture() {
+      if (!window.localStorage.getItem("picURL")) {
+        let webid;
+        await firebase
+          .firestore()
+          .collection("users")
+          .where("uid", "==", this.user.data.uid)
+          .get()
+          .then((dataList) => {
+            dataList.forEach((data) => {
+              console.log("hi");
+              webid = data.data().webid;
+            });
+          });
+        await firebase
+          .storage()
+          .ref()
+          .child(webid)
+          .getDownloadURL()
+          .then((url) => {
+            this.picURL = url;
+            window.localStorage.setItem("picURL", this.picURL);
+            this.isPicStored = true;
+          })
+          .catch(() => {
+            firebase
+              .storage()
+              .ref()
+              .child("default.png")
+              .getDownloadURL()
+              .then((url) => {
+                this.picURL = url;
+                window.localStorage.setItem("picURL", this.picURL);
+                this.isPicStored = true;
+              });
+          });
+      }
       this.picURL = window.localStorage.getItem("picURL");
     },
   },
