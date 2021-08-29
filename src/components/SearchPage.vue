@@ -87,9 +87,12 @@
             </div>
           </div>
         </div>
-
         <div class="button">
-          <button class="view-more">Visit profile</button>
+          <router-link
+            :to="{ name: 'profile_page', params: { webid: result.webid } }"
+          >
+            <button class="view-more">Visit profile</button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -385,6 +388,13 @@ hr {
     width: 0%;
     left: 0;
     right: 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .col-md-5 {
+    flex: 0 0 auto;
+    width: 41.66666667%;
   }
 }
 
