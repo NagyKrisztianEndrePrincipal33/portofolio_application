@@ -5,60 +5,77 @@
     <div v-if="user.loggedIn">
       <div v-if="newsFeed">
         <div v-for="news in newsFeed" :key="news">
+          {{ grouping(news) }}
           <div class="post">
             <div class="post-header">
               {{ news.firstName + " " + news.lastName }} just updated
               <div v-if="news.gender == 'male'">his</div>
               <div v-else>her</div>
               <div v-for="editField in lastEdited.slice(0, 3)" :key="editField">
-                {{ editField }},
+                {{ editField }}<span v-if="lastEdited.length == 0">,</span>
               </div>
               <div v-if="lastEdited.length > 3">and more! check it out.</div>
             </div>
             <hr />
             <div class="name-date">
-              <img
-                class="profile-pic"
-                :src="news.profilePic"
-                style="width: 50px; height: 50px;"
-              />
+              <router-link
+                class="navigation-link"
+                :to="{
+                  name: 'profile_page',
+                  params: { webid: news.webid },
+                }"
+              >
+                <img
+                  class="profile-pic"
+                  :src="news.profilePic"
+                  style="width: 50px; height: 50px;"
+              /></router-link>
               <div class="name-date-holder">
-                <div class="name">
-                  {{ news.firstName + " " + news.lastName }}
-                </div>
+                <router-link
+                  class="navigation-link"
+                  :to="{
+                    name: 'profile_page',
+                    params: { webid: news.webid },
+                  }"
+                  ><div class="name">
+                    {{ news.firstName + " " + news.lastName }}
+                  </div></router-link
+                >
                 <div class="date">
                   {{ timePassed(news.editedAt.toDate()) }}
                 </div>
               </div>
             </div>
-            <div class="post-body"></div>
-          </div>
-          <!-- <div class="person">
-            <img
-              class="profilePic"
-              :src="news.profilePic"
-              style="width: 40px; height: 40px;"
-            />
-            <div class="name">
-              <div class="time">
-                {{ formatDate(new Date(news.editedAt.toDate())) }}
+            <div class="post-body">
+              <div class="description">
+                {{ news.description }}
               </div>
-              {{ news.lastName + " " + news.firstName }} just updated
+              <div class="skills" v-if="news.lastEdited.includes('skills')">
+                <div
+                  class="col-md-5"
+                  v-for="(skill, index) in this.combinedSkills
+                    .sort(function(a, b) {
+                      return b.skillExp.match(/\d+/) - a.skillExp.match(/\d+/);
+                    })
+                    .slice(0, 3)"
+                  :key="index"
+                >
+                  <p class="mb-2">{{ skill.skillName }}</p>
+                  <div class="progress my-1">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      :style="{ width: skill.skillExp }"
+                      :aria-valuenow="{ width: skill.skillExp }"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <button>Visit profile</button>
             </div>
-            <div v-if="news.gender == 'male'">his</div>
-            <div v-else>her</div>
-            <div v-for="editField in lastEdited.slice(0, 3)" :key="editField">
-              {{ editField }}
-            </div>
-            <div v-if="lastEdited.length > 3">and more! check it out.</div>
           </div>
-          <div class="post">
-            <router-link
-              class="navigation-link"
-              :to="{ name: 'profile_page', params: { webid: news.webid } }"
-              >post here</router-link
-            >
-          </div> -->
         </div>
       </div>
     </div>
@@ -73,8 +90,10 @@ export default {
   name: "Home",
   data() {
     return {
+      topSkills: [],
       newsFeed: [],
       lastEdited: [],
+      combinedSkills: [],
     };
   },
   components: {
@@ -89,36 +108,49 @@ export default {
     this.initLoad();
   },
   methods: {
-    timePassed(dateEdited) {
-      var today = new Date();
-      var diffMs = today - dateEdited;
-      var diffS = (today - dateEdited) / 1000; // sec
-      var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
-      var diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
-      var diffDays = Math.floor(diffMs / 86400000); // days
-
-      if (diffS < 60) {
-        return Math.trunc(diffS) + " seconds ago ";
-      } else if (diffMins < 60) {
-        return diffMins + " minutes ago ";
-      } else if (diffHrs < 24) {
-        return diffHrs + " hours ago ";
-      } else {
-        return diffDays + " days ago ";
-      }
+    grouping(news) {
+      this.combinedSkills = news.skills.map((x, i) => {
+        return { skillName: x, skillExp: news.skillExperience[i] };
+      });
     },
-    formatDate(date) {
-      var d = new Date(date);
-      const month = d.toLocaleString("En", { month: "long" });
-      const day = d.getDate();
-      const year = d.getFullYear();
+    timePassed(dateEdited) {
+      var seconds = Math.floor((new Date() - dateEdited) / 1000);
+      var interval = seconds / 31536000;
 
-      return (
-        day + " " + month.charAt(0).toUpperCase() + month.slice(1) + " " + year
-      );
+      if (interval > 1) {
+        return Math.floor(interval) == 1
+          ? Math.floor(interval) + " year ago"
+          : Math.floor(interval) + " years ago";
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return Math.floor(interval) == 1
+          ? Math.floor(interval) + " month ago"
+          : Math.floor(interval) + " months ago";
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return Math.floor(interval) == 1
+          ? Math.floor(interval) + " day ago"
+          : Math.floor(interval) + " days ago";
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return Math.floor(interval) == 1
+          ? Math.floor(interval) + " hour ago"
+          : Math.floor(interval) + " hours ago";
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return Math.floor(interval) == 1
+          ? Math.floor(interval) + " minute ago"
+          : Math.floor(interval) + " minutes ago";
+      }
+      return Math.floor(interval) == 1
+        ? Math.floor(interval) + " second ago"
+        : Math.floor(interval) + " seconds ago";
     },
     initLoad() {
-      console.log("Loaded");
       firebase
         .firestore()
         .collection("users")
@@ -135,7 +167,6 @@ export default {
               .getDownloadURL()
               .then((url) => {
                 data.profilePic = url;
-                console.log(data.profilePic);
               });
             this.newsFeed.push(data);
             this.lastEdited = doc.data().lastEdited;
@@ -160,6 +191,12 @@ export default {
   margin-top: 2rem;
   background-color: #fff;
   max-width: 800px;
+}
+
+.description {
+  display: flex;
+  margin: 5px 0px 10px 20px;
+  text-align: left;
 }
 
 .post-header {
@@ -197,8 +234,68 @@ export default {
 
 hr {
   margin: 0px 20px 15px 20px;
+  opacity: 0.15;
 }
 
 .post-body {
+}
+
+.navigation-link {
+  color: rgba($color: #000000, $alpha: 0.8);
+  text-decoration: none;
+}
+
+.navigation-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.my-1 {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  transition: width 3s ease;
+}
+
+.progress {
+  display: flex;
+  height: 1rem;
+  overflow: hidden;
+  font-size: 0.75rem;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+  transition: width 3s ease;
+}
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  background-color: #4a89dc;
+  transition: width 3s ease;
+  animation: progress-bar-stripes 2s linear;
+}
+
+.progress-bar:hover {
+  background-color: #2f9df7;
+}
+
+@keyframes progress-bar-stripes {
+  0% {
+    width: 0%;
+    left: 0;
+    right: 0;
+  }
+}
+
+.skills {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>
