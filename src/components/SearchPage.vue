@@ -2,10 +2,9 @@
   <navigation-bar :user="user"></navigation-bar>
   <div class="initial-padding"></div>
 
-  <div v-for="result in searchResult" :key="result">
+  <div v-for="result in sortedSearchResult" :key="result">
     <div v-if="result.job || result.skills">
       <div class="post">
-        {{ grouping(result) }}
         <div class="name">
           <div class="img-name">
             <router-link
@@ -48,14 +47,9 @@
             result.skills && result.skills.length != 0 && result.skillExperience
           "
         >
-          {{
-            sortSkills(
-              this.$route.params.searchText.replace("!skill", "").trim()
-            )
-          }}
           <div
             class="col-md-5"
-            v-for="(skill, index) in combinedSkills.slice(0, 3)"
+            v-for="(skill, index) in result.combinedSkills.slice(0, 3)"
             :key="index"
           >
             <p
@@ -110,6 +104,7 @@ export default {
     return {
       searchResult: [],
       combinedSkills: [],
+      sortedSearchResult: [],
     };
   },
   components: { NavigationBar },
@@ -123,8 +118,19 @@ export default {
     next();
   },
   methods: {
-    sortSkills(text) {
-      this.combinedSkills = this.combinedSkills.sort((a, b) => {
+    compareSearchSkills(a, b) {
+      let valueA = parseInt(a.combinedSkills[0]["skillExp"]);
+      let valueB = parseInt(b.combinedSkills[0]["skillExp"]);
+      if (valueA < valueB) {
+        return 1;
+      }
+      if (valueA > valueB) {
+        return -1;
+      }
+      return 0;
+    },
+    sortSkills(input, text) {
+      input.combinedSkills = input.combinedSkills.sort((a, b) => {
         if (
           a.skillName.toLowerCase().indexOf(text.toLowerCase()) >
           b.skillName.toLowerCase().indexOf(text.toLowerCase())
@@ -142,7 +148,7 @@ export default {
       });
     },
     grouping(result) {
-      this.combinedSkills = result.skills.map((x, i) => {
+      return result.skills.map((x, i) => {
         return { skillName: x, skillExp: result.skillExperience[i] };
       });
     },
@@ -185,11 +191,15 @@ export default {
               .then(async (url) => {
                 data.profilePic = url;
               });
+
+            data.combinedSkills = this.grouping(data);
+            this.sortSkills(data, text);
             this.searchResult.push(data);
+            this.sortedSearchResult = this.searchResult.sort(
+              this.compareSearchSkills
+            );
           });
         });
-
-      this.combinedSkills = this.sortSkills(text);
     },
     getLength() {
       return this.searchResult.length;
