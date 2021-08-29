@@ -7,7 +7,7 @@
   <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
     <template #header>
       <h5 class="modal-title">
-        Edit information
+        Edit Your informations.
       </h5>
       <button
         type="button"
@@ -118,7 +118,7 @@
   <edit-skills v-if="showEditSkills" style="overflow-y: scroll;">
     <template #header>
       <h5 class="modal-title">
-        Edit skills
+        Edit Your skills.
       </h5>
       <button
         type="button"
@@ -207,7 +207,7 @@
   >
     <template #header>
       <h5 class="modal-title">
-        Edit work experience information
+        Edit Your work experience information.
       </h5>
       <button
         type="button"
@@ -316,6 +316,110 @@
       </div>
     </template>
   </edit-work-experience>
+  <edit-education v-if="showEditEducation" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit Your education.
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeEditEducation"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <div class="modal-body">
+      <i @click="addEducationField" class="fas fa-plus-circle"></i>
+      <div
+        class="col-lg-10 domain-title"
+        v-for="(item, index) in educationCopy"
+        :key="index"
+      >
+        <div class="element-body">
+          <div>
+            <div>
+              <label>Education</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="educationCopy[index]"
+                required
+              />
+            </div>
+            <div class="location">
+              <label> From </label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="educationAtCopy[index]"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <label class="edu-label">Start Date</label>
+              <select v-model="educationStartPeriodCopy[index]">
+                <option
+                  v-for="n in range(1950, new Date().getFullYear())"
+                  :value="n"
+                  :key="n"
+                  >{{ n }}</option
+                >
+                <option>Present</option>
+              </select>
+            </div>
+            <label class="edu-label">End Date</label>
+            <select v-model="educationEndPeriodCopy[index]">
+              <option
+                v-for="n in range(1950, new Date().getFullYear())"
+                :value="n"
+                :key="n"
+                >{{ n }}</option
+              >
+              <option>Present</option>
+            </select>
+          </div>
+
+          <div class="location">
+            <label>Education Field</label>
+            <input
+              type="text"
+              class="form-control"
+              v-model="educationAreaCopy[index]"
+              required
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <template #actions>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeEditEducation"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateEducation"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-education>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -526,6 +630,7 @@ import storageRef from "../database/storageRef";
 import EditPersonalData from "./edit/editPersonalData.vue";
 import EditSkills from "./edit/editSkills.vue";
 import EditWorkExperience from "./edit/editWorkExperience.vue";
+import EditEducation from "./edit/editEducation.vue";
 export default {
   name: "Home",
   emits: ["edit"],
@@ -562,6 +667,11 @@ export default {
       facebook: "",
       contact: "",
       picURL: "",
+      educationCopy: [],
+      educationAtCopy: [],
+      educationStartPeriodCopy: [],
+      educationEndPeriodCopy: [],
+      educationAreaCopy: [],
       isCurrUserProfile: false,
       showEditWorkExperience: false,
       showEditEducation: false,
@@ -584,6 +694,7 @@ export default {
     EditPersonalData,
     EditSkills,
     EditWorkExperience,
+    EditEducation,
   },
   computed: {
     ...mapGetters({
@@ -612,13 +723,28 @@ export default {
       console.log("Skills:", this.skills);
       console.log("Skills to update:", this.toAddSkills);
     },
+    addEducationField() {
+      console.log("what");
+      if (!this.educationCopy) {
+        this.educationCopy = [];
+        this.educationAtCopy = [];
+        this.educationStartPeriodCopy = [];
+        this.educationEndPeriodCopy = [];
+        this.educationAreaCopy = [];
+      }
+      this.educationCopy.unshift("");
+      this.educationAtCopy.unshift("");
+      this.educationStartPeriodCopy.unshift("2021");
+      this.educationEndPeriodCopy.unshift("Present");
+      this.educationAreaCopy.unshift("");
+    },
     addExperienceField() {
       if (!this.experienceCopy.experience) {
         this.experienceCopy.experience = [];
         this.experienceCopy.experienceLocation = [];
         this.experienceCopy.experienceStartDate = [];
         this.experienceCopy.experienceEndDate = [];
-        this.experienceCopy.isPresent = [true];
+        this.experienceCopy.isPresent = [];
         this.experienceCopy.aboutExperience = [];
       }
       this.experienceCopy.experience.unshift("");
@@ -627,6 +753,54 @@ export default {
       this.experienceCopy.experienceEndDate.unshift("");
       this.experienceCopy.isPresent.unshift(true);
       this.experienceCopy.aboutExperience.unshift("");
+    },
+
+    updateEducation() {
+      if (
+        this.educationCopy == this.education &&
+        this.educationAt == this.educationAtCopy &&
+        this.educationPeriod == this.formatDateForEducationUpload()
+      ) {
+        console.log(this.educationCopy, "copy");
+        console.log(this.education);
+        console.log("No change");
+        return;
+      }
+
+      this.education = this.educationCopy;
+      this.educationAt = this.educationAtCopy;
+      this.educationPeriod = this.formatDateForEducationUpload();
+      this.educationArea = this.educationAreaCopy;
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .set(
+          {
+            education: this.education,
+            educationAt: this.educationAt,
+            educationPeriod: this.educationPeriod,
+            educationArea: this.educationArea,
+            editedAt: new Date(),
+            lastEdited: ["education"],
+          },
+          { merge: true }
+        );
+      this.closeEditEducation();
+      console.log("Updated.");
+    },
+    formatDateForEducationUpload() {
+      let obj = [];
+      for (
+        let index = 0;
+        index < this.educationStartPeriodCopy.length;
+        index++
+      ) {
+        const startYear = this.educationStartPeriodCopy[index];
+        const endYear = this.educationEndPeriodCopy[index];
+        obj.push(startYear + " - " + endYear);
+      }
+      return obj;
     },
     updateWorkExperienceModal() {
       let dates = this.formatExperienceDate();
@@ -640,6 +814,8 @@ export default {
             experienceLocation: this.experienceCopy.experienceLocation,
             aboutExperience: this.experienceCopy.aboutExperience,
             experienceDate: dates,
+            lastEdited: "experience",
+            editedAt: new Date(),
           },
           { merge: true }
         );
@@ -658,7 +834,6 @@ export default {
         index < this.experienceCopy.experienceStartDate.length;
         index++
       ) {
-        console.log(this.experienceCopy.experienceStartDate[index]);
         const elementStart = new Date(
           this.experienceCopy.experienceStartDate[index]
         );
@@ -742,6 +917,9 @@ export default {
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
     },
+    editHobbies() {
+      this.showEditHobbies = !this.showEditHobbies;
+    },
     editSkills() {
       this.showEditSkills = !this.showEditSkills;
     },
@@ -764,13 +942,47 @@ export default {
       this.showEditWorkExperience = !this.showEditWorkExperience;
     },
     editEducation() {
+      this.educationCopy = this.education;
+      this.educationAtCopy = this.educationAt;
+      this.educationStartPeriodCopy = this.formatStartEducationDate();
+      this.educationEndPeriodCopy = this.formatEndEducationDate();
+      this.educationAreaCopy = this.educationArea;
       this.showEditEducation = !this.showEditEducation;
+    },
+    formatStartEducationDate() {
+      if (!this.educationPeriod) {
+        return "";
+      }
+      let obj = [];
+      for (let index = 0; index < this.educationPeriod.length; index++) {
+        let temp = this.educationPeriod[index];
+        temp = temp.split(" - ");
+        obj.push(temp[0]);
+      }
+      return obj;
+    },
+    formatEndEducationDate() {
+      if (!this.educationPeriod) {
+        return "";
+      }
+      let obj = [];
+      for (let index = 0; index < this.educationPeriod.length; index++) {
+        let temp = this.educationPeriod[index];
+        temp = temp.split(" - ");
+        obj.push(temp[1]);
+      }
+      return obj;
     },
     closeEditEducation() {
       this.showEditEducation = false;
     },
     closeWorkExperienceModal() {
       this.showEditWorkExperience = false;
+    },
+    range(start, end) {
+      return Array(end - start + 1)
+        .fill()
+        .map((_, idx) => start + idx);
     },
     getStartDate(date) {
       if (!date) {
@@ -1529,5 +1741,10 @@ h5 {
 
 .element-body {
   padding-bottom: 20px;
+}
+
+.edu-label {
+  padding-top: 10px;
+  display: inline-block;
 }
 </style>
