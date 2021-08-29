@@ -11,8 +11,11 @@
               {{ news.firstName + " " + news.lastName }} just updated
               <div v-if="news.gender == 'male'">his</div>
               <div v-else>her</div>
-              <div v-for="editField in lastEdited.slice(0, 3)" :key="editField">
-                {{ editField }}<span v-if="lastEdited.length == 0">,</span>
+              <div
+                v-for="editField in news.lastEdited.slice(0, 3)"
+                :key="editField"
+              >
+                {{ editField }}<span v-if="news.lastEdited.length == 0">,</span>
               </div>
               <div v-if="lastEdited.length > 3">and more! check it out.</div>
             </div>
