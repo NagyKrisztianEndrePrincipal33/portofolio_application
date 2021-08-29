@@ -437,6 +437,7 @@ export default {
       edit_skills: false,
       edit_hobbies: false,
       lastEdited: [],
+      skillsChanged: false,
       levels: {
         20: "Beginner",
         40: "Entry-Level",
@@ -480,6 +481,7 @@ export default {
     },
     async updateSkills() {
       if (this.somethingChanged()) {
+        this.skillsChanged = true;
         this.skills = this.toAddSkills;
         this.skillExperience = this.toAddSkillExp;
         this.isPending = true;
@@ -591,12 +593,12 @@ export default {
       let edited = false;
       this.lastEdited = [];
       if (this.firstName != this.profileInfo.firstName) {
-        this.lastEdited.push("firstName");
+        this.lastEdited.push("first name");
         edited = true;
       }
 
       if (this.lastName != this.profileInfo.lastName) {
-        this.lastEdited.push("lastName");
+        this.lastEdited.push("last name");
         edited = true;
       }
 
@@ -629,8 +631,10 @@ export default {
         this.lastEdited.push("address");
         edited = true;
       }
-      if (this.skills != this.toAddSkills) {
+      if (this.skillsChanged) {
+        this.skillsChanged = false;
         this.lastEdited.push("skills");
+        console.log("Pushing skills");
         edited = true;
       }
       return edited;
