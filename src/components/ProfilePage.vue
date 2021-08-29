@@ -330,7 +330,10 @@
     </div>
     <hr />
     <div class="work-experience-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Work experience</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Work experience</h2>
+        <i @click="editWorkExperience()" class="fas fa-edit"></i>
+      </div>
       <div class="timeline">
         <div
           class="timeline-card timeline-card-primary card shadow-sm text-left"
@@ -340,13 +343,15 @@
           <div class="card-body">
             <div class="h5 mb-1">
               {{ experience[index] }}
-              <span class="text-muted h6">at Creative Agency</span>
+              <span class="text-muted h6"
+                >at {{ experienceLocation[index] }}</span
+              >
             </div>
-            <div class="text-muted text-small mb-2">May, 2015 - Present</div>
+            <div class="text-muted text-small mb-2">
+              {{ experienceDate[index] }}
+            </div>
             <div>
-              Leverage agile frameworks to provide a robust synopsis for high
-              level overviews. Iterative approaches to corporate strategy foster
-              collaborative thinking to further the overall value proposition.
+              {{ aboutExperience[index] }}
             </div>
           </div>
         </div>
@@ -354,7 +359,10 @@
     </div>
     <hr />
     <div class="education-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Education</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Education</h2>
+        <i @click="editEducation()" class="fas fa-edit"></i>
+      </div>
       <div class="timeline">
         <div
           class="timeline-card timeline-card-success card shadow-sm text-left"
@@ -378,7 +386,10 @@
     </div>
     <hr />
     <div class="hobbies-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Hobbies</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Hobbies</h2>
+        <i @click="editHobbies()" class="fas fa-edit"></i>
+      </div>
       <div class="hobbies">
         <div class="hobby" v-for="(hobby, index) in hobbies" :key="index">
           {{ hobby }}
@@ -416,6 +427,9 @@ export default {
       address: "",
       description: "",
       experience: [],
+      experienceLocation: [],
+      experienceDate: [],
+      aboutExperience: [],
       education: [],
       educationAt: [],
       educationPeriod: [],
@@ -663,6 +677,9 @@ export default {
             this.address = doc.data().address;
             this.description = doc.data().description;
             this.experience = doc.data().experience;
+            this.experienceLocation = doc.data().experienceLocation;
+            this.experienceDate = doc.data().experienceDate;
+            this.aboutExperience = doc.data().aboutExperience;
             this.education = doc.data().education;
             this.educationAt = doc.data().educationAt;
             this.educationPeriod = doc.data().educationPeriod;
