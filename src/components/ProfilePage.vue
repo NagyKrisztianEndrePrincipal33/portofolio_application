@@ -498,6 +498,7 @@ export default {
             { merge: true }
           );
       }
+      this.showEditSkills = false;
       this.isPending = false;
     },
     async updateProfileInfo() {
@@ -543,14 +544,12 @@ export default {
     },
     editSkills() {
       this.showEditSkills = !this.showEditSkills;
-      console.log(this.showEditSkills, " Showing");
     },
     closeModal() {
       this.showEditPersonalData = false;
     },
     closeSkillsModal() {
       this.showEditSkills = false;
-      console.log(this.skillExperience, "from close skills modal Showing");
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
