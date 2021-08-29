@@ -420,6 +420,63 @@
       </div>
     </template>
   </edit-education>
+  <edit-hobbies v-if="showEditHobbies" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit Your hobbies.
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeEditHobby"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+
+    <div class="modal-body">
+      <i @click="addHobbyField" class="fas fa-plus-circle"></i>
+      <div
+        class="col-lg-10 domain-title"
+        v-for="(item, index) in hobbies"
+        :key="index"
+      >
+        <div class="element-body">
+          <div>
+            <div>
+              <label>Hobby</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="hobbies[index]"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <template #actions>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" @click="closeEditHobby">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateHobbies"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-hobbies>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -468,9 +525,8 @@
           <div
             v-if="isCurrUserProfile"
             style="display: flex; justify-content: space-between;"
-          >
-            <i @click="editPersonalData()" class="fas fa-user-edit"></i>
-          </div>
+          ></div>
+          <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           <p>{{ job }}</p>
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
@@ -631,6 +687,7 @@ import EditPersonalData from "./edit/editPersonalData.vue";
 import EditSkills from "./edit/editSkills.vue";
 import EditWorkExperience from "./edit/editWorkExperience.vue";
 import EditEducation from "./edit/editEducation.vue";
+import EditHobbies from "./edit/editHobbies.vue";
 export default {
   name: "Home",
   emits: ["edit"],
@@ -695,6 +752,7 @@ export default {
     EditSkills,
     EditWorkExperience,
     EditEducation,
+    EditHobbies,
   },
   computed: {
     ...mapGetters({
@@ -722,6 +780,26 @@ export default {
 
       console.log("Skills:", this.skills);
       console.log("Skills to update:", this.toAddSkills);
+    },
+    addHobbyField() {
+      if (!this.hobbies) {
+        this.hobbies = [];
+      }
+      this.hobbies.unshift("");
+    },
+    updateHobbies() {
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .set(
+          {
+            hobbies: this.hobbies,
+            lastEdited: ["hobbies"],
+            editedAt: new Date(),
+          },
+          { merge: true }
+        );
     },
     addEducationField() {
       console.log("what");
@@ -1116,49 +1194,55 @@ export default {
       console.log(this.webid, "hi");
       this.isCurrUserProfile = false;
       this.loadedData = false;
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.webid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            if (currUserWebid == doc.data().webid) {
-              this.isCurrUserProfile = true;
-            }
+      try {
+        await firebase
+          .firestore()
+          .collection("users")
+          .where("webid", "==", this.webid)
+          .get()
+          .then((querySnapshot) => {
+            console.log("here", this.webid);
+            querySnapshot.forEach((doc) => {
+              if (currUserWebid == doc.data().webid) {
+                this.isCurrUserProfile = true;
+              }
 
-            this.userID = doc.id;
-            this.firstName = doc.data().firstName;
-            this.lastName = doc.data().lastName;
-            this.job = doc.data().job;
-            this.phone = doc.data().phone;
-            this.address = doc.data().address;
-            this.description = doc.data().description;
-            this.experience = doc.data().experience;
-            this.experienceLocation = doc.data().experienceLocation;
-            this.experienceDate = doc.data().experienceDate;
-            this.aboutExperience = doc.data().aboutExperience;
-            this.education = doc.data().education;
-            this.educationAt = doc.data().educationAt;
-            this.educationPeriod = doc.data().educationPeriod;
-            this.educationArea = doc.data().educationArea;
-            this.skills = doc.data().skills;
-            this.skillExperience = doc.data().skillExperience;
-            this.hobbies = doc.data().hobbies;
-            this.github = doc.data().github;
-            this.instagram = doc.data().instagram;
-            this.linkedin = doc.data().linkedin;
-            this.facebook = doc.data().facebook;
-            this.contact = doc.data().contact;
-            this.age = doc.data().age;
-            this.profileInfo = doc.data();
-            this.getStartDate(doc.data().experienceDate);
-            this.getEndDate(doc.data().experienceDate);
-            this.webid = doc.data().webid;
-            this.toAddSkills = doc.data().skills;
-            this.toAddSkillExp = doc.data().skillExperience;
-          });
-        });
+              this.userID = doc.id;
+              this.firstName = doc.data().firstName;
+              this.lastName = doc.data().lastName;
+              this.job = doc.data().job;
+              this.phone = doc.data().phone;
+              this.address = doc.data().address;
+              this.description = doc.data().description;
+              this.experience = doc.data().experience;
+              this.experienceLocation = doc.data().experienceLocation;
+              this.experienceDate = doc.data().experienceDate;
+              this.aboutExperience = doc.data().aboutExperience;
+              this.education = doc.data().education;
+              this.educationAt = doc.data().educationAt;
+              this.educationPeriod = doc.data().educationPeriod;
+              this.educationArea = doc.data().educationArea;
+              this.skills = doc.data().skills;
+              this.skillExperience = doc.data().skillExperience;
+              this.hobbies = doc.data().hobbies;
+              this.github = doc.data().github;
+              this.instagram = doc.data().instagram;
+              this.linkedin = doc.data().linkedin;
+              this.facebook = doc.data().facebook;
+              this.contact = doc.data().contact;
+              this.age = doc.data().age;
+              this.profileInfo = doc.data();
+              this.getStartDate(doc.data().experienceDate);
+              this.getEndDate(doc.data().experienceDate);
+              this.webid = doc.data().webid;
+              this.toAddSkills = doc.data().skills;
+              this.toAddSkillExp = doc.data().skillExperience;
+            });
+          })
+          .catch();
+      } catch {
+        console.log("what");
+      }
       await this.getPicture();
       this.loadedData = true;
     },
@@ -1176,12 +1260,29 @@ export default {
       }
     },
     async getPicture() {
-      await storageRef
-        .child(this.webid)
-        .getDownloadURL()
-        .then((url) => {
-          this.picURL = url;
-        });
+      try {
+        await storageRef
+          .child(this.webid)
+          .getDownloadURL()
+          .then((url) => {
+            this.picURL = url;
+          })
+          .catch(
+            await storageRef
+              .child("default.png")
+              .getDownloadURL()
+              .then((url) => {
+                this.picURL = url;
+              })
+          );
+      } catch {
+        await storageRef
+          .child("default.png")
+          .getDownloadURL()
+          .then((url) => {
+            this.picURL = url;
+          });
+      }
       this.loadedImage = true;
     },
   },
