@@ -300,7 +300,21 @@
 
       <div class="skills">
         <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
-          <p class="mb-2">{{ skill }}</p>
+          <div class="mb-2">
+            {{ skill }}
+            <div class="test-class">
+              {{
+                "(" +
+                  levels[
+                    skillExperience[index].substring(
+                      0,
+                      skillExperience[index].length - 1
+                    )
+                  ] +
+                  ")"
+              }}
+            </div>
+          </div>
           <div class="progress my-1">
             <div
               class="progress-bar"
@@ -423,6 +437,13 @@ export default {
       edit_skills: false,
       edit_hobbies: false,
       lastEdited: [],
+      levels: {
+        20: "Beginner",
+        40: "Entry-Level",
+        60: "Mid-Level",
+        80: "Senior-Level",
+        100: "Expert",
+      },
     };
   },
   components: {
@@ -522,13 +543,14 @@ export default {
     },
     editSkills() {
       this.showEditSkills = !this.showEditSkills;
+      console.log(this.showEditSkills, " Showing");
     },
     closeModal() {
       this.showEditPersonalData = false;
     },
     closeSkillsModal() {
       this.showEditSkills = false;
-      this.toAddSkillExp = this.skillExperience;
+      console.log(this.skillExperience, "from close skills modal Showing");
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -727,6 +749,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   margin-top: calc(var(--bs-gutter-y) * -1);
   margin-left: 0px;
   margin-right: 0px;
+}
+
+.test-class {
+  display: inline;
+  color: darkgray;
 }
 
 .row > * {
