@@ -11,10 +11,15 @@
               {{ news.firstName + " " + news.lastName }} just updated
               <div v-if="news.gender == 'male'">his</div>
               <div v-else>her</div>
-              <div v-for="editField in lastEdited.slice(0, 3)" :key="editField">
-                {{ editField }}<span v-if="lastEdited.length == 0">,</span>
+              <div
+                v-for="editField in news.lastEdited.slice(0, 3)"
+                :key="editField"
+              >
+                {{ editField }}<span v-if="news.lastEdited.length == 0">,</span>
               </div>
-              <div v-if="lastEdited.length > 3">and more! check it out.</div>
+              <div v-if="news.lastEdited.length > 3">
+                and more! check it out.
+              </div>
             </div>
             <hr />
             <div class="name-date">
@@ -104,8 +109,8 @@ export default {
       user: "user",
     }),
   },
-  created() {
-    this.initLoad();
+  async created() {
+    await this.initLoad();
   },
   methods: {
     grouping(news) {
@@ -150,16 +155,26 @@ export default {
         ? Math.floor(interval) + " second ago"
         : Math.floor(interval) + " seconds ago";
     },
-    initLoad() {
-      firebase
+    compareLastEdited(a, b) {
+      if (a.lastEdited < b.lastEdited) {
+        return -1;
+      }
+      if (a.lastEdited > b.lastEdited) {
+        return 1;
+      }
+      return 0;
+    },
+    async initLoad() {
+      await firebase
         .firestore()
         .collection("users")
-        .orderBy("editedAt")
+        .orderBy("editedAt", "desc")
         .limit(5)
         .get()
-        .then((doc) => {
+        .then(async (doc) => {
           doc.forEach(async (doc) => {
             const data = doc.data();
+            data.lastEdited = doc.data().lastEdited;
             await firebase
               .storage()
               .ref()
@@ -169,7 +184,7 @@ export default {
                 data.profilePic = url;
               });
             this.newsFeed.push(data);
-            this.lastEdited = doc.data().lastEdited;
+            this.newsFeed.sort(this.compareLastEdited);
           });
         });
     },

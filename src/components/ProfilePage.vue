@@ -241,11 +241,11 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
+          <h2>{{ firstName + " " + lastName }}</h2>
           <div
             v-if="isCurrUserProfile"
             style="display: flex; justify-content: space-between;"
           >
-            <h2>{{ firstName + " " + lastName }}</h2>
             <i @click="editPersonalData()" class="fas fa-user-edit"></i>
           </div>
           <p>{{ job }}</p>
@@ -300,7 +300,21 @@
 
       <div class="skills">
         <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
-          <p class="mb-2">{{ skill }}</p>
+          <div class="mb-2">
+            {{ skill }}
+            <div class="test-class">
+              {{
+                "(" +
+                  levels[
+                    skillExperience[index].substring(
+                      0,
+                      skillExperience[index].length - 1
+                    )
+                  ] +
+                  ")"
+              }}
+            </div>
+          </div>
           <div class="progress my-1">
             <div
               class="progress-bar"
@@ -423,6 +437,14 @@ export default {
       edit_skills: false,
       edit_hobbies: false,
       lastEdited: [],
+      skillsChanged: false,
+      levels: {
+        20: "Beginner",
+        40: "Entry-Level",
+        60: "Mid-Level",
+        80: "Senior-Level",
+        100: "Expert",
+      },
     };
   },
   components: {
@@ -458,17 +480,27 @@ export default {
       console.log("Skills to update:", this.toAddSkills);
     },
     async updateSkills() {
-      this.skills = this.toAddSkills;
-      this.skillExperience = this.toAddSkillExp;
-      this.isPending = true;
-      await firebase
-        .firestore()
-        .collection("users")
-        .doc(this.userID)
-        .update({
-          skills: this.skills,
-          skillExperience: this.skillExperience,
-        });
+      if (this.somethingChanged()) {
+        this.skillsChanged = true;
+        this.skills = this.toAddSkills;
+        this.skillExperience = this.toAddSkillExp;
+        this.isPending = true;
+        await firebase
+          .firestore()
+          .collection("users")
+          .doc(this.userID)
+          .set(
+            {
+              skills: this.skills,
+              skillExperience: this.skillExperience,
+              skills_lowercase: this.skills.map((v) => v.toLowerCase()),
+              editedAt: new Date(),
+              lastEdited: this.lastEdited,
+            },
+            { merge: true }
+          );
+      }
+      this.showEditSkills = false;
       this.isPending = false;
     },
     async updateProfileInfo() {
@@ -487,18 +519,21 @@ export default {
             .firestore()
             .collection("users")
             .doc(this.userID)
-            .update({
-              firstName: this.firstName,
-              lastName: this.lastName,
-              job: this.job,
-              description: this.description,
-              age: this.age,
-              contact: this.contact,
-              phone: this.phone,
-              address: this.address,
-              editedAt: new Date(),
-              lastEdited: this.lastEdited,
-            });
+            .set(
+              {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                job: this.job,
+                description: this.description,
+                age: this.age,
+                contact: this.contact,
+                phone: this.phone,
+                address: this.address,
+                editedAt: new Date(),
+                lastEdited: this.lastEdited,
+              },
+              { merge: true }
+            );
           this.isPending = false;
         }
         this.closeModal();
@@ -517,7 +552,6 @@ export default {
     },
     closeSkillsModal() {
       this.showEditSkills = false;
-      this.toAddSkillExp = this.skillExperience;
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -557,13 +591,14 @@ export default {
     },
     somethingChanged() {
       let edited = false;
+      this.lastEdited = [];
       if (this.firstName != this.profileInfo.firstName) {
-        this.lastEdited.push("firstName");
+        this.lastEdited.push("first name");
         edited = true;
       }
 
       if (this.lastName != this.profileInfo.lastName) {
-        this.lastEdited.push("lastName");
+        this.lastEdited.push("last name");
         edited = true;
       }
 
@@ -594,6 +629,12 @@ export default {
 
       if (this.address != this.profileInfo.address) {
         this.lastEdited.push("address");
+        edited = true;
+      }
+      if (this.skillsChanged) {
+        this.skillsChanged = false;
+        this.lastEdited.push("skills");
+        console.log("Pushing skills");
         edited = true;
       }
       return edited;
@@ -711,6 +752,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   margin-top: calc(var(--bs-gutter-y) * -1);
   margin-left: 0px;
   margin-right: 0px;
+}
+
+.test-class {
+  display: inline;
+  color: darkgray;
 }
 
 .row > * {
