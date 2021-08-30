@@ -156,6 +156,9 @@ export default {
     width: 100%;
     height: auto;
   }
+  .about-header-container {
+    padding-top: 5rem;
+  }
 }
 
 @media (max-width: 920px) {

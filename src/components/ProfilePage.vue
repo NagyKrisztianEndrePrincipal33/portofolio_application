@@ -7,7 +7,7 @@
   <edit-personal-data v-if="showEditPersonalData" style="overflow-y: scroll;">
     <template #header>
       <h5 class="modal-title">
-        Edit information
+        Edit Your informations.
       </h5>
       <button
         type="button"
@@ -90,7 +90,11 @@
     </template>
     <template #actions>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" @click="closeModal">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeWorkExperienceModal"
+        >
           Close
         </button>
         <button
@@ -111,10 +115,10 @@
       </div>
     </template>
   </edit-personal-data>
-  <edit-skills v-if="showEditSkills">
+  <edit-skills v-if="showEditSkills" style="overflow-y: scroll;">
     <template #header>
       <h5 class="modal-title">
-        Edit skills
+        Edit Your skills.
       </h5>
       <button
         type="button"
@@ -197,6 +201,282 @@
       </div>
     </template>
   </edit-skills>
+  <edit-work-experience
+    v-if="showEditWorkExperience"
+    style="overflow-y: scroll;"
+  >
+    <template #header>
+      <h5 class="modal-title">
+        Edit Your work experience information.
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeWorkExperienceModal"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <div class="modal-body">
+      <i @click="addExperienceField" class="fas fa-plus-circle"></i>
+      <div
+        class="col-lg-10 domain-title"
+        v-for="(item, index) in experienceCopy.experience"
+        :key="index"
+      >
+        <div class="element-body">
+          <div class="domain-location">
+            <div class="domain">
+              <label>Domain</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="experienceCopy.experience[index]"
+                required
+              />
+            </div>
+            <div class="location">
+              <label> At </label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="experienceCopy.experienceLocation[index]"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="dates">
+            <div class="start-date">
+              <label>Start Date</label>
+              <input
+                type="date"
+                class="form-control"
+                v-model="experienceCopy.experienceStartDate[index]"
+                required
+              />
+            </div>
+
+            <div>
+              <label>End Date</label>
+              <div class="end-date">
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="experienceCopy.experienceEndDate[index]"
+                  :disabled="experienceCopy.isPresent[index]"
+                  :required="!experienceCopy.isPresent[index]"
+                />
+                <div class="checkbox">
+                  <input
+                    type="checkbox"
+                    class="checkbox-chk"
+                    v-model="experienceCopy.isPresent[index]"
+                  />
+                  <label>
+                    Present
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <label>Tell us about your Experience in this domain</label>
+
+          <input
+            type="text"
+            class="form-control"
+            v-model="experienceCopy.aboutExperience[index]"
+          />
+        </div>
+      </div>
+    </div>
+    <template #actions>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeWorkExperienceModal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateWorkExperienceModal"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-work-experience>
+  <edit-education v-if="showEditEducation" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit Your education.
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeEditEducation"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+    <div class="modal-body">
+      <i @click="addEducationField" class="fas fa-plus-circle"></i>
+      <div
+        class="col-lg-10 domain-title"
+        v-for="(item, index) in educationCopy"
+        :key="index"
+      >
+        <div class="element-body">
+          <div>
+            <div>
+              <label>Education</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="educationCopy[index]"
+                required
+              />
+            </div>
+            <div class="location">
+              <label> From </label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="educationAtCopy[index]"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <div>
+              <label class="edu-label">Start Date</label>
+              <select v-model="educationStartPeriodCopy[index]">
+                <option
+                  v-for="n in range(1950, new Date().getFullYear())"
+                  :value="n"
+                  :key="n"
+                  >{{ n }}</option
+                >
+                <option>Present</option>
+              </select>
+            </div>
+            <label class="edu-label">End Date</label>
+            <select v-model="educationEndPeriodCopy[index]">
+              <option
+                v-for="n in range(1950, new Date().getFullYear())"
+                :value="n"
+                :key="n"
+                >{{ n }}</option
+              >
+              <option>Present</option>
+            </select>
+          </div>
+
+          <div class="location">
+            <label>Education Field</label>
+            <input
+              type="text"
+              class="form-control"
+              v-model="educationAreaCopy[index]"
+              required
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <template #actions>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="closeEditEducation"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateEducation"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-education>
+  <edit-hobbies v-if="showEditHobbies" style="overflow-y: scroll;">
+    <template #header>
+      <h5 class="modal-title">
+        Edit Your hobbies.
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        style="background-color: transparent; border: none; margin: 0; padding: 5px 15px 0 5px"
+        @click="closeEditHobby"
+      >
+        <span style="font-size: 2rem;">&times;</span>
+      </button>
+    </template>
+
+    <div class="modal-body">
+      <i @click="addHobbyField" class="fas fa-plus-circle"></i>
+      <div
+        class="col-lg-10 domain-title"
+        v-for="(item, index) in hobbies"
+        :key="index"
+      >
+        <div class="element-body">
+          <div>
+            <div>
+              <label>Hobby</label>
+              <input
+                type="text"
+                class="form-control"
+                v-model="hobbies[index]"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <template #actions>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" @click="closeEditHobby">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-if="!isPending"
+          @click="updateHobbies"
+        >
+          Save changes
+        </button>
+        <button type="button" class="btn btn-primary" v-else disabled>
+          Saving changes...
+        </button>
+      </div>
+    </template>
+  </edit-hobbies>
   <div v-if="loadedData" class="contact fade-in" style="margin-top: 100px">
     <div class="name">
       <h2 class="site-title mb-0">{{ firstName + " " + lastName }}</h2>
@@ -220,7 +500,7 @@
   </div>
   <div v-if="loadedData" class="container fade-in">
     <div class="header p-3 p-lg-4 text-white">
-      <div class="row" style="justify-content: space-between">
+      <div class="row">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
             <div v-if="!loadedImage" class="lds-ring">
@@ -241,13 +521,19 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <div
-            v-if="isCurrUserProfile"
-            style="display: flex; justify-content: space-between;"
-          >
+          <div class="name-edit-holder">
             <h2>{{ firstName + " " + lastName }}</h2>
-            <i @click="editPersonalData()" class="fas fa-user-edit"></i>
+            <div
+              v-if="isCurrUserProfile"
+              style="display: flex; justify-content: space-between;"
+            ></div>
+            <i
+              v-if="isCurrUserProfile"
+              @click="editPersonalData()"
+              class="fas fa-user-edit"
+            ></i>
           </div>
+
           <p>{{ job }}</p>
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
@@ -271,13 +557,17 @@
               <div class="pb-1">Contact</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">{{ contact }}</div>
+              <div class="pb-1 text-secondary">
+                <a class="mail-to" :href="`mailto:` + contact">{{ contact }}</a>
+              </div>
             </div>
             <div class="col-sm-4">
               <div class="pb-1">Phone</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">{{ phone }}</div>
+              <div class="pb-1 text-secondary">
+                <a class="mail-to" :href="`tel:` + phone">{{ phone }}</a>
+              </div>
             </div>
             <div class="col-sm-4">
               <div class="pb-1">Address</div>
@@ -292,15 +582,33 @@
       </div>
     </div>
     <hr />
-    <div v-if="isCurrUserProfile" class="px-3 px-lg-5 skills-section ">
+    <div class="px-3 px-lg-5 skills-section ">
       <div class="skills-edit">
         <h2 class="h3 mb-3 text-left">Professional Skills</h2>
-        <i @click="editSkills()" class="fas fa-edit"></i>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editSkills()"
+          class="fas fa-edit"
+        ></i>
       </div>
 
       <div class="skills">
         <div class="col-md-5" v-for="(skill, index) in skills" :key="index">
-          <p class="mb-2">{{ skill }}</p>
+          <div class="mb-2">
+            {{ skill }}
+            <div class="test-class">
+              {{
+                "(" +
+                  levels[
+                    skillExperience[index].substring(
+                      0,
+                      skillExperience[index].length - 1
+                    )
+                  ] +
+                  ")"
+              }}
+            </div>
+          </div>
           <div class="progress my-1">
             <div
               class="progress-bar"
@@ -316,23 +624,32 @@
     </div>
     <hr />
     <div class="work-experience-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Work experience</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Work experience</h2>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editWorkExperience()"
+          class="fas fa-edit"
+        ></i>
+      </div>
       <div class="timeline">
         <div
           class="timeline-card timeline-card-primary card shadow-sm text-left"
           v-for="(item, index) in experience"
           :key="index"
         >
-          <div class="card-body">
+          <div class="card-body" v-if="experienceLocation">
             <div class="h5 mb-1">
               {{ experience[index] }}
-              <span class="text-muted h6">at Creative Agency</span>
+              <span class="text-muted h6"
+                >at {{ experienceLocation[index] }}</span
+              >
             </div>
-            <div class="text-muted text-small mb-2">May, 2015 - Present</div>
+            <div class="text-muted text-small mb-2">
+              {{ experienceDate[index] }}
+            </div>
             <div>
-              Leverage agile frameworks to provide a robust synopsis for high
-              level overviews. Iterative approaches to corporate strategy foster
-              collaborative thinking to further the overall value proposition.
+              {{ aboutExperience[index] }}
             </div>
           </div>
         </div>
@@ -340,7 +657,14 @@
     </div>
     <hr />
     <div class="education-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Education</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Education</h2>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editEducation()"
+          class="fas fa-edit"
+        ></i>
+      </div>
       <div class="timeline">
         <div
           class="timeline-card timeline-card-success card shadow-sm text-left"
@@ -364,7 +688,14 @@
     </div>
     <hr />
     <div class="hobbies-section px-3 px-lg-5">
-      <h2 class="h3 mb-4 text-left">Hobbies</h2>
+      <div class="skills-edit">
+        <h2 class="h3 mb-4 text-left">Hobbies</h2>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editHobbies()"
+          class="fas fa-edit"
+        ></i>
+      </div>
       <div class="hobbies">
         <div class="hobby" v-for="(hobby, index) in hobbies" :key="index">
           {{ hobby }}
@@ -381,6 +712,9 @@ import firebase from "../database/firebase";
 import storageRef from "../database/storageRef";
 import EditPersonalData from "./edit/editPersonalData.vue";
 import EditSkills from "./edit/editSkills.vue";
+import EditWorkExperience from "./edit/editWorkExperience.vue";
+import EditEducation from "./edit/editEducation.vue";
+import EditHobbies from "./edit/editHobbies.vue";
 export default {
   name: "Home",
   emits: ["edit"],
@@ -417,18 +751,35 @@ export default {
       facebook: "",
       contact: "",
       picURL: "",
+      educationCopy: [],
+      educationAtCopy: [],
+      educationStartPeriodCopy: [],
+      educationEndPeriodCopy: [],
+      educationAreaCopy: [],
       isCurrUserProfile: false,
-      edit_experience: false,
-      edit_education: false,
-      edit_skills: false,
-      edit_hobbies: false,
+      showEditWorkExperience: false,
+      showEditEducation: false,
+      showEditHobbies: false,
+      copySaveExperience: [],
       lastEdited: [],
+      skillsChanged: false,
+      experienceCopy: [],
+      levels: {
+        20: "Beginner",
+        40: "Entry-Level",
+        60: "Mid-Level",
+        80: "Senior-Level",
+        100: "Expert",
+      },
     };
   },
   components: {
     NavigationBar,
     EditPersonalData,
     EditSkills,
+    EditWorkExperience,
+    EditEducation,
+    EditHobbies,
   },
   computed: {
     ...mapGetters({
@@ -446,6 +797,7 @@ export default {
   },
   methods: {
     addInputField() {
+      this.skillsChanged = true;
       if (!this.toAddSkills) {
         this.toAddSkills = [""];
         this.toAddSkillExp = ["20%"];
@@ -457,18 +809,181 @@ export default {
       console.log("Skills:", this.skills);
       console.log("Skills to update:", this.toAddSkills);
     },
-    async updateSkills() {
-      this.skills = this.toAddSkills;
-      this.skillExperience = this.toAddSkillExp;
-      this.isPending = true;
-      await firebase
+    addHobbyField() {
+      if (!this.hobbies) {
+        this.hobbies = [];
+      }
+      this.hobbies.unshift("");
+    },
+    closeEditHobby() {
+      this.showEditHobbies = false;
+    },
+    updateHobbies() {
+      firebase
         .firestore()
         .collection("users")
         .doc(this.userID)
-        .update({
-          skills: this.skills,
-          skillExperience: this.skillExperience,
-        });
+        .set(
+          {
+            hobbies: this.hobbies,
+            lastEdited: ["hobbies"],
+            editedAt: new Date(),
+          },
+          { merge: true }
+        );
+      this.closeEditHobby();
+    },
+    addEducationField() {
+      console.log("what");
+      if (!this.educationCopy) {
+        this.educationCopy = [];
+        this.educationAtCopy = [];
+        this.educationStartPeriodCopy = [];
+        this.educationEndPeriodCopy = [];
+        this.educationAreaCopy = [];
+      }
+      this.educationCopy.unshift("");
+      this.educationAtCopy.unshift("");
+      this.educationStartPeriodCopy.unshift("2021");
+      this.educationEndPeriodCopy.unshift("Present");
+      this.educationAreaCopy.unshift("");
+    },
+    addExperienceField() {
+      if (!this.experienceCopy.experience) {
+        this.experienceCopy.experience = [];
+        this.experienceCopy.experienceLocation = [];
+        this.experienceCopy.experienceStartDate = [];
+        this.experienceCopy.experienceEndDate = [];
+        this.experienceCopy.isPresent = [];
+        this.experienceCopy.aboutExperience = [];
+      }
+      this.experienceCopy.experience.unshift("");
+      this.experienceCopy.experienceLocation.unshift("");
+      this.experienceCopy.experienceStartDate.unshift("");
+      this.experienceCopy.experienceEndDate.unshift("");
+      this.experienceCopy.isPresent.unshift(true);
+      this.experienceCopy.aboutExperience.unshift("");
+    },
+
+    updateEducation() {
+      if (
+        this.educationCopy == this.education &&
+        this.educationAt == this.educationAtCopy &&
+        this.educationPeriod == this.formatDateForEducationUpload()
+      ) {
+        console.log(this.educationCopy, "copy");
+        console.log(this.education);
+        console.log("No change");
+        return;
+      }
+
+      this.education = this.educationCopy;
+      this.educationAt = this.educationAtCopy;
+      this.educationPeriod = this.formatDateForEducationUpload();
+      this.educationArea = this.educationAreaCopy;
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .set(
+          {
+            education: this.education,
+            educationAt: this.educationAt,
+            educationPeriod: this.educationPeriod,
+            educationArea: this.educationArea,
+            editedAt: new Date(),
+            lastEdited: ["education"],
+          },
+          { merge: true }
+        );
+      this.closeEditEducation();
+      console.log("Updated.");
+    },
+    formatDateForEducationUpload() {
+      let obj = [];
+      for (
+        let index = 0;
+        index < this.educationStartPeriodCopy.length;
+        index++
+      ) {
+        const startYear = this.educationStartPeriodCopy[index];
+        const endYear = this.educationEndPeriodCopy[index];
+        obj.push(startYear + " - " + endYear);
+      }
+      return obj;
+    },
+    updateWorkExperienceModal() {
+      let dates = this.formatExperienceDate();
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(this.userID)
+        .set(
+          {
+            experience: this.experienceCopy.experience,
+            experienceLocation: this.experienceCopy.experienceLocation,
+            aboutExperience: this.experienceCopy.aboutExperience,
+            experienceDate: dates,
+            lastEdited: "experience",
+            editedAt: new Date(),
+          },
+          { merge: true }
+        );
+      this.closeWorkExperienceModal();
+      this.experience = this.experienceCopy.experience;
+      this.experienceLocation = this.experienceCopy.experienceLocation;
+      this.experienceDate = dates;
+      this.aboutExperience = this.experienceCopy.aboutExperience;
+
+      console.log("Changes done");
+    },
+    formatExperienceDate() {
+      let obj = [];
+      for (
+        let index = 0;
+        index < this.experienceCopy.experienceStartDate.length;
+        index++
+      ) {
+        const elementStart = new Date(
+          this.experienceCopy.experienceStartDate[index]
+        );
+        let endDate;
+        if (this.experienceCopy.isPresent[index]) {
+          endDate = " - Present";
+        } else {
+          endDate = new Date(this.experienceCopy.experienceEndDate[index]);
+          let endYear = endDate.getFullYear();
+          let endMonth = endDate.toLocaleString("En", { month: "long" });
+          endDate = " - " + endMonth + ", " + endYear;
+        }
+        let startYear = elementStart.getFullYear();
+        let startMonth = elementStart.toLocaleString("En", { month: "long" });
+        obj.push(startMonth + ", " + startYear + endDate);
+      }
+      return obj;
+    },
+    async updateSkills() {
+      if (this.somethingChanged()) {
+        this.skillsChanged = true;
+        this.skills = this.toAddSkills;
+        this.skillExperience = this.toAddSkillExp;
+        this.isPending = true;
+        await firebase
+          .firestore()
+          .collection("users")
+          .doc(this.userID)
+          .set(
+            {
+              skills: this.skills,
+              skillExperience: this.skillExperience,
+              skills_lowercase: this.skills.map((v) => v.toLowerCase()),
+              editedAt: new Date(),
+              lastEdited: this.lastEdited,
+            },
+            { merge: true }
+          );
+      }
+      this.showEditSkills = false;
       this.isPending = false;
     },
     async updateProfileInfo() {
@@ -487,18 +1002,21 @@ export default {
             .firestore()
             .collection("users")
             .doc(this.userID)
-            .update({
-              firstName: this.firstName,
-              lastName: this.lastName,
-              job: this.job,
-              description: this.description,
-              age: this.age,
-              contact: this.contact,
-              phone: this.phone,
-              address: this.address,
-              editedAt: new Date(),
-              lastEdited: this.lastEdited,
-            });
+            .set(
+              {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                job: this.job,
+                description: this.description,
+                age: this.age,
+                contact: this.contact,
+                phone: this.phone,
+                address: this.address,
+                editedAt: new Date(),
+                lastEdited: this.lastEdited,
+              },
+              { merge: true }
+            );
           this.isPending = false;
         }
         this.closeModal();
@@ -509,6 +1027,9 @@ export default {
     async editPersonalData() {
       this.showEditPersonalData = !this.showEditPersonalData;
     },
+    editHobbies() {
+      this.showEditHobbies = !this.showEditHobbies;
+    },
     editSkills() {
       this.showEditSkills = !this.showEditSkills;
     },
@@ -517,7 +1038,101 @@ export default {
     },
     closeSkillsModal() {
       this.showEditSkills = false;
-      this.toAddSkillExp = this.skillExperience;
+    },
+    editWorkExperience() {
+      this.experienceCopy = {
+        experience: this.profileInfo.experience,
+        experienceLocation: this.profileInfo.experienceLocation,
+        experienceStartDate: this.profileInfo.experienceStartDate,
+        experienceEndDate: this.profileInfo.experienceEndDate,
+        isPresent: this.profileInfo.isPresent,
+        aboutExperience: this.profileInfo.aboutExperience,
+      };
+      this.copySaveExperience = this.experienceCopy;
+      this.showEditWorkExperience = !this.showEditWorkExperience;
+    },
+    editEducation() {
+      this.educationCopy = this.education;
+      this.educationAtCopy = this.educationAt;
+      this.educationStartPeriodCopy = this.formatStartEducationDate();
+      this.educationEndPeriodCopy = this.formatEndEducationDate();
+      this.educationAreaCopy = this.educationArea;
+      this.showEditEducation = !this.showEditEducation;
+    },
+    formatStartEducationDate() {
+      if (!this.educationPeriod) {
+        return "";
+      }
+      let obj = [];
+      for (let index = 0; index < this.educationPeriod.length; index++) {
+        let temp = this.educationPeriod[index];
+        temp = temp.split(" - ");
+        obj.push(temp[0]);
+      }
+      return obj;
+    },
+    formatEndEducationDate() {
+      if (!this.educationPeriod) {
+        return "";
+      }
+      let obj = [];
+      for (let index = 0; index < this.educationPeriod.length; index++) {
+        let temp = this.educationPeriod[index];
+        temp = temp.split(" - ");
+        obj.push(temp[1]);
+      }
+      return obj;
+    },
+    closeEditEducation() {
+      this.showEditEducation = false;
+    },
+    closeWorkExperienceModal() {
+      this.showEditWorkExperience = false;
+    },
+    range(start, end) {
+      return Array(end - start + 1)
+        .fill()
+        .map((_, idx) => start + idx);
+    },
+    getStartDate(date) {
+      if (!date) {
+        return;
+      }
+      this.profileInfo.experienceStartDate = [];
+      for (let index = 0; index < date.length; index++) {
+        let temp = date[index].split("-");
+        let tempDate = new Date(temp[0]);
+        let year = tempDate.getFullYear();
+        let month = tempDate.getMonth() + 1;
+        if (month < 10) {
+          month = "0" + month;
+        }
+        console.log(this.profileInfo.experienceStartDate);
+        this.profileInfo.experienceStartDate.push(year + "-" + month + "-01");
+      }
+    },
+    getEndDate(date) {
+      if (!date) {
+        return;
+      }
+      this.profileInfo.experienceEndDate = [];
+      this.profileInfo.isPresent = [];
+      for (let index = 0; index < date.length; index++) {
+        let temp = date[index].split("-");
+        console.log(temp[1]);
+        if (temp[1] == " Present") {
+          this.profileInfo.isPresent.push(true);
+          continue;
+        }
+        let tempDate = new Date(temp[0]);
+        let year = tempDate.getFullYear();
+        let month = tempDate.getMonth() + 1;
+        if (month < 10) {
+          month = "0" + month;
+        }
+        this.profileInfo.experienceEndDate.push(year + "-" + month + "-01");
+        this.profileInfo.isPresent.push(false);
+      }
     },
     isNumber(e) {
       let char = String.fromCharCode(e.keyCode);
@@ -557,13 +1172,14 @@ export default {
     },
     somethingChanged() {
       let edited = false;
+      this.lastEdited = [];
       if (this.firstName != this.profileInfo.firstName) {
-        this.lastEdited.push("firstName");
+        this.lastEdited.push("first name");
         edited = true;
       }
 
       if (this.lastName != this.profileInfo.lastName) {
-        this.lastEdited.push("lastName");
+        this.lastEdited.push("last name");
         edited = true;
       }
 
@@ -596,51 +1212,69 @@ export default {
         this.lastEdited.push("address");
         edited = true;
       }
+      if (this.skillsChanged) {
+        this.skillsChanged = false;
+        this.lastEdited.push("skills");
+        console.log("Pushing skills");
+        edited = true;
+      }
       return edited;
     },
+
     async GetData() {
       let currUserWebid = window.localStorage.getItem("currUserWebid");
       console.log(this.webid, "hi");
       this.isCurrUserProfile = false;
       this.loadedData = false;
-      await firebase
-        .firestore()
-        .collection("users")
-        .where("webid", "==", this.webid)
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            if (currUserWebid == doc.data().webid) {
-              this.isCurrUserProfile = true;
-            }
+      try {
+        await firebase
+          .firestore()
+          .collection("users")
+          .where("webid", "==", this.webid)
+          .get()
+          .then((querySnapshot) => {
+            console.log("here", this.webid);
+            querySnapshot.forEach((doc) => {
+              if (currUserWebid == doc.data().webid) {
+                this.isCurrUserProfile = true;
+              }
 
-            this.userID = doc.id;
-            this.firstName = doc.data().firstName;
-            this.lastName = doc.data().lastName;
-            this.job = doc.data().job;
-            this.phone = doc.data().phone;
-            this.address = doc.data().address;
-            this.description = doc.data().description;
-            this.experience = doc.data().experience;
-            this.education = doc.data().education;
-            this.educationAt = doc.data().educationAt;
-            this.educationPeriod = doc.data().educationPeriod;
-            this.educationArea = doc.data().educationArea;
-            this.skills = doc.data().skills;
-            this.skillExperience = doc.data().skillExperience;
-            this.hobbies = doc.data().hobbies;
-            this.github = doc.data().github;
-            this.instagram = doc.data().instagram;
-            this.linkedin = doc.data().linkedin;
-            this.facebook = doc.data().facebook;
-            this.contact = doc.data().contact;
-            this.age = doc.data().age;
-            this.profileInfo = doc.data();
-            this.webid = doc.data().webid;
-            this.toAddSkills = doc.data().skills;
-            this.toAddSkillExp = doc.data().skillExperience;
-          });
-        });
+              this.userID = doc.id;
+              this.firstName = doc.data().firstName;
+              this.lastName = doc.data().lastName;
+              this.job = doc.data().job;
+              this.phone = doc.data().phone;
+              this.address = doc.data().address;
+              this.description = doc.data().description;
+              this.experience = doc.data().experience;
+              this.experienceLocation = doc.data().experienceLocation;
+              this.experienceDate = doc.data().experienceDate;
+              this.aboutExperience = doc.data().aboutExperience;
+              this.education = doc.data().education;
+              this.educationAt = doc.data().educationAt;
+              this.educationPeriod = doc.data().educationPeriod;
+              this.educationArea = doc.data().educationArea;
+              this.skills = doc.data().skills;
+              this.skillExperience = doc.data().skillExperience;
+              this.hobbies = doc.data().hobbies;
+              this.github = doc.data().github;
+              this.instagram = doc.data().instagram;
+              this.linkedin = doc.data().linkedin;
+              this.facebook = doc.data().facebook;
+              this.contact = doc.data().contact;
+              this.age = doc.data().age;
+              this.profileInfo = doc.data();
+              this.getStartDate(doc.data().experienceDate);
+              this.getEndDate(doc.data().experienceDate);
+              this.webid = doc.data().webid;
+              this.toAddSkills = doc.data().skills;
+              this.toAddSkillExp = doc.data().skillExperience;
+            });
+          })
+          .catch();
+      } catch {
+        console.log("what");
+      }
       await this.getPicture();
       this.loadedData = true;
     },
@@ -663,7 +1297,11 @@ export default {
         .getDownloadURL()
         .then((url) => {
           this.picURL = url;
+        })
+        .catch((err) => {
+          console.log(err);
         });
+
       this.loadedImage = true;
     },
   },
@@ -711,6 +1349,11 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
   margin-top: calc(var(--bs-gutter-y) * -1);
   margin-left: 0px;
   margin-right: 0px;
+}
+
+.test-class {
+  display: inline;
+  color: darkgray;
 }
 
 .row > * {
@@ -833,6 +1476,16 @@ hr {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
   transition: width 3s ease;
+}
+
+.mail-to {
+  text-decoration: none;
+  color: inherit;
+}
+
+.mail-to:hover {
+  text-decoration: underline;
+  color: #4a89dc;
 }
 
 .progress {
@@ -1047,8 +1700,20 @@ h5 {
   }
 }
 
+@media (min-width: 767px) {
+  .row {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 767px) {
   .row {
+    justify-content: center;
+  }
+  .name-edit-holder {
+    justify-content: center;
+  }
+  .name-job-holder {
     justify-content: center;
   }
   .col-md-5 {
@@ -1106,6 +1771,13 @@ h5 {
   -o-transform: translate(0, -4px);
   -webkit-transform: translate(0, -4px);
   transform: translate(0, -4px);
+}
+
+.name-edit-holder {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .lds-ring {
@@ -1183,5 +1855,45 @@ h5 {
 
 .col-lg-10 {
   margin: 10px auto;
+}
+
+.domain-location {
+  display: flex;
+  justify-content: center;
+}
+
+.domain {
+  padding-right: 10px;
+}
+
+.dates {
+  display: flex;
+  justify-content: center;
+}
+.start-date {
+  padding-right: 10px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.checkbox-chk:checked {
+  display: block;
+}
+
+.end-date {
+  display: flex;
+}
+
+.element-body {
+  padding-bottom: 20px;
+}
+
+.edu-label {
+  padding-top: 10px;
+  display: inline-block;
 }
 </style>
