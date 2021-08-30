@@ -500,7 +500,7 @@
   </div>
   <div v-if="loadedData" class="container fade-in">
     <div class="header p-3 p-lg-4 text-white">
-      <div class="row" style="justify-content: space-between">
+      <div class="row">
         <div class="col-lg-4 col-md-5">
           <div class="avatar p-1">
             <div v-if="!loadedImage" class="lds-ring">
@@ -521,16 +521,19 @@
         <div
           class="col-lg-8 col-md-7 text-center text-md-start name-job-holder"
         >
-          <h2>{{ firstName + " " + lastName }}</h2>
-          <div
-            v-if="isCurrUserProfile"
-            style="display: flex; justify-content: space-between;"
-          ></div>
-          <i
-            v-if="isCurrUserProfile"
-            @click="editPersonalData()"
-            class="fas fa-user-edit"
-          ></i>
+          <div class="name-edit-holder">
+            <h2>{{ firstName + " " + lastName }}</h2>
+            <div
+              v-if="isCurrUserProfile"
+              style="display: flex; justify-content: space-between;"
+            ></div>
+            <i
+              v-if="isCurrUserProfile"
+              @click="editPersonalData()"
+              class="fas fa-user-edit"
+            ></i>
+          </div>
+
           <p>{{ job }}</p>
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
@@ -635,7 +638,7 @@
           v-for="(item, index) in experience"
           :key="index"
         >
-          <div class="card-body">
+          <div class="card-body" v-if="experienceLocation">
             <div class="h5 mb-1">
               {{ experience[index] }}
               <span class="text-muted h6"
@@ -1697,8 +1700,20 @@ h5 {
   }
 }
 
+@media (min-width: 767px) {
+  .row {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 767px) {
   .row {
+    justify-content: center;
+  }
+  .name-edit-holder {
+    justify-content: center;
+  }
+  .name-job-holder {
     justify-content: center;
   }
   .col-md-5 {
@@ -1756,6 +1771,13 @@ h5 {
   -o-transform: translate(0, -4px);
   -webkit-transform: translate(0, -4px);
   transform: translate(0, -4px);
+}
+
+.name-edit-holder {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
 }
 
 .lds-ring {
