@@ -770,6 +770,7 @@ export default {
   },
   methods: {
     addInputField() {
+      this.skillsChanged = true;
       if (!this.toAddSkills) {
         this.toAddSkills = [""];
         this.toAddSkillExp = ["20%"];
@@ -787,6 +788,9 @@ export default {
       }
       this.hobbies.unshift("");
     },
+    closeEditHobby() {
+      this.showEditHobbies = false;
+    },
     updateHobbies() {
       firebase
         .firestore()
@@ -800,6 +804,7 @@ export default {
           },
           { merge: true }
         );
+      this.closeEditHobby();
     },
     addEducationField() {
       console.log("what");
@@ -1260,29 +1265,16 @@ export default {
       }
     },
     async getPicture() {
-      try {
-        await storageRef
-          .child(this.webid)
-          .getDownloadURL()
-          .then((url) => {
-            this.picURL = url;
-          })
-          .catch(
-            await storageRef
-              .child("default.png")
-              .getDownloadURL()
-              .then((url) => {
-                this.picURL = url;
-              })
-          );
-      } catch {
-        await storageRef
-          .child("default.png")
-          .getDownloadURL()
-          .then((url) => {
-            this.picURL = url;
-          });
-      }
+      await storageRef
+        .child(this.webid)
+        .getDownloadURL()
+        .then((url) => {
+          this.picURL = url;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       this.loadedImage = true;
     },
   },

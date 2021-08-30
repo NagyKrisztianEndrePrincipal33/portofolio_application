@@ -114,6 +114,9 @@ export default {
   },
   methods: {
     grouping(news) {
+      if (!news.sklils) {
+        return;
+      }
       this.combinedSkills = news.skills.map((x, i) => {
         return { skillName: x, skillExp: news.skillExperience[i] };
       });
