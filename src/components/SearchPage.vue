@@ -2,7 +2,10 @@
   <navigation-bar :user="user"></navigation-bar>
   <div class="initial-padding"></div>
 
-  <div v-for="result in sortedSearchResult" :key="result">
+  <div
+    v-for="result in !sortedSearchResult ? sortedSearchResult : searchResult"
+    :key="result"
+  >
     <div v-if="result.job || result.skills">
       <div class="post">
         <div class="name">
@@ -14,6 +17,7 @@
                 params: { webid: result.webid },
               }"
             >
+              <span style="display: none">{{ getProfile(result.webid) }}</span>
               <img
                 class="profile-pic"
                 :src="result.profilePic"
@@ -37,7 +41,14 @@
 
         <hr />
 
-        <h2 v-if="result.skills" class="h4 mb-3 text-left">
+        <div v-if="sortedSearchResult" class="description">
+          {{ result.description }}
+        </div>
+
+        <h2
+          v-if="result.skills && !sortedSearchResult"
+          class="h4 mb-3 text-left"
+        >
           Professional Skills
         </h2>
 
@@ -105,6 +116,7 @@ export default {
       searchResult: [],
       combinedSkills: [],
       sortedSearchResult: [],
+      profile: "",
     };
   },
   components: { NavigationBar },
@@ -207,7 +219,7 @@ export default {
     searchName(text) {
       const fireSQL = new FireSQL(firebase.firestore());
       const usersPromis = fireSQL.query(
-        `SELECT firstName,lastName, skills, job, webid
+        `SELECT firstName, lastName, skills, job, webid, description
             FROM users
             WHERE firstName like '${text}%'
             OR lastName like '${text}%'`
@@ -216,8 +228,19 @@ export default {
         for (const user of users) {
           console.log(`${user.firstName}, ${user.skills}`);
           this.searchResult.push(user);
+          console.log("Ez", this.searchResult);
         }
       });
+    },
+    getProfile(webid) {
+      firebase
+        .storage()
+        .ref()
+        .child(webid)
+        .getDownloadURL()
+        .then((url) => {
+          this.searchResult.profilePic = url;
+        });
     },
   },
 };
@@ -391,6 +414,12 @@ hr {
 
 .progress-bar:hover {
   background-color: #2f9df7;
+}
+
+.description {
+  display: flex;
+  margin: 5px 0px 10px 20px;
+  text-align: left;
 }
 
 @keyframes progress-bar-stripes {

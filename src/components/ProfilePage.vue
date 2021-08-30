@@ -526,7 +526,11 @@
             v-if="isCurrUserProfile"
             style="display: flex; justify-content: space-between;"
           ></div>
-          <i @click="editPersonalData()" class="fas fa-user-edit"></i>
+          <i
+            v-if="isCurrUserProfile"
+            @click="editPersonalData()"
+            class="fas fa-user-edit"
+          ></i>
           <p>{{ job }}</p>
           <a class="btn btn-success shadow-sm mt-1" href="#contact">Contact</a>
         </div>
@@ -550,13 +554,17 @@
               <div class="pb-1">Contact</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">{{ contact }}</div>
+              <div class="pb-1 text-secondary">
+                <a class="mail-to" :href="`mailto:` + contact">{{ contact }}</a>
+              </div>
             </div>
             <div class="col-sm-4">
               <div class="pb-1">Phone</div>
             </div>
             <div class="col-sm-8">
-              <div class="pb-1 text-secondary">{{ phone }}</div>
+              <div class="pb-1 text-secondary">
+                <a class="mail-to" :href="`tel:` + phone">{{ phone }}</a>
+              </div>
             </div>
             <div class="col-sm-4">
               <div class="pb-1">Address</div>
@@ -571,10 +579,14 @@
       </div>
     </div>
     <hr />
-    <div v-if="isCurrUserProfile" class="px-3 px-lg-5 skills-section ">
+    <div class="px-3 px-lg-5 skills-section ">
       <div class="skills-edit">
         <h2 class="h3 mb-3 text-left">Professional Skills</h2>
-        <i @click="editSkills()" class="fas fa-edit"></i>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editSkills()"
+          class="fas fa-edit"
+        ></i>
       </div>
 
       <div class="skills">
@@ -611,7 +623,11 @@
     <div class="work-experience-section px-3 px-lg-5">
       <div class="skills-edit">
         <h2 class="h3 mb-4 text-left">Work experience</h2>
-        <i @click="editWorkExperience()" class="fas fa-edit"></i>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editWorkExperience()"
+          class="fas fa-edit"
+        ></i>
       </div>
       <div class="timeline">
         <div
@@ -640,7 +656,11 @@
     <div class="education-section px-3 px-lg-5">
       <div class="skills-edit">
         <h2 class="h3 mb-4 text-left">Education</h2>
-        <i @click="editEducation()" class="fas fa-edit"></i>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editEducation()"
+          class="fas fa-edit"
+        ></i>
       </div>
       <div class="timeline">
         <div
@@ -667,7 +687,11 @@
     <div class="hobbies-section px-3 px-lg-5">
       <div class="skills-edit">
         <h2 class="h3 mb-4 text-left">Hobbies</h2>
-        <i @click="editHobbies()" class="fas fa-edit"></i>
+        <i
+          v-if="isCurrUserProfile"
+          @click="editHobbies()"
+          class="fas fa-edit"
+        ></i>
       </div>
       <div class="hobbies">
         <div class="hobby" v-for="(hobby, index) in hobbies" :key="index">
@@ -1449,6 +1473,16 @@ hr {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
   transition: width 3s ease;
+}
+
+.mail-to {
+  text-decoration: none;
+  color: inherit;
+}
+
+.mail-to:hover {
+  text-decoration: underline;
+  color: #4a89dc;
 }
 
 .progress {

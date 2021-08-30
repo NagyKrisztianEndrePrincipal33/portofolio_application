@@ -78,7 +78,15 @@
                   </div>
                 </div>
               </div>
-              <button>Visit profile</button>
+              <hr />
+              <router-link
+                :to="{
+                  name: 'profile_page',
+                  params: { webid: news.webid },
+                }"
+              >
+                <button class="view-more">Visit profile</button>
+              </router-link>
             </div>
           </div>
         </div>
@@ -282,6 +290,22 @@ hr {
   background-color: #e9ecef;
   border-radius: 0.25rem;
   transition: width 3s ease;
+}
+
+.view-more {
+  border-radius: 20px;
+  border: none;
+  background-color: #4a89dc;
+  color: #fff;
+  padding: 10px 24px;
+  margin-bottom: 15px;
+  font-weight: 400;
+  letter-spacing: 0.8px;
+  transition: 0.3s ease-in-out;
+}
+
+.view-more:hover {
+  background-color: #00acee;
 }
 
 .progress-bar {
